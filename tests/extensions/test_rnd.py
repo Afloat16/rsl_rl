@@ -100,6 +100,18 @@ class TestIntrinsicReward:
 class TestPredictorLoss:
     """Tests for :meth:`RandomNetworkDistillation.compute_loss` and the built-in optimizer."""
 
+    def test_target_forward_does_not_build_an_autograd_graph(self) -> None:
+        """The frozen target must not save activations during predictor training."""
+        rnd, obs = _make_rnd()
+        target_outputs = []
+        handle = rnd.target.register_forward_hook(lambda _module, _inputs, output: target_outputs.append(output))
+        loss = rnd.compute_loss(obs)
+        handle.remove()
+        assert not target_outputs[0].requires_grad
+        loss.backward()
+        assert all(parameter.grad is not None for parameter in rnd.predictor.parameters())
+        assert all(parameter.grad is None for parameter in rnd.target.parameters())
+
     def test_compute_loss_is_finite_scalar(self) -> None:
         """The MSE loss should be a finite, non-negative scalar tensor."""
         rnd, obs = _make_rnd()
