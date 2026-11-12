@@ -43,6 +43,30 @@ def _build_sac() -> SAC:
     return SAC.construct_algorithm(env.get_observations(), env, cfg, "cpu")
 
 
+def test_actor_update_preserves_frozen_critic_parameters() -> None:
+    """Actor updates retain frozen critic weights while trainable actor and critic weights learn."""
+    torch.manual_seed(7)
+    alg = _build_sac()
+    alg.num_updates = 1
+    frozen = next(alg.critics[0].parameters()).requires_grad_(False)
+    frozen_before = frozen.detach().clone()
+    critic_before = [p.detach().clone() for p in alg.critics.parameters()]
+    actor_before = [p.detach().clone() for p in alg.actor.parameters()]
+    env = DummyEnv()
+    obs = env.get_observations()
+    with torch.inference_mode():
+        for _ in range(3):
+            obs, rewards, dones, extras = env.step(alg.act(obs))
+            alg.process_env_step(obs, rewards, dones, extras)
+    alg.update()
+
+    assert not frozen.requires_grad
+    assert frozen.grad is None
+    torch.testing.assert_close(frozen, frozen_before, rtol=0, atol=0)
+    assert any(not torch.equal(old, p) for old, p in zip(critic_before, alg.critics.parameters()))
+    assert any(not torch.equal(old, p) for old, p in zip(actor_before, alg.actor.parameters()))
+
+
 def test_cnn_actor_is_rejected_at_construction() -> None:
     """Unsupported image actors fail before replay collection starts."""
     env = DummyEnv()
