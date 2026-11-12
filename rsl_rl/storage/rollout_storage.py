@@ -268,6 +268,11 @@ class RolloutStorage:
         if not 1 <= num_mini_batches <= self.num_envs:
             raise ValueError("num_mini_batches must be between 1 and the number of environments.")
         padded_obs_trajectories, trajectory_masks = split_and_pad_trajectories(self.observations, self.dones)
+        dones = self.dones.squeeze(-1)
+        last_was_done = torch.zeros_like(dones, dtype=torch.bool)
+        last_was_done[1:] = dones[:-1]
+        last_was_done[0] = True
+        last_was_done = last_was_done.permute(1, 0)
 
         for ep in range(num_epochs):
             first_traj = 0
@@ -276,24 +281,18 @@ class RolloutStorage:
                 start = i * self.num_envs // num_mini_batches
                 stop = (i + 1) * self.num_envs // num_mini_batches
 
-                dones = self.dones.squeeze(-1)
-                last_was_done = torch.zeros_like(dones, dtype=torch.bool)
-                last_was_done[1:] = dones[:-1]
-                last_was_done[0] = True
-                trajectories_batch_size = torch.sum(last_was_done[:, start:stop])
+                batch_starts = last_was_done[start:stop]
+                trajectories_batch_size = torch.sum(batch_starts)
                 last_traj = first_traj + trajectories_batch_size
 
                 # Handle the hidden states
                 # Reshape to [num_envs, time, num layers, hidden dim]
                 # Original shape: [time, num_layers, num_envs, hidden_dim])
-                last_was_done = last_was_done.permute(1, 0)
                 # Take only time steps after dones (flattens num envs and time dimensions),
                 # take a batch of trajectories and finally reshape back to [num_layers, batch, hidden_dim]
                 if self.saved_hidden_state_a is not None:
                     hidden_state_a_batch = [
-                        saved_hidden_state.permute(2, 0, 1, 3)[last_was_done][first_traj:last_traj]
-                        .transpose(1, 0)
-                        .contiguous()
+                        saved_hidden_state.permute(2, 0, 1, 3)[start:stop][batch_starts].transpose(1, 0).contiguous()
                         for saved_hidden_state in self.saved_hidden_state_a
                     ]
                     # Unwrap the single state of a GRU, keep the pair of an LSTM as a tuple
@@ -304,9 +303,7 @@ class RolloutStorage:
                     hidden_state_a_batch = None
                 if self.saved_hidden_state_c is not None:
                     hidden_state_c_batch = [
-                        saved_hidden_state.permute(2, 0, 1, 3)[last_was_done][first_traj:last_traj]
-                        .transpose(1, 0)
-                        .contiguous()
+                        saved_hidden_state.permute(2, 0, 1, 3)[start:stop][batch_starts].transpose(1, 0).contiguous()
                         for saved_hidden_state in self.saved_hidden_state_c
                     ]
                     hidden_state_c_batch = (

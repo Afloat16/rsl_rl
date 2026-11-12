@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import torch
+from collections.abc import Callable
 from tensordict import TensorDict
 
 import pytest
@@ -18,6 +19,27 @@ from rsl_rl.modules import RNN
 from rsl_rl.storage import RolloutStorage
 from rsl_rl.utils import unpad_trajectories
 from tests.conftest import make_obs
+
+
+class _HiddenStateSelectionVolume(torch.utils._python_dispatch.TorchDispatchMode):
+    """Count elements materialized by boolean selection of recurrent state tensors."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.elements = 0
+
+    def __torch_dispatch__(
+        self, func: Callable, types: tuple[type, ...], args: tuple = (), kwargs: dict | None = None
+    ) -> object:
+        result = func(*args, **(kwargs or {}))
+        if (
+            func is torch.ops.aten.index.Tensor
+            and args[0].ndim == 4
+            and any(index is not None and index.dtype == torch.bool for index in args[1])
+        ):
+            self.elements += result.numel()
+        return result
+
 
 NUM_ENVS = 6
 NUM_STEPS = 8
@@ -427,6 +449,29 @@ def test_recurrent_remainder_hidden_states_match_episode_starts(
         assert torch.equal(batch.hidden_states[1][1][0, :, 0], expected + 30)
         assert batch.masks.sum().item() == num_steps * len(environments)
     assert sum(batch.actions.shape[1] for batch in batches) == num_envs
+
+
+@pytest.mark.parametrize("num_batches", [1, 3])
+def test_hidden_state_selection_excludes_unrelated_environments(num_batches: int) -> None:
+    """Preparing a mini-batch should materialize only the GRU/LSTM states that it yields."""
+    storage = _identified_storage(7, 4)
+    volume = _HiddenStateSelectionVolume()
+    with volume:
+        batches = list(storage.recurrent_mini_batch_generator(num_batches, 2))
+    output_elements = sum(
+        state.numel() for batch in batches for state in (batch.hidden_states[0], *batch.hidden_states[1])
+    )
+    assert volume.elements == output_elements
+    for batch in batches:
+        environments = batch.actions[0, :, 0].long().tolist()
+        starts = []
+        for environment in environments:
+            starts.append(environment)
+            starts.extend((step + 1) * 1000 + environment for step in range(3) if storage.dones[step, environment, 0])
+        expected = torch.tensor(starts, dtype=torch.float32)
+        torch.testing.assert_close(batch.hidden_states[0][0, :, 0], expected)
+        torch.testing.assert_close(batch.hidden_states[1][0][0, :, 0], expected + 20)
+        torch.testing.assert_close(batch.hidden_states[1][1][0, :, 0], expected + 30)
 
 
 @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
