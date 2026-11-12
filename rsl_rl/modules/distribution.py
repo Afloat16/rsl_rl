@@ -183,11 +183,13 @@ class GaussianDistribution(Distribution):
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the Gaussian distribution from MLP output."""
-        mean = mlp_output
+        mean = mlp_output.to(dtype=torch.promote_types(mlp_output.dtype, torch.float32))
         if self.std_type == "scalar":
-            std = self.std_param.clamp(self.std_range[0], self.std_range[1])
+            std_param = self.std_param.to(dtype=torch.promote_types(self.std_param.dtype, torch.float32))
+            std = std_param.clamp(self.std_range[0], self.std_range[1])
         elif self.std_type == "log":
-            log_std = self.log_std_param.clamp(self.log_std_range[0], self.log_std_range[1])
+            log_std_param = self.log_std_param.to(dtype=torch.promote_types(self.log_std_param.dtype, torch.float32))
+            log_std = log_std_param.clamp(self.log_std_range[0], self.log_std_range[1])
             std = torch.exp(log_std)
         self._distribution = Normal(mean, std)
 
@@ -287,6 +289,7 @@ class HeteroscedasticGaussianDistribution(GaussianDistribution):
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the Gaussian distribution from MLP output."""
+        mlp_output = mlp_output.to(dtype=torch.promote_types(mlp_output.dtype, torch.float32))
         if self.std_type == "scalar":
             mean, std = torch.unbind(mlp_output, dim=-2)
             std = torch.clamp(std, self.std_range[0], self.std_range[1])
@@ -379,6 +382,7 @@ class SquashedGaussianDistribution(Distribution):
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the distribution parameters from MLP output."""
+        mlp_output = mlp_output.to(dtype=torch.promote_types(mlp_output.dtype, torch.float32))
         # Map the raw standard deviation head smoothly into the configured log range
         mean, raw_log_std = torch.unbind(mlp_output, dim=-2)
         log_std_min, log_std_max = self.log_std_range
@@ -439,6 +443,7 @@ class SquashedGaussianDistribution(Distribution):
 
     def log_prob(self, outputs: torch.Tensor) -> torch.Tensor:
         """Compute the log probability of squashed and scaled outputs, summed over the last dimension."""
+        outputs = outputs.to(dtype=torch.promote_types(outputs.dtype, torch.float32))
         # Undo action scaling and reuse cached pre-squash samples when available
         if outputs is self._last_sample:
             pre_squash: torch.Tensor = self._pre_squash  # type: ignore
@@ -514,6 +519,7 @@ class BetaDistribution(Distribution):
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the Beta distribution from MLP output."""
+        mlp_output = mlp_output.to(dtype=torch.promote_types(mlp_output.dtype, torch.float32))
         alpha_raw, beta_raw = torch.unbind(mlp_output, dim=-2)
         self._alpha = torch.nn.functional.softplus(alpha_raw) + 1.0
         self._beta = torch.nn.functional.softplus(beta_raw) + 1.0
@@ -569,6 +575,7 @@ class BetaDistribution(Distribution):
         Outputs are unscaled from ``action_range`` back to ``[0, 1]`` before computing the log probability.
         The Jacobian correction for the linear rescaling is included.
         """
+        outputs = outputs.to(dtype=torch.promote_types(outputs.dtype, torch.float32))
         unscaled = (outputs - self._range_offset) / self._range_scale
         unscaled = unscaled.clamp(1e-6, 1.0 - 1e-6)
         # Jacobian correction: log p(y) = log p(x) - log(scale), where y = x * scale + offset

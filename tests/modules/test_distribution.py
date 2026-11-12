@@ -14,6 +14,36 @@ from rsl_rl.modules import MLP, SquashedGaussianDistribution
 from rsl_rl.modules.distribution import BetaDistribution, GaussianDistribution, HeteroscedasticGaussianDistribution
 
 
+@pytest.mark.parametrize("dtype", [torch.float16, torch.bfloat16, torch.float32, torch.float64])
+@pytest.mark.parametrize("kind", ["gaussian_scalar", "gaussian_log", "hetero_scalar", "hetero_log", "squashed", "beta"])
+def test_low_precision_distribution_updates(dtype: torch.dtype, kind: str) -> None:
+    """Sampling and densities remain finite for small variances and bounded actions."""
+    if kind.startswith("gaussian"):
+        distribution = GaussianDistribution(2, init_std=1e-4, std_type=kind.split("_")[1]).to(dtype)
+        output = torch.zeros(2, 2, dtype=dtype)
+    else:
+        output = torch.zeros(2, 2, 2, dtype=dtype)
+        if kind.startswith("hetero"):
+            std_type = kind.split("_")[1]
+            distribution = HeteroscedasticGaussianDistribution(2, std_type=std_type).to(dtype)
+            output[:, 1] = 1e-4 if std_type == "scalar" else math.log(1e-4)
+        else:
+            distribution = (SquashedGaussianDistribution(2) if kind == "squashed" else BetaDistribution(2)).to(dtype)
+    output.requires_grad_()
+    distribution.update(output)
+    assert torch.isfinite(distribution.sample()).all()
+    assert torch.isfinite(distribution.entropy).all()
+    if kind in ("squashed", "beta"):
+        actions = torch.tensor([[-1.0, 1.0], [1.0, -1.0]], dtype=dtype)
+    else:
+        actions = distribution.mean.detach() + 0.5 * distribution.std.detach()
+    log_prob = distribution.log_prob(actions)
+    assert torch.isfinite(log_prob).all()
+    (-log_prob.mean()).backward()
+    assert output.grad is not None and torch.isfinite(output.grad).all()
+    assert torch.count_nonzero(output.grad) > 0
+
+
 class TestGaussianDistribution:
     """Tests for ``GaussianDistribution``."""
 
