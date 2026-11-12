@@ -332,6 +332,10 @@ class RolloutStorage:
 
     def _save_hidden_states(self, hidden_states: tuple[HiddenState, HiddenState]) -> None:
         """Save recurrent hidden states to the rollout storage."""
+        for state, saved in zip(hidden_states, (self.saved_hidden_state_a, self.saved_hidden_state_c)):
+            if state is None and saved is not None:
+                for buffer in saved:
+                    buffer[self.step].zero_()
         if hidden_states == (None, None):
             return
         # Make a tuple out of GRU hidden states to match the LSTM format

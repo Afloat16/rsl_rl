@@ -13,7 +13,7 @@ from tensordict import TensorDict
 import pytest
 
 from rsl_rl.algorithms import PPO
-from rsl_rl.models import MLPModel
+from rsl_rl.models import MLPModel, RNNModel
 from rsl_rl.modules import RNN
 from rsl_rl.storage import RolloutStorage
 from rsl_rl.utils import unpad_trajectories
@@ -363,6 +363,44 @@ def _identified_storage(num_envs: int, num_steps: int) -> RolloutStorage:
     storage.returns.copy_(storage.values * 10)
     storage.advantages.copy_(storage.values * 100)
     return storage
+
+
+@pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
+@pytest.mark.parametrize("reset_models", [(True, False), (False, True), (True, True)])
+def test_reset_recurrent_models_replace_reused_rollout_states(rnn_type: str, reset_models: tuple[bool, bool]) -> None:
+    """A rollout collected after reset must replay the recorded policy probabilities and values."""
+    torch.manual_seed(19)
+    obs = make_obs(2, 4)
+    groups = {"actor": ["policy"], "critic": ["policy"]}
+    options = {"hidden_dims": [8], "rnn_hidden_dim": 8, "rnn_type": rnn_type}
+    actor = RNNModel(obs, groups, "actor", 2, distribution_cfg={"class_name": "GaussianDistribution"}, **options)
+    critic = RNNModel(obs, groups, "critic", 1, **options)
+    storage = RolloutStorage("rl", 2, 3, obs, [2])
+    ppo = PPO(actor, critic, storage, num_learning_epochs=1, num_mini_batches=1, schedule="fixed", learning_rate=0.0)
+
+    for rollout in range(3):
+        if rollout == 2:
+            for model, reset in zip((actor, critic), reset_models):
+                if reset:
+                    model.reset()
+        with torch.inference_mode():
+            for _ in range(storage.num_transitions_per_env):
+                ppo.act(obs)
+                obs = make_obs(2, 4)
+                ppo.process_env_step(obs, torch.ones(2), torch.zeros(2), {})
+            ppo.compute_returns(obs)
+        batch = next(storage.recurrent_mini_batch_generator(1, 1))
+        actor(batch.observations, masks=batch.masks, hidden_state=batch.hidden_states[0], stochastic_output=True)
+        replayed_log_prob = actor.get_output_log_prob(batch.actions)
+        replayed_values = critic(batch.observations, masks=batch.masks, hidden_state=batch.hidden_states[1])
+        torch.testing.assert_close(replayed_log_prob, batch.old_actions_log_prob.squeeze(-1))
+        torch.testing.assert_close(replayed_values, batch.values)
+        if rollout == 2:
+            for states, reset in zip(batch.hidden_states, reset_models):
+                states = states if isinstance(states, tuple) else (states,)
+                assert all(bool(state.count_nonzero()) != reset for state in states)
+        losses, _ = ppo.update()
+        assert all(torch.isfinite(torch.tensor(value)) for value in losses.values())
 
 
 @pytest.mark.parametrize("recurrent", [False, True])
