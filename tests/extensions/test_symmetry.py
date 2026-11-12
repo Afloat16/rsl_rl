@@ -170,6 +170,38 @@ class TestComputeLoss:
 
         assert not loss.requires_grad
 
+    def test_logging_does_not_save_backward_activations(self) -> None:
+        """A logging-only mirror loss retains the same value without preparing an unused backward pass."""
+        sym = Symmetry(env=None, data_augmentation_func=_negate_augmentation, use_mirror_loss=False)
+        actor = _make_actor()
+        batch = _make_batch()
+        observations = batch.observations.clone()
+        saved = []
+        with torch.autograd.graph.saved_tensors_hooks(lambda value: saved.append(value) or value, lambda value: value):
+            actual = sym.compute_loss(actor, batch, NUM_ENVS)
+        assert not saved
+        assert not actual.requires_grad
+        assert torch.is_grad_enabled()
+        sym.use_mirror_loss = True
+        batch.observations = observations
+        reference = sym.compute_loss(actor, batch, NUM_ENVS)
+        torch.testing.assert_close(actual, reference.detach(), rtol=0, atol=0)
+        reference.backward()
+        assert any(parameter.grad is not None and parameter.grad.abs().sum() > 0 for parameter in actor.parameters())
+
+    def test_ppo_reports_symmetry_when_mirror_training_is_disabled(self) -> None:
+        """The optimization loop still reports the diagnostic metric without adding it to the objective."""
+        from tests.algorithms.test_ppo import _build_ppo, _fill_rollout
+
+        ppo, obs = _build_ppo(
+            symmetry_cfg={"env": None, "data_augmentation_func": _negate_augmentation, "use_mirror_loss": False}
+        )
+        _fill_rollout(ppo, obs)
+        ppo.compute_returns(obs)
+        losses, _ = ppo.update()
+        assert torch.isfinite(torch.tensor(losses["symmetry"]))
+        assert losses["symmetry"] > 0
+
     def test_augments_observations_when_not_previously_augmented(self) -> None:
         """If ``augment_batch`` wasn't called, ``compute_loss`` augments the observations in place."""
         sym = Symmetry(

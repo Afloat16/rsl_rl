@@ -102,7 +102,8 @@ class Symmetry:
             batch.observations, _ = self.data_augmentation_func(env=self.env, obs=batch.observations, actions=None)
 
         # Action means predicted by the actor on the augmented observation batch
-        mean_actions = actor(batch.observations.detach().clone())
+        with torch.set_grad_enabled(self.use_mirror_loss and torch.is_grad_enabled()):
+            mean_actions = actor(batch.observations.detach().clone())
 
         # Mirror the original-slice action means using the augmentation function. We use the action means here rather
         # than the sampled actions in ``batch.actions``, since the symmetry loss is defined on the policy mean.
