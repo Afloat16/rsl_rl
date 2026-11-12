@@ -14,6 +14,23 @@ from rsl_rl.modules import MLP, SquashedGaussianDistribution
 from rsl_rl.modules.distribution import BetaDistribution, GaussianDistribution, HeteroscedasticGaussianDistribution
 
 
+@pytest.mark.parametrize(
+    "distribution_class",
+    [GaussianDistribution, HeteroscedasticGaussianDistribution, SquashedGaussianDistribution, BetaDistribution],
+)
+def test_constructor_preserves_torch_validation_default(
+    distribution_class: type, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Constructing a policy distribution must preserve unrelated PyTorch validation."""
+    monkeypatch.setattr(torch.distributions.Distribution, "_validate_args", True)
+    distribution = distribution_class(output_dim=2)
+    shape = (3, 2) if distribution_class is GaussianDistribution else (3, 2, 2)
+    distribution.update(torch.ones(shape))
+    assert torch.isfinite(distribution.log_prob(distribution.sample())).all()
+    with pytest.raises(ValueError):
+        torch.distributions.Normal(torch.zeros(1), -torch.ones(1))
+
+
 class TestGaussianDistribution:
     """Tests for ``GaussianDistribution``."""
 
