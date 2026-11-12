@@ -350,6 +350,41 @@ class TestNormalizationUpdates:
 class TestPPOLosses:
     """Tests for PPO loss computation correctness."""
 
+    @pytest.mark.parametrize("recurrent", ["actor", "critic", "both", "neither"])
+    def test_rnd_loss_excludes_trajectory_padding(self, recurrent: str) -> None:
+        """RND should learn from real transitions, independent of recurrent trajectory padding."""
+        torch.manual_seed(7)
+        obs = make_obs(NUM_ENVS, OBS_DIM)
+        groups = {"actor": ["policy"], "critic": ["policy"]}
+        models = []
+        for name, output_dim in [("actor", NUM_ACTIONS), ("critic", 1)]:
+            model_class = RNNModel if recurrent in (name, "both") else MLPModel
+            kwargs = {"rnn_hidden_dim": 8, "rnn_type": "gru"} if model_class is RNNModel else {}
+            distribution = {"class_name": "GaussianDistribution"} if name == "actor" else None
+            models.append(
+                model_class(obs, groups, name, output_dim, hidden_dims=[8], distribution_cfg=distribution, **kwargs)
+            )
+        storage = RolloutStorage("rl", NUM_ENVS, NUM_STEPS, obs, [NUM_ACTIONS])
+        ppo = PPO(*models, storage, num_learning_epochs=1, num_mini_batches=1, schedule="fixed", rnd_cfg=RND_CFG)
+        with torch.inference_mode():
+            for step in range(NUM_STEPS):
+                ppo.act(obs)
+                obs = TensorDict({"policy": torch.full((NUM_ENVS, OBS_DIM), float(step + 1))}, [NUM_ENVS])
+                dones = torch.tensor([step == 2, False, step == 4, False])
+                ppo.process_env_step(obs, torch.ones(NUM_ENVS), dones, {})
+            ppo.compute_returns(obs)
+
+        reference = copy.deepcopy(ppo.rnd)
+        expected_loss = reference.compute_loss(storage.observations.flatten(0, 1))
+        reference.optimizer.zero_grad()
+        expected_loss.backward()
+        reference.optimizer.step()
+
+        losses, _ = ppo.update()
+        torch.testing.assert_close(losses["rnd"], expected_loss.item())
+        for actual, expected in zip(ppo.rnd.predictor.parameters(), reference.predictor.parameters()):
+            torch.testing.assert_close(actual, expected)
+
     def test_recurrent_surrogate_matches_per_transition_objective(self) -> None:
         """A recurrent minibatch must pair each action with its own old probability and advantage."""
         torch.manual_seed(7)

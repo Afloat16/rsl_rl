@@ -296,7 +296,12 @@ class PPO:
                 loss = surrogate_loss + self.value_loss_coef * value_loss + self.entropy_coef * entropy_loss
 
                 # RND loss
-                rnd_loss = self.rnd.compute_loss(batch.observations[:original_batch_size]) if self.rnd else None  # type: ignore
+                rnd_loss = None
+                if self.rnd:
+                    rnd_obs = batch.observations[:original_batch_size]
+                    if batch.masks is not None:
+                        rnd_obs = rnd_obs[batch.masks]
+                    rnd_loss = self.rnd.compute_loss(rnd_obs)
 
                 # Symmetry loss
                 if self.symmetry:
