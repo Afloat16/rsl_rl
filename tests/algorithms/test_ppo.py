@@ -106,6 +106,40 @@ def _build_ppo_with_shared_cnn() -> PPO:
     return PPO(actor, critic, storage, learning_rate=1e-3)
 
 
+@pytest.mark.parametrize("cnn_actor", [True, False])
+def test_cnn_model_updates_with_recurrent_peer(cnn_actor: bool) -> None:
+    """A CNN actor or critic can learn from the trajectory batches selected for its recurrent peer."""
+    obs = TensorDict(
+        {"policy": torch.randn(NUM_ENVS, OBS_DIM), "image": torch.randn(NUM_ENVS, 1, 8, 8)},
+        batch_size=[NUM_ENVS],
+    )
+    groups = {
+        "actor": ["policy", "image"] if cnn_actor else ["policy"],
+        "critic": ["policy"] if cnn_actor else ["policy", "image"],
+    }
+    models = {}
+    for role, is_cnn, output_dim in (("actor", cnn_actor, NUM_ACTIONS), ("critic", not cnn_actor, 1)):
+        config = {"cnn_cfg": {"output_channels": [4], "kernel_size": 3}} if is_cnn else {"rnn_hidden_dim": 8}
+        if role == "actor":
+            config["distribution_cfg"] = {"class_name": "GaussianDistribution", "init_std": 1.0}
+        models[role] = (CNNModel if is_cnn else RNNModel)(obs, groups, role, output_dim, hidden_dims=[16], **config)
+    storage = RolloutStorage("rl", NUM_ENVS, 3, obs, [NUM_ACTIONS])
+    ppo = PPO(models["actor"], models["critic"], storage, num_learning_epochs=1, num_mini_batches=1)
+    cnn = models["actor" if cnn_actor else "critic"]
+    before = [parameter.detach().clone() for parameter in cnn.cnns.parameters()]
+    with torch.inference_mode():
+        for step in range(3):
+            ppo.act(obs)
+            dones = torch.tensor([step == 1, False, False, False])
+            ppo.process_env_step(obs, torch.ones(NUM_ENVS), dones, {})
+        ppo.compute_returns(obs)
+
+    losses, _ = ppo.update()
+
+    assert all(torch.isfinite(torch.tensor(value)) for value in losses.values())
+    assert any(not torch.equal(old, parameter) for old, parameter in zip(before, cnn.cnns.parameters()))
+
+
 class TestGAEComputation:
     """Tests for generalized advantage estimation in ``compute_returns``."""
 

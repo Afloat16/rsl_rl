@@ -112,7 +112,13 @@ class CNNModel(MLPModel):
     ) -> torch.Tensor:
         """Build the model latent by combining (optional) normalized 1D and CNN-encoded 2D observation groups."""
         # Process 2D observation groups with CNNs
-        latent_cnn = torch.cat([self.cnns[obs_group](obs[obs_group]) for obs_group in self.obs_groups_2d], dim=-1)
+        latent_cnn = torch.cat(
+            [
+                self.cnns[obs_group](obs[obs_group].flatten(0, -4)).unflatten(0, obs.batch_size)
+                for obs_group in self.obs_groups_2d
+            ],
+            dim=-1,
+        )
         # If there are no 1D observations, return the CNN latent directly
         if not self.obs_groups:
             return latent_cnn

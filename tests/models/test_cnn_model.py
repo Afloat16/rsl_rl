@@ -17,6 +17,7 @@ import pytest
 from rsl_rl.models import CNNModel
 from rsl_rl.modules import ResidualMLP
 from rsl_rl.modules.cnn import _compute_output_dim, _compute_padding
+from rsl_rl.utils import split_and_pad_trajectories
 
 NUM_ENVS = 2
 OBS_DIM_1D = 6
@@ -97,6 +98,22 @@ class TestCNNLatentConcatenation:
 
         cnn_start = model.obs_dim
         assert not torch.allclose(latent_before[:, cnn_start:], latent_after[:, cnn_start:], atol=1e-6)
+
+    def test_trajectory_batch_matches_individual_timesteps(self) -> None:
+        """CNN features preserve time and environment order after recurrent trajectory unpadding."""
+        model, obs = _make_cnn_model()
+        rollout = torch.stack([obs, obs + 1.0, obs + 2.0])
+        dones = torch.tensor([[[0], [0]], [[1], [0]], [[0], [1]]])
+        padded, masks = split_and_pad_trajectories(rollout, dones)
+        expected = torch.stack([model(rollout[step]) for step in range(3)])
+
+        actual = model(padded, masks=masks)
+
+        torch.testing.assert_close(actual, expected)
+        actual.square().mean().backward()
+        assert all(
+            parameter.grad is not None and torch.isfinite(parameter.grad).all() for parameter in model.cnns.parameters()
+        )
 
 
 class TestCNNOutputDimComputation:
