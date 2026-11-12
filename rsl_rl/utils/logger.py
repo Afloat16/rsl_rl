@@ -14,6 +14,7 @@ import statistics
 import torch
 import warnings
 from collections import deque
+from torch.utils.tensorboard import SummaryWriter
 
 import rsl_rl
 from rsl_rl.utils.log_writer import LogWriter
@@ -45,7 +46,7 @@ class Logger:
         self.tot_timesteps = 0
         self.tot_time = 0
 
-        self.writer: LogWriter | None = None
+        self.writer: LogWriter | SummaryWriter | None = None
         self.uploaded_videos: set[pathlib.Path] = set()
 
         # Create buffers
@@ -93,9 +94,7 @@ class Logger:
                 logger_cfg = {"class_name": writer_name, "project_name": self.cfg.get("neptune_project")}
 
             if writer_name == "tensorboard":
-                from torch.utils.tensorboard import SummaryWriter
-
-                self.writer = SummaryWriter(log_dir=self.log_dir, flush_secs=10)  # type: ignore
+                self.writer = SummaryWriter(log_dir=self.log_dir, flush_secs=10)
             else:
                 writer_class, writer_cfg = resolve_class(logger_cfg)  # type: ignore
                 self.writer = writer_class(log_dir=self.log_dir, **writer_cfg)  # type: ignore
@@ -280,13 +279,21 @@ class Logger:
 
     def stop_logging_writer(self) -> None:
         """Stop the logging writer."""
-        if isinstance(self.writer, LogWriter):
-            self.writer.stop()
+        try:
+            if isinstance(self.writer, LogWriter):
+                self.writer.stop()
+        finally:
+            if isinstance(self.writer, SummaryWriter):
+                self.writer.close()
 
     def abort_logging_writer(self) -> None:
         """Abort the logging writer after training was interrupted."""
-        if isinstance(self.writer, LogWriter):
-            self.writer.abort()
+        try:
+            if isinstance(self.writer, LogWriter):
+                self.writer.abort()
+        finally:
+            if isinstance(self.writer, SummaryWriter):
+                self.writer.close()
 
     def _store_code_state(self) -> list[str]:
         """Store the current git diff of the code repositories involved in the experiment."""

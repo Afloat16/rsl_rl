@@ -9,10 +9,13 @@ from __future__ import annotations
 
 import pathlib
 import torch
+from torch.utils.tensorboard import SummaryWriter
+from unittest.mock import Mock
 
 import pytest
+from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
-from rsl_rl.utils import LogWriter
+from rsl_rl.utils import LogWriter, NeptuneLogWriter, WandbLogWriter
 from rsl_rl.utils.logger import Logger
 
 
@@ -64,6 +67,59 @@ def _log(
         loss_dict=loss_dict or {},
         stats_dict=stats_dict or {},
     )
+
+
+@pytest.mark.parametrize("method", ["stop_logging_writer", "abort_logging_writer"])
+def test_tensorboard_writer_closes_and_can_restart(tmp_path: pathlib.Path, method: str) -> None:
+    """Each finished logging run flushes its scalars and joins its local event worker."""
+    logger = _make_logger(tmp_path)
+    logger.git_status_repos = []
+    for step in range(2):
+        logger.init_logging_writer()
+        writer = logger.writer
+        worker = writer.file_writer.event_writer._async_writer._worker
+        try:
+            _log(logger, step, {"actor": float(step + 1)})
+            getattr(logger, method)()
+            assert not worker.is_alive()
+            assert writer.file_writer is None
+        finally:
+            writer.close()
+
+    events = EventAccumulator(str(tmp_path)).Reload().Scalars("Loss/actor")
+    assert [(event.step, event.value) for event in events] == [(0, 1.0), (1, 2.0)]
+
+
+@pytest.mark.parametrize("writer_class", [WandbLogWriter, NeptuneLogWriter])
+@pytest.mark.parametrize("method", ["stop_logging_writer", "abort_logging_writer"])
+@pytest.mark.parametrize("remote_failure", [False, True])
+def test_external_writer_also_closes_local_events(
+    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch, writer_class: type, method: str, remote_failure: bool
+) -> None:
+    """Local events are finalized even if the remote run's finalization raises."""
+    writer = writer_class.__new__(writer_class)
+    SummaryWriter.__init__(writer, log_dir=str(tmp_path))
+    remote_stop = Mock(side_effect=RuntimeError("remote finish failed") if remote_failure else None)
+    if writer_class is WandbLogWriter:
+        monkeypatch.setattr("rsl_rl.utils.wandb_log_writer.wandb", Mock(finish=remote_stop))
+    else:
+        writer.run = Mock(stop=remote_stop)
+    logger = _make_logger(tmp_path)
+    logger.writer = writer
+    worker = writer.file_writer.event_writer._async_writer._worker
+    try:
+        SummaryWriter.add_scalar(writer, "last/value", 3.0, 7)
+        if remote_failure:
+            with pytest.raises(RuntimeError, match="remote finish failed"):
+                getattr(logger, method)()
+        else:
+            getattr(logger, method)()
+        remote_stop.assert_called_once()
+        assert not worker.is_alive()
+        events = EventAccumulator(str(tmp_path)).Reload().Scalars("last/value")
+        assert [(event.step, event.value) for event in events] == [(7, 3.0)]
+    finally:
+        writer.close()
 
 
 def test_statistics_are_separate_from_losses(tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
