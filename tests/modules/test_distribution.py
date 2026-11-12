@@ -363,3 +363,30 @@ def test_squashed_gaussian_initial_standard_deviation(kwargs: dict) -> None:
     distribution.init_mlp_weights(mlp)
     distribution.update(mlp(torch.randn(4, 3)))
     torch.testing.assert_close(distribution.std, torch.full((4, 2), 0.5))
+
+
+@pytest.mark.parametrize(
+    "distribution_type",
+    [GaussianDistribution, HeteroscedasticGaussianDistribution, SquashedGaussianDistribution, BetaDistribution],
+)
+@pytest.mark.parametrize("validation_enabled", [False, True])
+def test_preserve_unrelated_distribution_validation(
+    distribution_type: type, validation_enabled: bool, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Policy distributions must leave other PyTorch distributions' validation setting intact."""
+    monkeypatch.setattr(torch.distributions.Distribution, "_validate_args", validation_enabled)
+    distribution = distribution_type(2)
+    shape = (3, 2) if distribution_type is GaussianDistribution else (3, 2, 2)
+    distribution.update(torch.zeros(shape))
+    assert torch.isfinite(distribution.log_prob(distribution.sample())).all()
+    assert torch.isfinite(distribution.entropy).all()
+    params = distribution.params
+    torch.testing.assert_close(distribution.kl_divergence(params, params), torch.zeros(3))
+    if validation_enabled:
+        with pytest.raises(ValueError):
+            torch.distributions.Normal(0.0, -1.0)
+        with pytest.raises(ValueError):
+            torch.distributions.Beta(1.0, -1.0)
+    else:
+        torch.distributions.Normal(0.0, -1.0)
+        torch.distributions.Beta(1.0, -1.0)

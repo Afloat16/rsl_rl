@@ -179,7 +179,7 @@ class GaussianDistribution(Distribution):
         self._distribution: Normal | None = None
 
         # Disable args validation for speedup
-        Normal.set_default_validate_args(False)
+        self._validate_args = False
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the Gaussian distribution from MLP output."""
@@ -189,7 +189,7 @@ class GaussianDistribution(Distribution):
         elif self.std_type == "log":
             log_std = self.log_std_param.clamp(self.log_std_range[0], self.log_std_range[1])
             std = torch.exp(log_std)
-        self._distribution = Normal(mean, std)
+        self._distribution = Normal(mean, std, validate_args=self._validate_args)
 
     def sample(self) -> torch.Tensor:
         """Sample from the Gaussian distribution."""
@@ -236,7 +236,10 @@ class GaussianDistribution(Distribution):
         """Compute KL(old || new) between two Gaussian distributions."""
         old_mean, old_std = old_params
         new_mean, new_std = new_params
-        return torch.distributions.kl_divergence(Normal(old_mean, old_std), Normal(new_mean, new_std)).sum(dim=-1)
+        return torch.distributions.kl_divergence(
+            Normal(old_mean, old_std, validate_args=self._validate_args),
+            Normal(new_mean, new_std, validate_args=self._validate_args),
+        ).sum(dim=-1)
 
 
 class HeteroscedasticGaussianDistribution(GaussianDistribution):
@@ -283,7 +286,7 @@ class HeteroscedasticGaussianDistribution(GaussianDistribution):
         self._distribution: Normal | None = None
 
         # Disable args validation for speedup
-        Normal.set_default_validate_args(False)
+        self._validate_args = False
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the Gaussian distribution from MLP output."""
@@ -294,7 +297,7 @@ class HeteroscedasticGaussianDistribution(GaussianDistribution):
             mean, log_std = torch.unbind(mlp_output, dim=-2)
             log_std = torch.clamp(log_std, self.log_std_range[0], self.log_std_range[1])
             std = torch.exp(log_std)
-        self._distribution = Normal(mean, std)
+        self._distribution = Normal(mean, std, validate_args=self._validate_args)
 
     def deterministic_output(self, mlp_output: torch.Tensor) -> torch.Tensor:
         """Extract the mean from the MLP output (first slice of the second-to-last dimension)."""
@@ -375,7 +378,7 @@ class SquashedGaussianDistribution(Distribution):
         self._last_sample: torch.Tensor | None = None
 
         # Disable args validation for speedup
-        Normal.set_default_validate_args(False)
+        self._validate_args = False
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the distribution parameters from MLP output."""
@@ -430,7 +433,7 @@ class SquashedGaussianDistribution(Distribution):
 
         The entropy of the squashed distribution has no closed form. SAC estimates it from sampled log probabilities.
         """
-        return Normal(self._mean, self._std).entropy().sum(dim=-1)
+        return Normal(self._mean, self._std, validate_args=self._validate_args).entropy().sum(dim=-1)
 
     @property
     def params(self) -> tuple[torch.Tensor, ...]:
@@ -447,14 +450,17 @@ class SquashedGaussianDistribution(Distribution):
             pre_squash = torch.atanh(squashed.clamp(-1.0 + 1e-6, 1.0 - 1e-6))
         # Correct the Gaussian density for tanh squashing and action scaling
         log_det_tanh = 2.0 * (np.log(2.0) - pre_squash - torch.nn.functional.softplus(-2.0 * pre_squash))
-        log_prob = Normal(self._mean, self._std).log_prob(pre_squash) - log_det_tanh
+        log_prob = Normal(self._mean, self._std, validate_args=self._validate_args).log_prob(pre_squash) - log_det_tanh
         return log_prob.sum(dim=-1) - torch.log(self.range_scale).expand(self.output_dim).sum()  # type: ignore
 
     def kl_divergence(self, old_params: tuple[torch.Tensor, ...], new_params: tuple[torch.Tensor, ...]) -> torch.Tensor:
         """Compute KL(old || new), which is invariant to the squashing since it is a bijection."""
         old_mean, old_std = old_params
         new_mean, new_std = new_params
-        return torch.distributions.kl_divergence(Normal(old_mean, old_std), Normal(new_mean, new_std)).sum(dim=-1)
+        return torch.distributions.kl_divergence(
+            Normal(old_mean, old_std, validate_args=self._validate_args),
+            Normal(new_mean, new_std, validate_args=self._validate_args),
+        ).sum(dim=-1)
 
     def init_mlp_weights(self, mlp: nn.Module) -> None:
         """Initialize the std head so that the initial standard deviation equals ``init_std``."""
@@ -510,14 +516,14 @@ class BetaDistribution(Distribution):
         self._beta: torch.Tensor | None = None
 
         # Disable args validation for speedup
-        Beta.set_default_validate_args(False)
+        self._validate_args = False
 
     def update(self, mlp_output: torch.Tensor) -> None:
         """Update the Beta distribution from MLP output."""
         alpha_raw, beta_raw = torch.unbind(mlp_output, dim=-2)
         self._alpha = torch.nn.functional.softplus(alpha_raw) + 1.0
         self._beta = torch.nn.functional.softplus(beta_raw) + 1.0
-        self._distribution = Beta(self._alpha, self._beta)
+        self._distribution = Beta(self._alpha, self._beta, validate_args=self._validate_args)
 
     def sample(self) -> torch.Tensor:
         """Sample from the Beta distribution and rescale to ``action_range``."""
@@ -578,7 +584,10 @@ class BetaDistribution(Distribution):
         """Compute KL(old || new) between two Beta distributions."""
         old_alpha, old_beta = old_params
         new_alpha, new_beta = new_params
-        return torch.distributions.kl_divergence(Beta(old_alpha, old_beta), Beta(new_alpha, new_beta)).sum(dim=-1)
+        return torch.distributions.kl_divergence(
+            Beta(old_alpha, old_beta, validate_args=self._validate_args),
+            Beta(new_alpha, new_beta, validate_args=self._validate_args),
+        ).sum(dim=-1)
 
     def init_mlp_weights(self, mlp: nn.Module) -> None:
         """Initialize the beta-parameter head weights to zero for a near-uniform initial distribution."""
