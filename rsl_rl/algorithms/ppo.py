@@ -107,6 +107,8 @@ class PPO:
             list(dict.fromkeys(chain(self.actor.parameters(), self.critic.parameters()))), lr=learning_rate
         )  # type: ignore
 
+        self._actor_critic_share_parameters = bool(set(self.actor.parameters()) & set(self.critic.parameters()))
+
         # Add storage
         self.storage = storage
         self.transition = RolloutStorage.Transition()
@@ -317,8 +319,12 @@ class PPO:
                 self.reduce_parameters()
 
             # Apply the gradients for PPO
-            nn.utils.clip_grad_norm_(self.actor.parameters(), self.max_grad_norm)
-            nn.utils.clip_grad_norm_(self.critic.parameters(), self.max_grad_norm)
+            if self._actor_critic_share_parameters:
+                params = dict.fromkeys(chain(self.actor.parameters(), self.critic.parameters()))
+                nn.utils.clip_grad_norm_(params, self.max_grad_norm)
+            else:
+                nn.utils.clip_grad_norm_(self.actor.parameters(), self.max_grad_norm)
+                nn.utils.clip_grad_norm_(self.critic.parameters(), self.max_grad_norm)
             self.optimizer.step()
             # Apply the gradients for RND
             if self.rnd:

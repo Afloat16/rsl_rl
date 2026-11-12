@@ -85,7 +85,7 @@ def _fill_rollout(ppo: PPO, obs: TensorDict) -> None:
             ppo.process_env_step(obs, torch.zeros(NUM_ENVS), torch.zeros(NUM_ENVS), {})
 
 
-def _build_ppo_with_shared_cnn() -> PPO:
+def _build_ppo_with_shared_cnn(**overrides: object) -> PPO:
     """Build a PPO instance whose actor and critic share a CNN encoder."""
     obs = TensorDict(
         {"policy": torch.randn(NUM_ENVS, OBS_DIM), "image": torch.randn(NUM_ENVS, 1, 8, 8)}, batch_size=[NUM_ENVS]
@@ -103,7 +103,7 @@ def _build_ppo_with_shared_cnn() -> PPO:
     )
     critic = CNNModel(obs, obs_groups, "critic", 1, hidden_dims=[32], cnns=actor.cnns)
     storage = RolloutStorage("rl", NUM_ENVS, NUM_STEPS, obs, [NUM_ACTIONS])
-    return PPO(actor, critic, storage, learning_rate=1e-3)
+    return PPO(actor, critic, storage, **{"learning_rate": 1e-3, **overrides})
 
 
 class TestGAEComputation:
@@ -547,3 +547,48 @@ class TestSharedCNNEncoders:
         assert ppo.optimizer.state[shared]["step"] == 1
         # The first Adam step moves each parameter by the learning rate
         torch.testing.assert_close((before - shared.detach()).abs().max().item(), 1e-3, atol=1e-6, rtol=0)
+
+    @pytest.mark.parametrize("shared", [False, True])
+    def test_clipping_preserves_gradient_direction(self, shared: bool) -> None:
+        """One SGD update follows each disjoint group's jointly clipped gradient."""
+        torch.manual_seed(7)
+        config = dict(
+            optimizer="sgd",
+            num_learning_epochs=1,
+            num_mini_batches=1,
+            schedule="fixed",
+            max_grad_norm=0.05,
+            learning_rate=0.1,
+        )
+        if shared:
+            ppo = _build_ppo_with_shared_cnn(**config)
+            obs = ppo.storage.observations[0].apply(torch.randn_like)
+        else:
+            ppo, obs = _build_ppo(**config)
+        params = ppo.optimizer.param_groups[0]["params"]
+        assert len(params) == len(set(params))
+        before = {p: p.detach().clone() for p in params}
+        gradients = {}
+        handles = [p.register_hook(lambda grad, p=p: gradients.update({p: grad.detach().clone()})) for p in params]
+        with torch.no_grad():
+            for _ in range(NUM_STEPS):
+                ppo.act(obs)
+                ppo.process_env_step(obs, torch.arange(NUM_ENVS, dtype=torch.float) + 1, torch.zeros(NUM_ENVS), {})
+            ppo.compute_returns(obs)
+        ppo.update()
+        for handle in handles:
+            handle.remove()
+        assert set(gradients) == set(params)
+        actor_params, critic_params = set(ppo.actor.parameters()), set(ppo.critic.parameters())
+        if shared:
+            for subset in (actor_params & critic_params, actor_params - critic_params, critic_params - actor_params):
+                assert any(gradients[p].count_nonzero() > 0 for p in subset)
+        groups = [params] if shared else [list(ppo.actor.parameters()), list(ppo.critic.parameters())]
+        for group in groups:
+            norm = torch.linalg.vector_norm(torch.stack([gradients[p].norm() for p in group]))
+            assert norm > ppo.max_grad_norm
+            coefficient = ppo.max_grad_norm / (norm + 1e-6)
+            for p in group:
+                torch.testing.assert_close(p.grad, coefficient * gradients[p])
+                expected = ppo.learning_rate * coefficient * gradients[p]
+                torch.testing.assert_close(before[p] - p.detach(), expected, rtol=1e-4, atol=1e-7)

@@ -222,7 +222,9 @@ PPO
    * - ``max_grad_norm``
      - float
      - ``1.0``
-     - Maximum gradient norm for gradient clipping.
+     - Maximum gradient norm for gradient clipping. Actor and critic are clipped separately when their parameters
+       are disjoint. If they share parameters, their unique combined parameter set is clipped together to preserve
+       the direction of the combined gradient.
    * - ``normalize_advantage_per_mini_batch``
      - bool
      - ``False``
