@@ -7,8 +7,11 @@
 from __future__ import annotations
 
 import os
+import stat
 import time
 import torch
+import uuid
+from contextlib import suppress
 
 from rsl_rl.algorithms import PPO
 from rsl_rl.env import VecEnv
@@ -148,7 +151,21 @@ class OnPolicyRunner:
         saved_dict = self.alg.save()
         saved_dict["iter"] = self.current_learning_iteration
         saved_dict["infos"] = infos
-        torch.save(saved_dict, path)
+        target_path = os.path.realpath(path)
+        mode = None
+        with suppress(FileNotFoundError):
+            mode = stat.S_IMODE(os.stat(target_path).st_mode)
+        temporary_path = os.path.join(os.path.dirname(target_path), f".{uuid.uuid4().hex}.pt")
+        fd = os.open(temporary_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o666)
+        try:
+            with os.fdopen(fd, "wb") as checkpoint:
+                torch.save(saved_dict, checkpoint)
+            if mode is not None:
+                os.chmod(temporary_path, mode)
+            os.replace(temporary_path, target_path)
+        finally:
+            with suppress(FileNotFoundError):
+                os.unlink(temporary_path)
         # Upload model to external logging services
         self.logger.save_model(path, self.current_learning_iteration)
 

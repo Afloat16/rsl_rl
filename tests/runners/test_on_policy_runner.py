@@ -8,7 +8,9 @@
 from __future__ import annotations
 
 import copy
+import os
 import pathlib
+import stat
 import tempfile
 import torch
 from tensordict import TensorDict
@@ -174,6 +176,51 @@ class TestLearnLoop:
 
 class TestSaveLoad:
     """Tests for checkpoint save and load."""
+
+    def test_failed_save_preserves_the_previous_checkpoint(self, tmp_path: pathlib.Path) -> None:
+        """A serialization failure must not truncate the last usable checkpoint."""
+        runner = _build_runner()
+        path = tmp_path / "checkpoint.pt"
+        runner.current_learning_iteration = 7
+        runner.save(str(path))
+        previous = path.read_bytes()
+        runner.current_learning_iteration = 8
+        with pytest.raises(AttributeError):
+            runner.save(str(path), infos={"callback": lambda: None})
+        assert path.read_bytes() == previous
+        runner.load(str(path))
+        assert runner.current_learning_iteration == 7
+        assert list(tmp_path.iterdir()) == [path]
+
+    @pytest.mark.skipif(os.name == "nt", reason="POSIX permissions and symbolic links are required")
+    @pytest.mark.parametrize("use_symlink", [False, True])
+    def test_save_preserves_permissions_and_links(self, tmp_path: pathlib.Path, use_symlink: bool) -> None:
+        """Replacing a checkpoint keeps its permissions and an existing link to it."""
+        runner = _build_runner()
+        target = tmp_path / "checkpoint.pt"
+        runner.save(str(target))
+        target.chmod(0o640)
+        path = target
+        if use_symlink:
+            path = tmp_path / "latest.pt"
+            path.symlink_to(target.name)
+        runner.current_learning_iteration = 8
+        runner.save(str(path))
+        assert stat.S_IMODE(target.stat().st_mode) == 0o640
+        assert path.is_symlink() == use_symlink
+        runner.current_learning_iteration = 0
+        runner.load(str(target))
+        assert runner.current_learning_iteration == 8
+
+    @pytest.mark.skipif(os.name == "nt", reason="POSIX permissions are required")
+    def test_new_checkpoint_uses_normal_file_permissions(self, tmp_path: pathlib.Path) -> None:
+        """A new checkpoint follows the process umask just like a normal output file."""
+        runner = _build_runner()
+        path = tmp_path / "checkpoint.pt"
+        sibling = tmp_path / "ordinary-file"
+        sibling.touch()
+        runner.save(str(path))
+        assert stat.S_IMODE(path.stat().st_mode) == stat.S_IMODE(sibling.stat().st_mode)
 
     def test_save_creates_file(self) -> None:
         """save() should create a checkpoint file at the given path."""
