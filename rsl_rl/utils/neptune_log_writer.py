@@ -25,7 +25,6 @@ class NeptuneLogWriter(SummaryWriter, LogWriter):
         """Initialize a Neptune run for logging."""
         if neptune is None:
             raise ModuleNotFoundError("neptune-client is required to log to Neptune.")
-        super().__init__(log_dir, flush_secs=10)
 
         # Get the run name
         run_name = os.path.split(log_dir)[-1]
@@ -45,8 +44,13 @@ class NeptuneLogWriter(SummaryWriter, LogWriter):
 
         # Initialize neptune
         neptune_project = entity + "/" + project_name
-        self.run = neptune.init_run(project=neptune_project, api_token=token)
-        self.run["log_dir"].log(run_name)
+        super().__init__(log_dir, flush_secs=10)
+        try:
+            self.run = neptune.init_run(project=neptune_project, api_token=token)
+            self.run["log_dir"].log(run_name)
+        except BaseException:
+            self.close()
+            raise
 
     def add_scalar(
         self,

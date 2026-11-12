@@ -37,12 +37,16 @@ class WandbLogWriter(SummaryWriter, LogWriter):
             entity = None
 
         # Initialize wandb
-        wandb.init(
-            project=project_name,
-            entity=entity,
-            name=run_name,
-            config={"log_dir": log_dir},
-        )
+        try:
+            wandb.init(
+                project=project_name,
+                entity=entity,
+                name=run_name,
+                config={"log_dir": log_dir},
+            )
+        except BaseException:
+            self.close()
+            raise
 
     def add_scalar(
         self,

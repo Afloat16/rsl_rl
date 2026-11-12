@@ -122,6 +122,67 @@ def test_external_writer_also_closes_local_events(
         writer.close()
 
 
+@pytest.mark.parametrize(
+    "writer_class,missing_token", [(WandbLogWriter, False), (NeptuneLogWriter, False), (NeptuneLogWriter, True)]
+)
+def test_failed_external_writer_construction_closes_local_events(
+    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch, writer_class: type, missing_token: bool
+) -> None:
+    """A failed remote initialization must not leave a local event writer running."""
+    failure = RuntimeError("remote initialization failed")
+    monkeypatch.setenv("NEPTUNE_API_TOKEN", "test-token")
+    monkeypatch.setenv("NEPTUNE_USERNAME", "test-user")
+    if missing_token:
+        monkeypatch.delenv("NEPTUNE_API_TOKEN")
+    monkeypatch.setattr("rsl_rl.utils.wandb_log_writer.wandb", Mock(init=Mock(side_effect=failure)))
+    monkeypatch.setattr("rsl_rl.utils.neptune_log_writer.neptune", Mock(init_run=Mock(side_effect=failure)))
+    writer = writer_class.__new__(writer_class)
+    workers = []
+    original_init = SummaryWriter.__init__
+
+    def record_init(instance: SummaryWriter, *args: object, **kwargs: object) -> None:
+        original_init(instance, *args, **kwargs)
+        workers.append(instance.file_writer.event_writer._async_writer._worker)
+
+    monkeypatch.setattr(SummaryWriter, "__init__", record_init)
+    try:
+        with pytest.raises(KeyError if missing_token else RuntimeError) as raised:
+            writer.__init__(log_dir=str(tmp_path), project_name="test-project")
+        if not missing_token:
+            assert raised.value is failure
+        assert all(not worker.is_alive() for worker in workers)
+    finally:
+        if hasattr(writer, "all_writers"):
+            SummaryWriter.close(writer)
+
+
+@pytest.mark.parametrize("phase", ["code_state", "store_config"])
+@pytest.mark.parametrize("abort_failure", [False, True])
+def test_failed_logging_setup_closes_created_writer(
+    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch, phase: str, abort_failure: bool
+) -> None:
+    """Setup errors after construction close the writer before training can begin."""
+    writer = WandbLogWriter.__new__(WandbLogWriter)
+    SummaryWriter.__init__(writer, log_dir=str(tmp_path))
+    remote_stop = Mock(side_effect=RuntimeError("remote abort failed") if abort_failure else None)
+    monkeypatch.setattr("rsl_rl.utils.wandb_log_writer.wandb", Mock(finish=remote_stop))
+    logger = _make_logger(tmp_path)
+    logger.cfg["logger"] = {"class_name": "WandbLogWriter", "project_name": "test-project"}
+    monkeypatch.setattr("rsl_rl.utils.logger.resolve_class", lambda cfg: (lambda **kwargs: writer, {}))
+    failure = RuntimeError("logging setup failed")
+    logger._store_code_state = Mock(side_effect=failure if phase == "code_state" else None, return_value=[])
+    writer.store_config = Mock(side_effect=failure if phase == "store_config" else None)
+    worker = writer.file_writer.event_writer._async_writer._worker
+    try:
+        with pytest.raises(RuntimeError) as raised:
+            logger.init_logging_writer()
+        assert raised.value is failure
+        assert not worker.is_alive()
+        remote_stop.assert_called_once_with(exit_code=1)
+    finally:
+        writer.close()
+
+
 def test_statistics_are_separate_from_losses(tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
     """Statistics retain their tags and console labels without being treated as optimization losses."""
     logger = _make_logger(tmp_path)

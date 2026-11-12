@@ -14,6 +14,7 @@ import statistics
 import torch
 import warnings
 from collections import deque
+from contextlib import suppress
 from torch.utils.tensorboard import SummaryWriter
 
 import rsl_rl
@@ -101,14 +102,19 @@ class Logger:
         else:
             self.writer = None
 
-        # Save code state
-        files_to_upload = self._store_code_state()
+        try:
+            # Save code state
+            files_to_upload = self._store_code_state()
 
-        # Upload configuration and code state to external logging service if supported
-        if isinstance(self.writer, LogWriter):
-            self.writer.store_config(self.env_cfg, self.cfg)
-            for path in files_to_upload:
-                self.writer.save_file(path)
+            # Upload configuration and code state to external logging service if supported
+            if isinstance(self.writer, LogWriter):
+                self.writer.store_config(self.env_cfg, self.cfg)
+                for path in files_to_upload:
+                    self.writer.save_file(path)
+        except BaseException:
+            with suppress(Exception):
+                self.abort_logging_writer()
+            raise
 
     def process_env_step(
         self,
