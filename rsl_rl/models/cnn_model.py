@@ -236,12 +236,13 @@ class _OnnxCNNModel(nn.Module):
 
     def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:
         """Return representative dummy inputs for ONNX tracing."""
-        dummy_1d = torch.zeros(1, self.obs_dim_1d)
+        reference = next(self.mlp.parameters())
+        dummy_1d = reference.new_zeros(1, self.obs_dim_1d)
         dummy_2d = []
         for i in range(len(self.obs_groups_2d)):
             h, w = self.obs_dims_2d[i]
             c = self.obs_channels_2d[i]
-            dummy_2d.append(torch.zeros(1, c, h, w))
+            dummy_2d.append(reference.new_zeros(1, c, h, w))
         return (dummy_1d, *dummy_2d)
 
     @property

@@ -229,10 +229,10 @@ class _OnnxRNNModel(nn.Module):
 
     def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:
         """Return representative dummy inputs for ONNX tracing."""
-        obs = torch.zeros(1, self.input_size)
-        h_in = torch.zeros(self.num_layers, 1, self.hidden_size)
+        obs = self.rnn.weight_ih_l0.new_zeros(1, self.input_size)
+        h_in = self.rnn.weight_ih_l0.new_zeros(self.num_layers, 1, self.hidden_size)
         if self.rnn_type == "lstm":
-            c_in = torch.zeros(self.num_layers, 1, self.hidden_size)
+            c_in = self.rnn.weight_ih_l0.new_zeros(self.num_layers, 1, self.hidden_size)
             return (obs, h_in, c_in)
         return (obs, h_in)
 

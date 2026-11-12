@@ -218,12 +218,13 @@ class TestCNNModelJITExport:
 class TestCNNModelONNXExport:
     """Tests for ONNX export fidelity of CNN models."""
 
-    def test_onnx_export_model(self) -> None:
+    @pytest.mark.parametrize("dtype", [torch.float32, torch.float64])
+    def test_onnx_export_model(self, dtype: torch.dtype) -> None:
         """ONNX-exported CNN model should be a valid ONNX graph with correct I/O names."""
         model, _obs = _make_cnn_model(
             distribution_cfg={"class_name": "GaussianDistribution", "init_std": 1.0, "std_type": "scalar"},
         )
-        model.eval()
+        model.to(dtype=dtype).eval()
 
         onnx_model = model.as_onnx()
         onnx_model.eval()
@@ -240,6 +241,11 @@ class TestCNNModelONNXExport:
             )
             loaded = onnx.load(f.name)
             onnx.checker.check_model(loaded)
+            expected_type = onnx.TensorProto.DOUBLE if dtype == torch.float64 else onnx.TensorProto.FLOAT
+            assert all(
+                value.type.tensor_type.elem_type == expected_type
+                for value in [*loaded.graph.input, *loaded.graph.output]
+            )
 
             assert [i.name for i in loaded.graph.input] == ["obs", "image"]
             assert [o.name for o in loaded.graph.output] == ["actions"]

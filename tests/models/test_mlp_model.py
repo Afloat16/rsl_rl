@@ -175,10 +175,11 @@ class TestMLPModelExport:
 
     @pytest.mark.filterwarnings("ignore:.*legacy TorchScript.*:DeprecationWarning")
     @pytest.mark.filterwarnings("ignore:.*will be removed.*:DeprecationWarning")
-    def test_onnx_export_model(self) -> None:
+    @pytest.mark.parametrize("dtype", [torch.float32, torch.float64])
+    def test_onnx_export_model(self, dtype: torch.dtype) -> None:
         """ONNX-exported MLP model should be a valid ONNX graph with correct I/O names."""
         actor, _obs = _make_mlp_model(stochastic=True)
-        actor.eval()
+        actor.to(dtype=dtype).eval()
 
         onnx_model = actor.as_onnx()
         onnx_model.eval()
@@ -195,6 +196,11 @@ class TestMLPModelExport:
             )
             loaded = onnx.load(f.name)
             onnx.checker.check_model(loaded)
+            expected_type = onnx.TensorProto.DOUBLE if dtype == torch.float64 else onnx.TensorProto.FLOAT
+            assert all(
+                value.type.tensor_type.elem_type == expected_type
+                for value in [*loaded.graph.input, *loaded.graph.output]
+            )
 
             assert [i.name for i in loaded.graph.input] == ["obs"]
             assert [o.name for o in loaded.graph.output] == ["actions"]

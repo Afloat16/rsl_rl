@@ -254,7 +254,8 @@ class TestRNNModelONNXExport:
     """Tests for ONNX export fidelity of RNN models."""
 
     @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
-    def test_onnx_export_model(self, rnn_type: str) -> None:
+    @pytest.mark.parametrize("dtype", [torch.float32, torch.float64])
+    def test_onnx_export_model(self, rnn_type: str, dtype: torch.dtype) -> None:
         """ONNX-exported RNN model should be a valid ONNX graph with correct I/O names."""
         obs = make_obs(1, OBS_DIM)
         model = RNNModel(
@@ -269,7 +270,7 @@ class TestRNNModelONNXExport:
             rnn_num_layers=1,
             distribution_cfg={"class_name": "GaussianDistribution", "init_std": 1.0, "std_type": "scalar"},
         )
-        model.eval()
+        model.to(dtype=dtype).eval()
 
         onnx_model = model.as_onnx()
         onnx_model.eval()
@@ -286,6 +287,11 @@ class TestRNNModelONNXExport:
             )
             loaded = onnx.load(f.name)
             onnx.checker.check_model(loaded)
+            expected_type = onnx.TensorProto.DOUBLE if dtype == torch.float64 else onnx.TensorProto.FLOAT
+            assert all(
+                value.type.tensor_type.elem_type == expected_type
+                for value in [*loaded.graph.input, *loaded.graph.output]
+            )
 
             assert [i.name for i in loaded.graph.input] == onnx_model.input_names
             assert [o.name for o in loaded.graph.output] == onnx_model.output_names

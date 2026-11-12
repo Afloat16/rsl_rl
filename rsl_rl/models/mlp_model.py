@@ -317,7 +317,7 @@ class _OnnxMLPModel(nn.Module):
 
     def get_dummy_inputs(self) -> tuple[torch.Tensor]:
         """Return representative dummy inputs for ONNX tracing."""
-        return (torch.zeros(1, self.input_size),)
+        return (next(self.mlp.parameters()).new_zeros(1, self.input_size),)
 
     @property
     def input_names(self) -> list[str]:
