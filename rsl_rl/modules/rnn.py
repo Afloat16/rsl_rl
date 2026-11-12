@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
-from typing import Union
+from typing import Callable, Union
 
 from rsl_rl.utils import unpad_trajectories
 
@@ -31,6 +31,14 @@ class RNN(nn.Module):
         rnn_cls = nn.GRU if type.lower() == "gru" else nn.LSTM
         self.rnn = rnn_cls(input_size=input_size, hidden_size=hidden_dim, num_layers=num_layers)
         self.hidden_state = None
+
+    def _apply(self, fn: Callable[[torch.Tensor], torch.Tensor], recurse: bool = True) -> RNN:
+        super()._apply(fn, recurse=recurse)
+        if isinstance(self.hidden_state, tuple):
+            self.hidden_state = tuple(fn(state) for state in self.hidden_state)
+        elif self.hidden_state is not None:
+            self.hidden_state = fn(self.hidden_state)
+        return self
 
     def forward(
         self,

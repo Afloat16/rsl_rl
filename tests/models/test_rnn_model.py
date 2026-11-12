@@ -149,6 +149,24 @@ class TestSequentialConsistency:
     """Tests that hidden state accumulates context over sequential steps."""
 
     @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
+    def test_dtype_conversion_preserves_runtime_context(self, rnn_type: str) -> None:
+        """A warm model can change dtype and continue from its existing recurrent state."""
+        model, obs = _make_rnn_model(rnn_type=rnn_type)
+        with torch.no_grad():
+            model(obs)
+        state = model.get_hidden_state()
+        converted_state = tuple(value.double() for value in state) if isinstance(state, tuple) else state.double()
+        reference, _ = _make_rnn_model(rnn_type=rnn_type)
+        reference.load_state_dict(model.state_dict())
+        reference.double()
+        reference.reset(hidden_state=converted_state)
+        model.double()
+        with torch.no_grad():
+            actual = model(obs.double())
+            expected = reference(obs.double())
+        torch.testing.assert_close(actual, expected, rtol=0, atol=0)
+
+    @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
     def test_hidden_state_accumulates_context(self, rnn_type: str) -> None:
         """Running multiple steps should change the output compared to a fresh model."""
         model, obs = _make_rnn_model(rnn_type=rnn_type)
