@@ -116,6 +116,21 @@ class TestPredictorLoss:
         loss = rnd.compute_loss(obs)
         assert loss.requires_grad
 
+    def test_target_does_not_retain_autograd_tensors(self) -> None:
+        """Target evaluation needs no backward state while the predictor remains trainable."""
+        rnd, obs = _make_rnd()
+        rnd.train()
+        saved = []
+        with torch.autograd.graph.saved_tensors_hooks(lambda value: saved.append(value) or value, lambda value: value):
+            target = rnd.target(rnd.get_rnd_state(obs))
+        assert not saved
+        assert not target.requires_grad
+        loss = rnd.compute_loss(obs)
+        torch.testing.assert_close(loss, torch.nn.functional.mse_loss(rnd.predictor(rnd.get_rnd_state(obs)), target))
+        loss.backward()
+        assert any(p.grad is not None and p.grad.count_nonzero() for p in rnd.predictor.parameters())
+        assert all(p.grad is None for p in rnd.target.parameters())
+
     def test_default_optimizer_updates_predictor_only(self) -> None:
         """The auto-built optimizer should update the predictor and leave the frozen target untouched."""
         rnd, obs = _make_rnd()

@@ -118,7 +118,7 @@ class RandomNetworkDistillation(nn.Module):
         self.target = MLP(num_states, num_outputs, target_hidden_dims, activation).to(self.device)
 
         # Make target network not trainable
-        self.target.eval()
+        self.target.eval().requires_grad_(False)
 
         # Optimizer for the predictor (the target is frozen)
         self.optimizer = torch.optim.Adam(self.predictor.parameters(), lr=learning_rate)
