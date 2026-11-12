@@ -29,6 +29,27 @@ class TestEmpiricalNormalization:
         assert torch.allclose(norm.mean, torch.full((4,), true_mean), atol=0.15)
         assert torch.allclose(norm.std, torch.full((4,), true_std), atol=0.15)
 
+    @pytest.mark.parametrize("dtype,scale", [(torch.float32, 1e-4), (torch.float64, 1e-9)])
+    def test_small_variances_survive_running_moment_updates(self, dtype: torch.dtype, scale: float) -> None:
+        """Small positive population variances must survive initialization and later merges."""
+        norm = EmpiricalNormalization(shape=1, eps=0.0).to(dtype=dtype)
+        variance_buffer, std_buffer = norm._var, norm._std
+        batches = [torch.tensor([[-1.0], [1.0]], dtype=dtype), torch.tensor([[2.0], [-2.0], [1.0]], dtype=dtype)]
+        history = []
+        for batch in batches:
+            batch = batch * scale
+            history.append(batch)
+            norm.update(batch)
+            values = torch.cat(history)
+            expected_mean = values.mean(dim=0)
+            expected_std = values.std(dim=0, unbiased=False)
+            assert norm.count == values.shape[0]
+            torch.testing.assert_close(norm.mean, expected_mean, rtol=1e-6, atol=0)
+            torch.testing.assert_close(norm.std, expected_std, rtol=1e-6, atol=0)
+            torch.testing.assert_close(norm(values), (values - expected_mean) / expected_std, rtol=1e-6, atol=1e-6)
+        assert norm._var is variance_buffer
+        assert norm._std is std_buffer
+
     def test_forward_applies_normalization(self) -> None:
         """forward() should return (x - mean) / (std + eps), not the raw input."""
         norm = EmpiricalNormalization(shape=2, eps=0.01)

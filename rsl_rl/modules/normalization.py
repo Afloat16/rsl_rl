@@ -74,7 +74,7 @@ class EmpiricalNormalization(nn.Module):
         rate = count_x / self.count
         delta_mean = mean_x - self._mean
         self._mean += rate * delta_mean
-        self._var += rate * (var_x - self._var + delta_mean * (mean_x - self._mean))
+        self._var.mul_(1.0 - rate).add_(rate * (var_x + delta_mean * (mean_x - self._mean)))
         self._std.copy_(torch.sqrt(self._var))  # type: ignore
 
     @torch.jit.unused
