@@ -15,6 +15,24 @@ from rsl_rl.modules.normalization import EmpiricalDiscountedVariationNormalizati
 class TestEmpiricalNormalization:
     """Tests for ``EmpiricalNormalization``."""
 
+    @pytest.mark.parametrize("dtype", [torch.float16, torch.bfloat16, torch.float32])
+    def test_low_precision_observations_preserve_running_moments(self, dtype: torch.dtype) -> None:
+        """Observation moments should use at least the precision of the running buffers."""
+        norm = EmpiricalNormalization(shape=2)
+        batches = [
+            torch.tensor([[-1000.0, 500.0], [1000.0, -500.0]], dtype=dtype),
+            torch.tensor([[-600.0, 300.0], [600.0, -300.0]], dtype=dtype),
+        ]
+        for index, batch in enumerate(batches):
+            norm.update(batch)
+            reference = torch.cat(batches[: index + 1]).float()
+            expected_mean = reference.mean(dim=0, keepdim=True)
+            expected_var = reference.var(dim=0, unbiased=False, keepdim=True)
+            torch.testing.assert_close(norm._mean, expected_mean)
+            torch.testing.assert_close(norm._var, expected_var)
+            expected = (batch.float() - expected_mean) / (expected_var.sqrt() + norm.eps)
+            torch.testing.assert_close(norm(batch), expected)
+
     def test_convergence_to_known_distribution(self) -> None:
         """Running mean and std should converge to the true values of the input distribution."""
         true_mean, true_std = 5.0, 2.0

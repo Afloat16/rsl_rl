@@ -55,6 +55,7 @@ class EmpiricalNormalization(nn.Module):
         if self.until is not None and self.count >= self.until:
             return
 
+        x = x.to(dtype=torch.promote_types(x.dtype, self._mean.dtype))
         count_x = torch.tensor(x.shape[0], dtype=self.count.dtype, device=self.count.device)  # type: ignore
         var_x = torch.var(x, dim=0, unbiased=False, keepdim=True)
         mean_x = torch.mean(x, dim=0, keepdim=True)
