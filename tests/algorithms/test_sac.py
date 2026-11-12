@@ -43,6 +43,26 @@ def _build_sac() -> SAC:
     return SAC.construct_algorithm(env.get_observations(), env, cfg, "cpu")
 
 
+def test_actor_update_preserves_frozen_critic_parameters() -> None:
+    """Actor optimization must not enable updates for frozen critic parameters."""
+    torch.manual_seed(0)
+    cfg = _make_train_cfg()
+    cfg["algorithm"].update(num_updates=2, critic_loss_type="mse")
+    runner = OffPolicyRunner(DummyEnv(), cfg)
+    frozen = next(runner.alg.critics[0].parameters())
+    frozen.requires_grad_(False)
+    frozen_before = frozen.detach().clone()
+    trainable = next(runner.alg.critics[1].parameters())
+    trainable_before = trainable.detach().clone()
+
+    runner.learn(1)
+
+    assert not frozen.requires_grad
+    torch.testing.assert_close(frozen, frozen_before, rtol=0, atol=0)
+    assert trainable.requires_grad
+    assert not torch.equal(trainable, trainable_before)
+
+
 def test_cnn_actor_is_rejected_at_construction() -> None:
     """Unsupported image actors fail before replay collection starts."""
     env = DummyEnv()

@@ -580,6 +580,7 @@ class SAC:
 
             # Evaluate policy actions without accumulating critic parameter gradients
             normalized_actions = self._normalize_actions(actions)
+            critic_requires_grad = [parameter.requires_grad for parameter in self.critics.parameters()]
             self.critics.requires_grad_(False)
             try:
                 with _BatchNormMode(self._critic_batch_norms, training=False):
@@ -587,7 +588,8 @@ class SAC:
                         self._expected_value(critic(batch.observations, normalized_actions)) for critic in self.critics
                     ])
             finally:
-                self.critics.requires_grad_(True)
+                for parameter, requires_grad in zip(self.critics.parameters(), critic_requires_grad):
+                    parameter.requires_grad_(requires_grad)
 
             # Compute the actor objective
             q_value = q_values.min(dim=0).values
