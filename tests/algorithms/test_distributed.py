@@ -269,7 +269,6 @@ class TestDistributedAlgorithms:
         """Bucketed reduction must match the previous full-buffer average, including oversized and ``None`` grads."""
         spawn_gloo(_reduce_compare_worker)
 
-
     @pytest.mark.parametrize(
         ("first_dtype", "second_dtype"),
         [
