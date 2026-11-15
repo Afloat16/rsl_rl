@@ -1,0 +1,38 @@
+name: Promoted and strided gradient reduction integration
+
+on:
+  push:
+    branches:
+      - validation/rsl-promoted-strided-gradient-integration-20261115
+
+permissions:
+  contents: read
+
+jobs:
+  combined:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: .
+      OMP_NUM_THREADS: 1
+      OPENBLAS_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        with:
+          version: "0.13.4"
+          enable-cache: true
+      - name: Create CPU environment
+        run: |
+          uv venv --python 3.12
+          uv pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          uv pip install -e '.[test]' tensordict==0.7.2 numpy==1.26.4 onnx==1.18.0 onnxscript==0.5.4
+      - name: Verify strided promoted Gloo reduction with finite half gradients
+        run: |
+          uv run --no-sync python .github/validation/gradient_bucket_probe.py --strided
+          uv run --no-sync python -m pytest tests/algorithms/test_distributed.py -q
+      - name: Run complete combined CPU suite
+        run: uv run --no-sync python -m pytest tests/ -q -ra
