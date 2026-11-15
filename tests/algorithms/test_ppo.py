@@ -350,6 +350,59 @@ class TestNormalizationUpdates:
 class TestPPOLosses:
     """Tests for PPO loss computation correctness."""
 
+    @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
+    def test_one_step_recurrent_entropy_uses_all_environments(self, rnn_type: str) -> None:
+        """One-step updates retain every environment for entropy gradients and adaptive KL."""
+        torch.manual_seed(7)
+        obs = make_obs(4, 3)
+        groups = {"actor": ["policy"], "critic": ["policy"]}
+        rnn_cfg = {"hidden_dims": [8], "rnn_hidden_dim": 8, "rnn_type": rnn_type}
+        actor = RNNModel(
+            obs,
+            groups,
+            "actor",
+            2,
+            distribution_cfg={"class_name": "HeteroscedasticGaussianDistribution", "std_type": "log"},
+            **rnn_cfg,
+        )
+        critic = RNNModel(obs, groups, "critic", 1, **rnn_cfg)
+        with torch.no_grad():
+            actor.mlp.output_layer.weight[2:].fill_(0.5)
+            for model in (actor, critic):
+                model(obs)
+                model.reset(torch.ones(4))
+        reference = copy.deepcopy(actor)
+        storage = RolloutStorage("rl", 4, 1, obs, [2])
+        ppo = PPO(
+            actor,
+            critic,
+            storage,
+            num_learning_epochs=1,
+            num_mini_batches=1,
+            learning_rate=1e-3,
+            desired_kl=1e-6,
+            value_loss_coef=0.0,
+            entropy_coef=1.0,
+            max_grad_norm=1e6,
+        )
+        with torch.no_grad():
+            ppo.act(obs)
+            ppo.process_env_step(obs, torch.zeros(4), torch.zeros(4), {})
+            ppo.compute_returns(obs)
+            storage.advantages.zero_()
+
+        reference(obs, stochastic_output=True)
+        expected_loss = (
+            -torch.distributions.Normal(reference.output_mean, reference.output_std).entropy().sum(-1).mean()
+        )
+        expected_loss.backward()
+
+        losses, _ = ppo.update()
+        assert losses["entropy"] == pytest.approx(expected_loss.item(), abs=1e-6)
+        assert ppo.learning_rate == 1e-3
+        for actual, expected in zip(actor.parameters(), reference.parameters()):
+            torch.testing.assert_close(actual.grad, expected.grad)
+
     def test_recurrent_surrogate_matches_per_transition_objective(self) -> None:
         """A recurrent minibatch must pair each action with its own old probability and advantage."""
         torch.manual_seed(7)
@@ -418,6 +471,61 @@ class TestPPOLosses:
         losses, _ = ppo.update()
 
         assert losses["surrogate"] == pytest.approx(expected)
+
+    @pytest.mark.parametrize(
+        "num_actions, advantage, offset",
+        [(64, 2.0, 0.0), (64, 0.0, 0.0), (64, 0.0, 10.0), (4, 2.0, 0.0), (4, -2.0, 0.0), (4, -2.0, 4.0), (4, 2.0, 4.0)],
+    )
+    def test_clipped_surrogate_preserves_finite_gradients(
+        self, num_actions: int, advantage: float, offset: float
+    ) -> None:
+        """Finite Gaussian policies retain the float64 clipped objective and its policy gradients."""
+        torch.manual_seed(12)
+        obs = make_obs(1, 3)
+        groups = {"actor": ["policy"], "critic": ["policy"]}
+        actor = _make_actor(obs, groups, num_actions)
+        critic = _make_critic(obs, groups)
+        storage = RolloutStorage("rl", 1, 1, obs, [num_actions])
+        ppo = PPO(
+            actor,
+            critic,
+            storage,
+            gamma=0.0,
+            num_learning_epochs=1,
+            num_mini_batches=1,
+            schedule="fixed",
+            entropy_coef=0.0,
+            value_loss_coef=0.0,
+            max_grad_norm=1e9,
+        )
+        with torch.no_grad():
+            ppo.act(obs)
+            rewards = ppo.transition.values.flatten() + advantage
+            ppo.process_env_step(obs, rewards, torch.zeros(1), {})
+            ppo.compute_returns(obs)
+            actor.mlp.output_layer.weight.zero_()
+            actor.mlp.output_layer.bias.copy_(storage.actions[0, 0] + 0.1 * offset)
+            actor.distribution.std_param.fill_(0.1)
+        reference = copy.deepcopy(actor)
+        reference(obs, stochastic_output=True)
+        log_prob = (
+            torch.distributions.Normal(reference.output_mean.double(), reference.output_std.double())
+            .log_prob(storage.actions[0].double())
+            .sum(-1)
+        )
+        ratio = (log_prob - storage.actions_log_prob.flatten().double()).exp()
+        advantages = storage.advantages.flatten().double()
+        expected_loss = torch.maximum(
+            -advantages * ratio, -advantages * ratio.clamp(1.0 - ppo.clip_param, 1.0 + ppo.clip_param)
+        ).mean()
+        expected_loss.backward()
+        torch.nn.utils.clip_grad_norm_(reference.parameters(), ppo.max_grad_norm)
+
+        losses, _ = ppo.update()
+        assert losses["surrogate"] == pytest.approx(expected_loss.item(), rel=3e-5, abs=1e-8)
+        for actual, expected in zip(actor.parameters(), reference.parameters()):
+            assert torch.isfinite(actual).all()
+            torch.testing.assert_close(actual.grad, expected.grad, rtol=3e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         "clipped, return_offset, expected", [(True, 0.0, 0.64), (False, 0.0, 0.0), (True, -1.0, 1.0)]

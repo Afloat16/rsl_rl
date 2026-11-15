@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import math
 import torch
 import torch.nn as nn
 from itertools import chain
@@ -274,7 +275,11 @@ class PPO:
                             param_group["lr"] = self.learning_rate
 
                 # Surrogate loss
-                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore
+                log_ratio = actions_log_prob - batch.old_actions_log_prob.squeeze(-1)  # type: ignore
+                log_ratio = torch.where(
+                    batch.advantages.squeeze(-1) >= 0, log_ratio.clamp(max=math.log1p(self.clip_param)), log_ratio
+                )
+                ratio = torch.exp(log_ratio)
                 surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore
                 surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore
                     ratio, 1.0 - self.clip_param, 1.0 + self.clip_param

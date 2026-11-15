@@ -1,0 +1,63 @@
+name: Recurrent and PPO ratio integration
+
+on:
+  push:
+    branches:
+      - validation/rsl-recurrent-ratio-integration-20261115
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: .
+      OMP_NUM_THREADS: 1
+      OPENBLAS_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
+        with:
+          version: "0.13.4"
+          enable-cache: true
+      - name: Create CPU environment
+        run: |
+          uv venv --python 3.12
+          uv pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+          uv pip install -e '.[test]' tensordict==0.7.2 numpy==1.26.4 onnx==1.18.0 onnxscript==0.5.4
+      - name: Verify exact composition of the two independent patches
+        run: |
+          uv run --no-sync python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          base = "8945bdcbc364f388e14caebf547dbf302d89e491"
+          first = "479edc3df3e9bad8549f3fd8be0224ded50e1a6e"
+          second = "725dde6daa9e2617642eef2a3f35ca7ca4ca1188"
+          def read(sha, path):
+              return subprocess.check_output(["git", "show", f"{sha}:{path}"], text=True)
+          for path, sha in (
+              ("rsl_rl/models/rnn_model.py", first),
+              ("tests/models/test_rnn_model.py", first),
+              ("rsl_rl/algorithms/ppo.py", second),
+          ):
+              assert Path(path).read_text() == read(sha, path), path
+          path = "tests/algorithms/test_ppo.py"
+          original, first_text, second_text = [read(sha, path) for sha in (base, first, second)]
+          marker = 'class TestPPOLosses:\n    """Tests for PPO loss computation correctness."""\n'
+          position = original.index(marker) + len(marker)
+          tail = original[position:]
+          insertion = first_text[position:len(first_text) - len(tail)]
+          assert first_text == original[:position] + insertion + tail
+          expected = second_text.replace(marker, marker + insertion)
+          assert Path(path).read_text() == expected
+          print("EXACT_PATCH_COMPOSITION=4 source/test files")
+          PY
+      - name: Run the combined regressions
+        run: uv run --no-sync python -m pytest tests/algorithms/test_ppo.py tests/models/test_rnn_model.py -k 'training_batch_preserves_time_dimension or one_step_recurrent_entropy or clipped_surrogate_preserves_finite_gradients' -q
+      - name: Run the complete CPU suite
+        run: uv run --no-sync python -m pytest tests/ -q -ra

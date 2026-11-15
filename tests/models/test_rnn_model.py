@@ -56,6 +56,24 @@ def test_custom_network_forward_and_export() -> None:
     torch.testing.assert_close(exported(obs["policy"][:1]), expected)
 
 
+@pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
+@pytest.mark.parametrize("num_steps", [1, 3])
+def test_training_batch_preserves_time_dimension(rnn_type: str, num_steps: int) -> None:
+    """Batched training preserves the time axis and matches sequential rollout outputs."""
+    model, obs = _make_rnn_model(rnn_type=rnn_type)
+    model(obs)
+    model.reset(torch.ones(NUM_ENVS))
+    hidden_state = model.get_hidden_state()
+    expected = torch.stack([model(obs) for _ in range(num_steps)])
+    batched_obs = torch.stack([obs] * num_steps)
+    actual = model(
+        batched_obs,
+        masks=torch.ones(num_steps, NUM_ENVS, dtype=torch.bool),
+        hidden_state=hidden_state,
+    )
+    torch.testing.assert_close(actual, expected)
+
+
 class TestHiddenStateReset:
     """Tests for hidden state reset behavior on done environments."""
 
