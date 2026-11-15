@@ -43,6 +43,30 @@ def _build_sac() -> SAC:
     return SAC.construct_algorithm(env.get_observations(), env, cfg, "cpu")
 
 
+@pytest.mark.parametrize("init_std", [None, 0.5])
+def test_fixed_standard_deviation_policy_can_train(init_std: float | None) -> None:
+    """A fixed deviation stays finite with optional initialization while the policy mean learns."""
+    torch.manual_seed(3)
+    env = DummyEnv()
+    cfg = _make_train_cfg()
+    cfg["multi_gpu"] = None
+    cfg["actor"]["distribution_cfg"].update(init_std=init_std, std_range=(0.5, 0.5))
+    cfg["algorithm"].update(num_updates=1, critic_loss_type="mse", reward_normalization=False)
+    alg = SAC.construct_algorithm(env.get_observations(), env, cfg, "cpu")
+    before = alg.actor.mlp.output_layer.weight[: env.num_actions].detach().clone()
+    obs = env.get_observations()
+    with torch.inference_mode():
+        for _ in range(3):
+            obs, rewards, dones, extras = env.step(alg.act(obs))
+            alg.process_env_step(obs, rewards, dones, extras)
+    losses, _ = alg.update()
+
+    assert all(torch.isfinite(torch.tensor(value)) for value in losses.values())
+    assert all(torch.isfinite(parameter).all() for parameter in alg.actor.parameters())
+    torch.testing.assert_close(alg.actor.output_std, torch.full_like(alg.actor.output_std, 0.5))
+    assert not torch.equal(before, alg.actor.mlp.output_layer.weight[: env.num_actions])
+
+
 def test_cnn_actor_is_rejected_at_construction() -> None:
     """Unsupported image actors fail before replay collection starts."""
     env = DummyEnv()

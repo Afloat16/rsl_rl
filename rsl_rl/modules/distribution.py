@@ -462,7 +462,9 @@ class SquashedGaussianDistribution(Distribution):
             return
         # Invert the bounded log standard deviation mapping to initialize the output head
         log_std_min, log_std_max = self.log_std_range
-        normalized = 2.0 * (np.log(self.init_std) - log_std_min) / (log_std_max - log_std_min) - 1.0
+        normalized = 0.0
+        if log_std_min != log_std_max:
+            normalized = 2.0 * (np.log(self.init_std) - log_std_min) / (log_std_max - log_std_min) - 1.0
         torch.nn.init.zeros_(mlp.output_layer.weight[self.output_dim :])  # type: ignore
         torch.nn.init.constant_(
             mlp.output_layer.bias[self.output_dim :],  # type: ignore

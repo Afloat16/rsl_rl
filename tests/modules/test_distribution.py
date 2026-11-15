@@ -355,7 +355,7 @@ def test_squashed_gaussian_standard_deviation_range(kwargs: dict, expected: tupl
     torch.testing.assert_close(distribution.std, torch.tensor([expected]))
 
 
-@pytest.mark.parametrize("kwargs", [{}, {"std_range": (0.1, 2.0)}])
+@pytest.mark.parametrize("kwargs", [{}, {"std_range": (0.1, 2.0)}, {"std_range": (0.5, 0.5)}])
 def test_squashed_gaussian_initial_standard_deviation(kwargs: dict) -> None:
     """The optional initialization sets the learned std head independently of its inputs."""
     distribution = SquashedGaussianDistribution(2, init_std=0.5, **kwargs)
