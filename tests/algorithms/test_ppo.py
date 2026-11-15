@@ -350,6 +350,57 @@ class TestNormalizationUpdates:
 class TestPPOLosses:
     """Tests for PPO loss computation correctness."""
 
+    @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
+    def test_one_step_recurrent_entropy_uses_all_environments(self, rnn_type: str) -> None:
+        """One-step updates retain every environment for entropy gradients and adaptive KL."""
+        torch.manual_seed(7)
+        obs = make_obs(4, 3)
+        groups = {"actor": ["policy"], "critic": ["policy"]}
+        rnn_cfg = {"hidden_dims": [8], "rnn_hidden_dim": 8, "rnn_type": rnn_type}
+        actor = RNNModel(
+            obs,
+            groups,
+            "actor",
+            2,
+            distribution_cfg={"class_name": "HeteroscedasticGaussianDistribution", "std_type": "log"},
+            **rnn_cfg,
+        )
+        critic = RNNModel(obs, groups, "critic", 1, **rnn_cfg)
+        with torch.no_grad():
+            actor.mlp.output_layer.weight[2:].fill_(0.5)
+            for model in (actor, critic):
+                model(obs)
+                model.reset(torch.ones(4))
+        reference = copy.deepcopy(actor)
+        storage = RolloutStorage("rl", 4, 1, obs, [2])
+        ppo = PPO(
+            actor,
+            critic,
+            storage,
+            num_learning_epochs=1,
+            num_mini_batches=1,
+            learning_rate=1e-3,
+            desired_kl=1e-6,
+            value_loss_coef=0.0,
+            entropy_coef=1.0,
+            max_grad_norm=1e6,
+        )
+        with torch.no_grad():
+            ppo.act(obs)
+            ppo.process_env_step(obs, torch.zeros(4), torch.zeros(4), {})
+            ppo.compute_returns(obs)
+            storage.advantages.zero_()
+
+        reference(obs, stochastic_output=True)
+        expected_loss = -torch.distributions.Normal(reference.output_mean, reference.output_std).entropy().sum(-1).mean()
+        expected_loss.backward()
+
+        losses, _ = ppo.update()
+        assert losses["entropy"] == pytest.approx(expected_loss.item(), abs=1e-6)
+        assert ppo.learning_rate == 1e-3
+        for actual, expected in zip(actor.parameters(), reference.parameters()):
+            torch.testing.assert_close(actual.grad, expected.grad)
+
     def test_recurrent_surrogate_matches_per_transition_objective(self) -> None:
         """A recurrent minibatch must pair each action with its own old probability and advantage."""
         torch.manual_seed(7)
