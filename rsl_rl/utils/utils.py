@@ -445,14 +445,35 @@ def reduce_gradients_in_buckets(params: Iterable[torch.nn.Parameter], world_size
             filled_bytes += grad_bytes
             end += 1
 
-        packed = torch.cat(grads[start:end])
-        torch.distributed.all_reduce(packed, op=torch.distributed.ReduceOp.SUM)
-        packed /= world_size
-        offset = 0
-        for flat_grad in grads[start:end]:
-            numel = flat_grad.numel()
-            flat_grad.copy_(packed[offset : offset + numel])
-            offset += numel
+        packed_dtype = grads[start].dtype
+        for flat_grad in grads[start + 1 : end]:
+            packed_dtype = torch.promote_types(packed_dtype, flat_grad.dtype)
+        element_size = torch.empty(0, dtype=packed_dtype).element_size()
+        chunk_numel = max(1, bucket_bytes // element_size)
+        grad_index = start
+        grad_offset = 0
+        while grad_index < end:
+            slices = []
+            packed_numel = 0
+            while grad_index < end and packed_numel < chunk_numel:
+                flat_grad = grads[grad_index]
+                length = min(flat_grad.numel() - grad_offset, chunk_numel - packed_numel)
+                slices.append(flat_grad.narrow(0, grad_offset, length))
+                packed_numel += length
+                grad_offset += length
+                if grad_offset == flat_grad.numel():
+                    grad_index += 1
+                    grad_offset = 0
+
+            packed = torch.empty(packed_numel, dtype=packed_dtype, device=grads[start].device)
+            torch.cat(slices, out=packed)
+            torch.distributed.all_reduce(packed, op=torch.distributed.ReduceOp.SUM)
+            packed /= world_size
+            offset = 0
+            for flat_slice in slices:
+                numel = flat_slice.numel()
+                flat_slice.copy_(packed[offset : offset + numel])
+                offset += numel
         start = end
 
 

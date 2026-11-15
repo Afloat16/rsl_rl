@@ -158,6 +158,43 @@ def _reduce_compare_worker(rank: int, world_size: int, store_file: str) -> None:
             torch.distributed.destroy_process_group()
 
 
+def _mixed_dtype_reduce_worker(
+    rank: int, world_size: int, store_file: str, first_dtype: torch.dtype, second_dtype: torch.dtype
+) -> None:
+    init_gloo(rank, world_size, store_file)
+    try:
+        specs = [(160, first_dtype), (64, second_dtype), (192, second_dtype), (280, first_dtype), (32, first_dtype)]
+        params = [nn.Parameter(torch.zeros(1))]
+        for index, (nbytes, dtype) in enumerate(specs):
+            numel = nbytes // torch.empty(0, dtype=dtype).element_size()
+            parameter = nn.Parameter(torch.zeros(numel, dtype=dtype))
+            parameter.grad = torch.arange(numel, dtype=dtype) % 7 + 2 * index + rank
+            params.append(parameter)
+        params[1].grad.fill_(40000)
+        original_grads = [param.grad for param in params]
+        expected = [None if grad is None else grad.clone() + (world_size - 1) / 2 - rank for grad in original_grads]
+        expected[1].fill_(40000)
+        sizes = []
+        all_reduce = torch.distributed.all_reduce
+
+        def record_all_reduce(value: torch.Tensor, op: Any) -> None:
+            sizes.append(value.numel() * value.element_size())
+            all_reduce(value, op=op)
+
+        with pytest.MonkeyPatch.context() as monkeypatch:
+            monkeypatch.setattr(torch.distributed, "all_reduce", record_all_reduce)
+            reduce_gradients_in_buckets(params, world_size, bucket_mb=_TINY_BUCKET_MB)
+        assert max(sizes) <= _TINY_BUCKET_BYTES, sizes
+        assert _TINY_BUCKET_BYTES in sizes
+        for parameter, original_grad, reference in zip(params, original_grads, expected):
+            assert parameter.grad is original_grad
+            if reference is not None:
+                torch.testing.assert_close(parameter.grad, reference, rtol=0, atol=0)
+    finally:
+        if torch.distributed.is_initialized():
+            torch.distributed.destroy_process_group()
+
+
 def _ppo_worker(rank: int, world_size: int, store_file: str) -> None:
     init_gloo(rank, world_size, store_file)
     try:
@@ -231,6 +268,23 @@ class TestDistributedAlgorithms:
     def test_chunked_reduce_matches_full_concat(self) -> None:
         """Bucketed reduction must match the previous full-buffer average, including oversized and ``None`` grads."""
         spawn_gloo(_reduce_compare_worker)
+
+
+    @pytest.mark.parametrize(
+        ("first_dtype", "second_dtype"),
+        [
+            (torch.float16, torch.float32),
+            (torch.float32, torch.float16),
+            (torch.float32, torch.float64),
+            (torch.float64, torch.float32),
+            (torch.float32, torch.float32),
+        ],
+    )
+    def test_mixed_dtype_buckets_preserve_memory_bound_and_average(
+        self, first_dtype: torch.dtype, second_dtype: torch.dtype
+    ) -> None:
+        """Bound promoted buffers while preserving finite cross-rank averages and gradient storage."""
+        spawn_gloo(_mixed_dtype_reduce_worker, first_dtype, second_dtype)
 
     def test_ppo_parameters_stay_in_sync(self) -> None:
         """PPO ranks that see different rollouts must still share parameters after update."""
