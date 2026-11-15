@@ -56,17 +56,25 @@ class EmpiricalNormalization(nn.Module):
             return
 
         count_x = torch.tensor(x.shape[0], dtype=self.count.dtype, device=self.count.device)  # type: ignore
-        var_x = torch.var(x, dim=0, unbiased=False, keepdim=True)
-        mean_x = torch.mean(x, dim=0, keepdim=True)
+        distributed = torch.distributed.is_initialized()
+        if distributed:
+            torch.distributed.all_reduce(count_x)
+        if x.shape[0] == 0:
+            if count_x == 0:
+                return
+            mean_x = x.new_zeros((1, *x.shape[1:]))
+            var_x = torch.zeros_like(mean_x)
+        else:
+            var_x = torch.var(x, dim=0, unbiased=False, keepdim=True)
+            mean_x = torch.mean(x, dim=0, keepdim=True)
 
-        if torch.distributed.is_initialized():
+        if distributed:
             # Compute the global mean first, then combine the local variances around that mean
             local_mean_x = mean_x
-            torch.distributed.all_reduce(count_x)
             mean_sum_x = mean_x * x.shape[0]
             torch.distributed.all_reduce(mean_sum_x)
             mean_x = mean_sum_x / count_x
-            var_sum_x = x.shape[0] * (var_x + (local_mean_x - mean_x).square())
+            var_sum_x = x.shape[0] * (var_x + (local_mean_x - mean_x).square()) if x.shape[0] else var_x
             torch.distributed.all_reduce(var_sum_x)
             var_x = var_sum_x / count_x
 

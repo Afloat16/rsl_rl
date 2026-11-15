@@ -10,10 +10,70 @@ import torch
 import pytest
 
 from rsl_rl.modules.normalization import EmpiricalDiscountedVariationNormalization, EmpiricalNormalization
+from tests.algorithms.test_distributed import init_gloo, spawn_gloo
+
+
+def _empty_batch_normalization_worker(rank: int, world_size: int, store_file: str, all_empty: bool) -> None:
+    init_gloo(rank, world_size, store_file)
+    try:
+        normalizer = EmpiricalNormalization(2)
+        observed = []
+        for step in range(3):
+            batches = [torch.tensor([[1e20, 2.0 + 4 * i], [1e20, 4.0 + 4 * i]]) for i in range(world_size)]
+            for i in range(world_size):
+                if (all_empty and step != 1) or (not all_empty and i != step % world_size):
+                    batches[i] = batches[i][:0]
+            before = {key: value.clone() for key, value in normalizer.state_dict().items()}
+            normalizer.update(batches[rank])
+            nonempty = [batch for batch in batches if batch.shape[0]]
+            observed.extend(nonempty)
+            if not nonempty:
+                for key, value in normalizer.state_dict().items():
+                    torch.testing.assert_close(value, before[key], rtol=0, atol=0)
+            if observed:
+                expected = torch.cat(observed)
+                assert normalizer.count == expected.shape[0]
+                torch.testing.assert_close(normalizer.mean, expected.mean(0))
+                torch.testing.assert_close(normalizer.std, expected.std(0, unbiased=False))
+                torch.testing.assert_close(
+                    normalizer(expected), (expected - expected.mean(0)) / (expected.std(0, unbiased=False) + normalizer.eps)
+                )
+            else:
+                assert normalizer.count == 0
+    finally:
+        if torch.distributed.is_initialized():
+            torch.distributed.destroy_process_group()
 
 
 class TestEmpiricalNormalization:
     """Tests for ``EmpiricalNormalization``."""
+
+    @pytest.mark.parametrize("initialized", [False, True])
+    def test_empty_batch_preserves_statistics_and_subsequent_updates(self, initialized: bool) -> None:
+        """An empty update must leave the running moments intact and permit later nonempty updates."""
+        normalizer = EmpiricalNormalization(2)
+        initial = torch.tensor([[1.0, 2.0], [3.0, 4.0]])
+        if initialized:
+            normalizer.update(initial)
+        before = {key: value.clone() for key, value in normalizer.state_dict().items()}
+        normalizer.update(initial[:0])
+        for key, value in normalizer.state_dict().items():
+            torch.testing.assert_close(value, before[key], rtol=0, atol=0)
+        following = initial + 4
+        normalizer.update(following)
+        expected = torch.cat((initial, following)) if initialized else following
+        assert normalizer.count == expected.shape[0]
+        torch.testing.assert_close(normalizer.mean, expected.mean(0))
+        torch.testing.assert_close(normalizer.std, expected.std(0, unbiased=False))
+
+    @pytest.mark.skipif(
+        not torch.distributed.is_available() or not torch.distributed.is_gloo_available(),
+        reason="torch.distributed gloo backend is required",
+    )
+    @pytest.mark.parametrize("all_empty", [False, True])
+    def test_distributed_empty_batches_match_global_moments(self, all_empty: bool) -> None:
+        """Empty ranks contribute no moments, and a globally empty update preserves all running statistics."""
+        spawn_gloo(_empty_batch_normalization_worker, all_empty)
 
     def test_convergence_to_known_distribution(self) -> None:
         """Running mean and std should converge to the true values of the input distribution."""
