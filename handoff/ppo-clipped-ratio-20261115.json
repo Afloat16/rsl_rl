@@ -1,0 +1,1657 @@
+{
+  "created_at": "2026-11-15T03:56:31.463Z",
+  "account": "Afloat16",
+  "upstream": "leggedrobotics/rsl_rl",
+  "fork": "Afloat16/rsl_rl",
+  "status": "ready_with_prefilled_pull_request",
+  "created_upstream_prs": 0,
+  "newly_merged_prs": 0,
+  "base_branch": "main",
+  "base_sha": "8945bdcbc364f388e14caebf547dbf302d89e491",
+  "source_branch": "fix/ppo-clipped-ratio-overflow-20261115",
+  "source_sha": "725dde6daa9e2617642eef2a3f35ca7ca4ca1188",
+  "source_url": "https://github.com/Afloat16/rsl_rl/tree/fix/ppo-clipped-ratio-overflow-20261115",
+  "diff_url": "https://github.com/leggedrobotics/rsl_rl/compare/main...Afloat16:rsl_rl:fix/ppo-clipped-ratio-overflow-20261115",
+  "mechanism": "For detached nonnegative advantages, bound the log probability ratio at log1p(clip_param) before exp. This is the exact existing saturated PPO policy objective, avoiding 0*inf in backward/zero-advantage loss. Negative-advantage ratio paths are unchanged.",
+  "production_change": [
+    {
+      "path": "rsl_rl/algorithms/ppo.py",
+      "patch": "@@ -6,6 +6,7 @@\n \n from __future__ import annotations\n \n+import math\n import torch\n import torch.nn as nn\n from itertools import chain\n@@ -274,7 +275,11 @@ def update(self) -> tuple[dict[str, float], dict[str, float]]:\n                             param_group[\"lr\"] = self.learning_rate\n \n                 # Surrogate loss\n-                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n+                log_ratio = actions_log_prob - batch.old_actions_log_prob.squeeze(-1)  # type: ignore\n+                log_ratio = torch.where(\n+                    batch.advantages.squeeze(-1) >= 0, log_ratio.clamp(max=math.log1p(self.clip_param)), log_ratio\n+                )\n+                ratio = torch.exp(log_ratio)\n                 surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                 surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                     ratio, 1.0 - self.clip_param, 1.0 + self.clip_param"
+    }
+  ],
+  "changed_files": [
+    {
+      "path": "rsl_rl/algorithms/ppo.py",
+      "additions": 6,
+      "deletions": 1
+    },
+    {
+      "path": "tests/algorithms/test_ppo.py",
+      "additions": 55,
+      "deletions": 0
+    }
+  ],
+  "policy": {
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "sha": "284c78bb4283a337e63655b999c468c53a2adc91",
+        "url": "https://github.com/leggedrobotics/rsl_rl/blob/main/AGENTS.md"
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "sha": "6ec8f9952d141f4051984bcffa143fd0eb7d302d",
+        "url": "https://github.com/leggedrobotics/rsl_rl/blob/main/CONTRIBUTING.md"
+      },
+      {
+        "path": ".github/workflows/docs.yml",
+        "sha": "11fe76c55ad67d90f49b837617d417530aaf6400",
+        "url": "https://github.com/leggedrobotics/rsl_rl/blob/main/.github/workflows/docs.yml"
+      },
+      {
+        "path": ".github/workflows/lint.yml",
+        "sha": "cd04d570536f15f0d1c90c8479016c6660d3ef84",
+        "url": "https://github.com/leggedrobotics/rsl_rl/blob/main/.github/workflows/lint.yml"
+      },
+      {
+        "path": ".github/workflows/tests.yml",
+        "sha": "eb48e2c54fc73be265cea0bd1490d25d6c41e021",
+        "url": "https://github.com/leggedrobotics/rsl_rl/blob/main/.github/workflows/tests.yml"
+      },
+      {
+        "path": "CONTRIBUTORS.md",
+        "sha": "a5a21300e5e414f60a91a7600ab844478c44f972",
+        "url": "https://github.com/leggedrobotics/rsl_rl/blob/main/CONTRIBUTORS.md"
+      }
+    ],
+    "agent_rules": "# Instructions for Agents\n\n- Read `CONTRIBUTING.md` before making changes.\n- Do not add or change code comments unless explicitly requested.\n- When opening a PR from a fork, enable \"Allow edits from maintainers\" and verify that it is enabled.\n- Keep regression tests minimal and proportionate to the risk of recurrence; avoid elaborate setup or broad test \n  matrices for narrowly scoped fixes.\n- Add tests to the existing test file corresponding to the modified module; do not create separate files for individual\n  bug fixes.\n",
+    "concurrency_cap": null,
+    "open_prs": 7,
+    "star_count": 3134,
+    "merged_prs": 3,
+    "optional_contributors_entry_omitted": true,
+    "maintainers_can_modify_requested": true,
+    "maintainers_can_modify_verified": false,
+    "maintainers_note": "Direct PR creation was forbidden; verify Allow edits from maintainers is checked when submitting the prefilled form."
+  },
+  "validation": {
+    "branch": "validation/ppo-clipped-ratio-overflow-20261115",
+    "sha": "6b3ad1b0b5b71a378f23f34bf8bcc5c7da2e220a",
+    "run_id": 43674281880,
+    "run_url": "https://github.com/Afloat16/rsl_rl/actions/runs/43674281880",
+    "status": "success",
+    "baseline": {
+      "failed": 2,
+      "passed": 5,
+      "deselected": 27,
+      "errors": 0
+    },
+    "focused": {
+      "passed": 7,
+      "deselected": 27
+    },
+    "full_cpu": {
+      "passed": 294,
+      "skipped": 6,
+      "warnings": 2,
+      "seconds": 16.09,
+      "includes": [
+        "actual Gloo multiprocess tests",
+        "JIT export",
+        "ONNX export"
+      ]
+    },
+    "skipped": [
+      {
+        "test": "tests/algorithms/test_sac.py:69",
+        "count": 1,
+        "reason": "CUDA is required for graph capture"
+      },
+      {
+        "test": "tests/algorithms/test_sac.py:162",
+        "count": 3,
+        "reason": "CUDA is required for replay parity"
+      },
+      {
+        "test": "tests/algorithms/test_sac.py:377",
+        "count": 1,
+        "reason": "CUDA is required for graph capture"
+      },
+      {
+        "test": "tests/storage/test_replay_buffer.py:91",
+        "count": 1,
+        "reason": "The replay memory budget applies to CUDA."
+      }
+    ],
+    "dependencies": {
+      "python": "3.12.3",
+      "torch": "2.7.1+cpu",
+      "tensordict": "0.7.2",
+      "numpy": "1.26.4",
+      "onnx": "1.18.0",
+      "onnxscript": "0.5.4",
+      "pytest": "9.2.0",
+      "pre_commit": "4.2.0",
+      "ruff": "0.14.0"
+    },
+    "cpu_threads": 1,
+    "hooks": "All configured pre-commit run --all-files checks passed at final source SHA; git diff --check passed.",
+    "baseline_probe": [
+      {
+        "num_actions": 64,
+        "advantage": 2,
+        "log_ratio": 184.97531127929688,
+        "log_ratio_finite": true,
+        "surrogate_loss": -2.4000000953674316,
+        "loss_finite": true,
+        "all_parameters_finite": false,
+        "all_gradients_finite": false,
+        "matches_float64_loss_and_gradients": false,
+        "failure": "",
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 64,
+        "advantage": 0,
+        "log_ratio": 184.97531127929688,
+        "log_ratio_finite": true,
+        "surrogate_loss": null,
+        "loss_finite": false,
+        "all_parameters_finite": false,
+        "all_gradients_finite": false,
+        "matches_float64_loss_and_gradients": false,
+        "failure": "",
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 64,
+        "advantage": 0,
+        "log_ratio": -3015.0244140625,
+        "log_ratio_finite": true,
+        "surrogate_loss": 0,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 10
+      },
+      {
+        "num_actions": 4,
+        "advantage": 2,
+        "log_ratio": 12.63984489440918,
+        "log_ratio_finite": true,
+        "surrogate_loss": -2.4000000953674316,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 4,
+        "advantage": -1.9999998807907104,
+        "log_ratio": 12.63984489440918,
+        "log_ratio_finite": true,
+        "surrogate_loss": 617226.875,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 4,
+        "advantage": -1.9999998807907104,
+        "log_ratio": -19.36015510559082,
+        "log_ratio_finite": true,
+        "surrogate_loss": 1.5999999046325684,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 4
+      },
+      {
+        "num_actions": 4,
+        "advantage": 2,
+        "log_ratio": -19.36015510559082,
+        "log_ratio_finite": true,
+        "surrogate_loss": -7.816664648885308e-9,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 4
+      }
+    ],
+    "candidate_probe": [
+      {
+        "num_actions": 64,
+        "advantage": 2,
+        "log_ratio": 184.97531127929688,
+        "log_ratio_finite": true,
+        "surrogate_loss": -2.4000000953674316,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 64,
+        "advantage": 0,
+        "log_ratio": 184.97531127929688,
+        "log_ratio_finite": true,
+        "surrogate_loss": 0,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 64,
+        "advantage": 0,
+        "log_ratio": -3015.0244140625,
+        "log_ratio_finite": true,
+        "surrogate_loss": 0,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 10
+      },
+      {
+        "num_actions": 4,
+        "advantage": 2,
+        "log_ratio": 12.63984489440918,
+        "log_ratio_finite": true,
+        "surrogate_loss": -2.4000000953674316,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 4,
+        "advantage": -1.9999998807907104,
+        "log_ratio": 12.63984489440918,
+        "log_ratio_finite": true,
+        "surrogate_loss": 617226.875,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 0
+      },
+      {
+        "num_actions": 4,
+        "advantage": -1.9999998807907104,
+        "log_ratio": -19.36015510559082,
+        "log_ratio_finite": true,
+        "surrogate_loss": 1.5999999046325684,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 4
+      },
+      {
+        "num_actions": 4,
+        "advantage": 2,
+        "log_ratio": -19.36015510559082,
+        "log_ratio_finite": true,
+        "surrogate_loss": -7.816664648885308e-9,
+        "loss_finite": true,
+        "all_parameters_finite": true,
+        "all_gradients_finite": true,
+        "matches_float64_loss_and_gradients": true,
+        "mean_offset_in_std_units": 4
+      }
+    ],
+    "additional_fork_only_algebra_checks": {
+      "cases": 63,
+      "clip_values": [
+        0,
+        0.2,
+        1.2
+      ],
+      "advantage_values": [
+        -2,
+        0,
+        2
+      ],
+      "log_ratios": "-100, -1, log1p(clip) +/- 1e-6, log1p(clip), 1, 100",
+      "result": "Original float64 objective and log-ratio gradients agree."
+    },
+    "limitations": [
+      "CPU validation only; no GPU or long-run convergence claim.",
+      "Advantages are treated as constant rollout targets; policy gradients were compared, not derivatives with respect to advantage at zero.",
+      "Unbounded negative-advantage objectives can still overflow when mathematically beyond float32 range.",
+      "Validation workflows/probe are excluded from source branch."
+    ]
+  },
+  "dedup": {
+    "own_all_state_pr_count": 11,
+    "own_all_state_prs": [
+      {
+        "number": 267,
+        "title": "Aggregate episode metrics without mutating environment extras",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 266,
+        "title": "Preserve import errors and validate resolved callables",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 264,
+        "title": "Preserve recurrent hidden-state dtypes in rollout storage",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 263,
+        "title": "Fix bucketed reduction of noncontiguous gradients",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 259,
+        "title": "Keep computed CNN padding nonnegative for small kernels",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 258,
+        "title": "Normalize vector rewards without ambiguous tensor conditions",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 257,
+        "title": "Include action-range scaling in Beta entropy",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 245,
+        "title": "Skip singleton PPO advantage normalization",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 244,
+        "title": "fix(storage): retain rollout remainders in mini-batch generators",
+        "state": "closed",
+        "merged_at": "2026-10-27T13:35:32Z"
+      },
+      {
+        "number": 240,
+        "title": "Resume RND exploration schedules from PPO checkpoints",
+        "state": "closed",
+        "merged_at": "2026-10-08T14:51:48Z"
+      },
+      {
+        "number": 239,
+        "title": "Keep discounted reward history independent of caller storage",
+        "state": "closed",
+        "merged_at": "2026-10-08T14:44:23Z"
+      }
+    ],
+    "upstream_all_state_count": 168,
+    "upstream_all_state_prs": [
+      {
+        "number": 275,
+        "title": "Add a TensorRT backend to the ExecuTorch export",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 274,
+        "title": "SAC: distributed training and CNN support on top of the CUDA graph optimizations",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 273,
+        "title": "SAC: capture updates and environment interaction in CUDA graphs",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 272,
+        "title": "feat: Add torch XPU support",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 271,
+        "title": "Add ExecuTorch export for policies",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 270,
+        "title": "Return only the ONNX outputs from the GRU ONNX model",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 268,
+        "title": "[main] Add distributed SAC and CNN model support",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 267,
+        "title": "Aggregate episode metrics without mutating environment extras",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 266,
+        "title": "Preserve import errors and validate resolved callables",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 265,
+        "title": "Clean up algorithm statistics for the logger",
+        "state": "closed",
+        "merged_at": "2026-11-10T18:20:58Z"
+      },
+      {
+        "number": 264,
+        "title": "Preserve recurrent hidden-state dtypes in rollout storage",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 263,
+        "title": "Fix bucketed reduction of noncontiguous gradients",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 262,
+        "title": "Remove unused init_weights functions",
+        "state": "closed",
+        "merged_at": "2026-11-10T18:32:07Z"
+      },
+      {
+        "number": 261,
+        "title": "fix: preserve recurrent state dtype in TorchScript exports",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 260,
+        "title": "Add PPO configuration checks",
+        "state": "closed",
+        "merged_at": "2026-11-10T15:04:34Z"
+      },
+      {
+        "number": 259,
+        "title": "Keep computed CNN padding nonnegative for small kernels",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 258,
+        "title": "Normalize vector rewards without ambiguous tensor conditions",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 257,
+        "title": "Include action-range scaling in Beta entropy",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 256,
+        "title": "Clean up tests and remove unused `verbose` argument for ONNX classes",
+        "state": "closed",
+        "merged_at": "2026-10-28T14:04:59Z"
+      },
+      {
+        "number": 255,
+        "title": "[main] Add SuperMimic model-based training",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 254,
+        "title": "[main] Add SAC with optional FlashSAC components",
+        "state": "closed",
+        "merged_at": "2026-11-10T15:01:12Z"
+      },
+      {
+        "number": 252,
+        "title": "Skip observation-normalizer updates for image-only CNN models",
+        "state": "closed",
+        "merged_at": "2026-10-27T15:47:49Z"
+      },
+      {
+        "number": 251,
+        "title": "Skip singleton PPO advantage normalization",
+        "state": "closed",
+        "merged_at": "2026-10-27T13:47:04Z"
+      },
+      {
+        "number": 250,
+        "title": "Skip observation-normalizer updates for image-only CNN models",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 249,
+        "title": "Preserve environment dimension in recurrent PPO surrogate loss",
+        "state": "closed",
+        "merged_at": "2026-10-28T10:57:01Z"
+      },
+      {
+        "number": 248,
+        "title": "Fix logging writer lifecycle and duplicate uploads",
+        "state": "closed",
+        "merged_at": "2026-10-28T08:55:50Z"
+      },
+      {
+        "number": 247,
+        "title": "Keep the recurrent teacher's hidden state across distillation updates",
+        "state": "closed",
+        "merged_at": "2026-10-27T14:13:19Z"
+      },
+      {
+        "number": 246,
+        "title": "Step CNN encoders shared by actor and critic once per update",
+        "state": "closed",
+        "merged_at": "2026-10-27T13:58:31Z"
+      },
+      {
+        "number": 245,
+        "title": "Skip singleton PPO advantage normalization",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 244,
+        "title": "fix(storage): retain rollout remainders in mini-batch generators",
+        "state": "closed",
+        "merged_at": "2026-10-27T13:35:32Z"
+      },
+      {
+        "number": 243,
+        "title": "Adapt the docs to extras branch",
+        "state": "closed",
+        "merged_at": "2026-10-08T10:31:55Z"
+      },
+      {
+        "number": 242,
+        "title": "Modify the workflows and docs to support the new extras branch",
+        "state": "closed",
+        "merged_at": "2026-10-08T09:53:19Z"
+      },
+      {
+        "number": 241,
+        "title": "Add a strictly equivariant model for symmetry-aware RL",
+        "state": "closed",
+        "merged_at": "2026-10-12T15:26:35Z"
+      },
+      {
+        "number": 240,
+        "title": "Resume RND exploration schedules from PPO checkpoints",
+        "state": "closed",
+        "merged_at": "2026-10-08T14:51:48Z"
+      },
+      {
+        "number": 239,
+        "title": "Keep discounted reward history independent of caller storage",
+        "state": "closed",
+        "merged_at": "2026-10-08T14:44:23Z"
+      },
+      {
+        "number": 238,
+        "title": "Detect infinite values in environment outputs",
+        "state": "closed",
+        "merged_at": "2026-10-12T15:07:03Z"
+      },
+      {
+        "number": 236,
+        "title": "Add PPO critic lifecycle hooks and DistributionalPPO",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 235,
+        "title": "docs: clarify VecEnv observation buffer lifetime",
+        "state": "closed",
+        "merged_at": "2026-10-09T15:45:04Z"
+      },
+      {
+        "number": 233,
+        "title": "Avoid broadcast_object_list when broadcasting parameters",
+        "state": "closed",
+        "merged_at": "2026-08-31T06:54:22Z"
+      },
+      {
+        "number": 232,
+        "title": "start_method=thread cause error with latest wandb",
+        "state": "closed",
+        "merged_at": "2026-08-28T11:53:15Z"
+      },
+      {
+        "number": 230,
+        "title": "Copy configs to log class names",
+        "state": "closed",
+        "merged_at": "2026-08-26T13:32:29Z"
+      },
+      {
+        "number": 229,
+        "title": "Fix custom logger config mutation",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 228,
+        "title": "Reduce multi-GPU gradients in bounded buckets",
+        "state": "closed",
+        "merged_at": "2026-08-31T10:29:25Z"
+      },
+      {
+        "number": 227,
+        "title": "Feature/flashsac integration",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 226,
+        "title": "Synchronize normalization statistics across GPUs",
+        "state": "closed",
+        "merged_at": "2026-08-26T14:15:59Z"
+      },
+      {
+        "number": 225,
+        "title": "Update normalizers after optimization",
+        "state": "closed",
+        "merged_at": "2026-08-26T14:46:56Z"
+      },
+      {
+        "number": 224,
+        "title": "[Feature] Multi critic PPO",
+        "state": "open",
+        "merged_at": null
+      },
+      {
+        "number": 219,
+        "title": "Feature: add opt-in bfloat16 mixed precision to PPO and Distillation",
+        "state": "closed",
+        "merged_at": "2026-08-27T06:59:57Z"
+      },
+      {
+        "number": 218,
+        "title": "docs: config schema by release + ROCm PyTorch note + Chrono-style example YAML",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 215,
+        "title": "Fix the CNNModel to support 2D observations only",
+        "state": "closed",
+        "merged_at": "2026-06-04T10:45:39Z"
+      },
+      {
+        "number": 212,
+        "title": "Preserve observation tensors dtype in the rollout storage",
+        "state": "closed",
+        "merged_at": "2026-05-27T07:38:56Z"
+      },
+      {
+        "number": 211,
+        "title": "Enable passing custom logging services",
+        "state": "closed",
+        "merged_at": "2026-05-27T07:38:26Z"
+      },
+      {
+        "number": 210,
+        "title": "fix: include day count in long training log durations",
+        "state": "closed",
+        "merged_at": "2026-05-27T09:40:02Z"
+      },
+      {
+        "number": 209,
+        "title": "Closed",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 208,
+        "title": "Enable customizable logging backends and logger subclassing",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 206,
+        "title": "Save and restore the critic's hidden state in compute_returns()",
+        "state": "closed",
+        "merged_at": "2026-05-04T09:54:04Z"
+      },
+      {
+        "number": 205,
+        "title": "Logger: union keys across the window instead of sampling from index 0",
+        "state": "closed",
+        "merged_at": "2026-05-04T08:53:21Z"
+      },
+      {
+        "number": 204,
+        "title": "Feature: Reset policy last layers in PPO",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 202,
+        "title": "Adds a Beta distribution",
+        "state": "closed",
+        "merged_at": "2026-05-07T06:36:04Z"
+      },
+      {
+        "number": 201,
+        "title": "Add clip and constant std functionalities to Gaussian Distribution",
+        "state": "closed",
+        "merged_at": "2026-04-23T12:32:08Z"
+      },
+      {
+        "number": 200,
+        "title": "Clean up PPO by moving extension logic to the extension files",
+        "state": "closed",
+        "merged_at": "2026-04-23T08:38:51Z"
+      },
+      {
+        "number": 199,
+        "title": "Add Torch compile for PPO and Distillation",
+        "state": "closed",
+        "merged_at": "2026-04-23T08:34:00Z"
+      },
+      {
+        "number": 198,
+        "title": "Add torch.compile support for actor and critic models",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 195,
+        "title": "Dev",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 194,
+        "title": "fix(wandb): allow config update when resuming run with same run_id",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 191,
+        "title": "Migrate poetry to uv",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 190,
+        "title": "Add log_std bounds to Gaussian distributions to prevent std underflow crash",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 189,
+        "title": "Fix shared CNN modules in _OnnxCNNModel and _TorchCNNModel",
+        "state": "closed",
+        "merged_at": "2026-03-03T07:29:06Z"
+      },
+      {
+        "number": 187,
+        "title": "Fix _OnnxCNNModel forward signature for ONNX export",
+        "state": "closed",
+        "merged_at": "2026-03-03T07:33:02Z"
+      },
+      {
+        "number": 185,
+        "title": "Adds NAN check to avoid ambiguous std >= 0.0 error",
+        "state": "closed",
+        "merged_at": "2026-02-28T13:18:22Z"
+      },
+      {
+        "number": 184,
+        "title": "Adds tests to the library",
+        "state": "closed",
+        "merged_at": "2026-02-28T13:11:38Z"
+      },
+      {
+        "number": 183,
+        "title": "Adds a small documentation",
+        "state": "closed",
+        "merged_at": "2026-02-28T12:47:09Z"
+      },
+      {
+        "number": 181,
+        "title": "Fix mutable default arguments and replace assertions with proper exceptions",
+        "state": "closed",
+        "merged_at": "2026-02-26T08:06:19Z"
+      },
+      {
+        "number": 180,
+        "title": "Fix three bugs: missing raise, wrong RND broadcast index, variable typo",
+        "state": "closed",
+        "merged_at": "2026-02-25T07:46:53Z"
+      },
+      {
+        "number": 179,
+        "title": "fix multi gpu unbounded growth due to logging",
+        "state": "closed",
+        "merged_at": "2026-02-16T07:55:54Z"
+      },
+      {
+        "number": 178,
+        "title": "log code state inside init_logging_writer",
+        "state": "closed",
+        "merged_at": "2026-02-13T08:05:44Z"
+      },
+      {
+        "number": 175,
+        "title": "Fix CNNModel init ordering bugs",
+        "state": "closed",
+        "merged_at": "2026-02-09T09:09:31Z"
+      },
+      {
+        "number": 174,
+        "title": "Fix CNNModel._get_obs_dim accessing attribute before assignment",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 173,
+        "title": "Add a distribution class for easier adaptability",
+        "state": "closed",
+        "merged_at": "2026-02-28T12:33:18Z"
+      },
+      {
+        "number": 172,
+        "title": "Adds a batch class to avoid positional arguments in generators",
+        "state": "closed",
+        "merged_at": "2026-02-17T13:33:14Z"
+      },
+      {
+        "number": 171,
+        "title": "Adds option to share CNN encoders between actor and critic models",
+        "state": "closed",
+        "merged_at": "2026-02-05T14:59:36Z"
+      },
+      {
+        "number": 170,
+        "title": "Add model exports to ONNX and JIT files",
+        "state": "closed",
+        "merged_at": "2026-02-05T14:45:19Z"
+      },
+      {
+        "number": 169,
+        "title": "Fixes training with partially recurrent architectures.",
+        "state": "closed",
+        "merged_at": "2026-02-05T13:57:03Z"
+      },
+      {
+        "number": 168,
+        "title": "Add model print outs",
+        "state": "closed",
+        "merged_at": "2026-02-05T13:53:13Z"
+      },
+      {
+        "number": 167,
+        "title": "Add video logging for W&B",
+        "state": "closed",
+        "merged_at": "2026-02-05T13:48:58Z"
+      },
+      {
+        "number": 166,
+        "title": "Fix multi-gpu initialization with W&B logging",
+        "state": "closed",
+        "merged_at": "2026-02-05T12:29:56Z"
+      },
+      {
+        "number": 165,
+        "title": "Feature/separate actor critic",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 164,
+        "title": "Move functions from Runners to Algorithms",
+        "state": "closed",
+        "merged_at": "2026-02-05T12:24:42Z"
+      },
+      {
+        "number": 162,
+        "title": "fixing deadlock in distributed training",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 161,
+        "title": "Added video logging for wandb",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 160,
+        "title": "Add logging to ClearML",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 159,
+        "title": "Separates actor and critic",
+        "state": "closed",
+        "merged_at": "2026-02-05T11:59:50Z"
+      },
+      {
+        "number": 158,
+        "title": "add amp",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 157,
+        "title": "adds attnenc actor-critic class",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 156,
+        "title": "Add support for SwanLab, an open-source training tracking and visualization tool",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 155,
+        "title": "Non recurrent critic",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 153,
+        "title": "Fixed a small typo in the cnn.py",
+        "state": "closed",
+        "merged_at": "2026-01-12T11:15:27Z"
+      },
+      {
+        "number": 146,
+        "title": "Add spatial softmax.",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 145,
+        "title": "Support direct class passing",
+        "state": "closed",
+        "merged_at": "2026-01-12T11:14:12Z"
+      },
+      {
+        "number": 144,
+        "title": "Add logger type 'none' to disable logging.",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 140,
+        "title": "Separates the logging functionality from the runner",
+        "state": "closed",
+        "merged_at": "2025-11-28T14:19:39Z"
+      },
+      {
+        "number": 139,
+        "title": "Remove unnecessary teacher eval call",
+        "state": "closed",
+        "merged_at": "2025-11-26T11:14:42Z"
+      },
+      {
+        "number": 138,
+        "title": "Add device for TensorDict in `split_and_pad_trajectories`",
+        "state": "closed",
+        "merged_at": "2025-11-26T11:15:21Z"
+      },
+      {
+        "number": 137,
+        "title": "Restructure rollout storage for clarity",
+        "state": "closed",
+        "merged_at": "2025-11-26T11:22:51Z"
+      },
+      {
+        "number": 136,
+        "title": "Fix wrong observation dimension in recurrent teacher",
+        "state": "closed",
+        "merged_at": "2025-11-10T15:56:03Z"
+      },
+      {
+        "number": 128,
+        "title": "Adds mjlab to environment repositories list",
+        "state": "closed",
+        "merged_at": "2025-11-08T18:16:32Z"
+      },
+      {
+        "number": 127,
+        "title": "Add onnxscript 0.4.0 as a dependency",
+        "state": "closed",
+        "merged_at": "2025-11-10T14:42:52Z"
+      },
+      {
+        "number": 126,
+        "title": "Fix the symmetry configuration checks",
+        "state": "closed",
+        "merged_at": "2025-10-24T12:40:17Z"
+      },
+      {
+        "number": 125,
+        "title": "Fix the symmetry configuration checks",
+        "state": "closed",
+        "merged_at": "2025-10-24T12:16:29Z"
+      },
+      {
+        "number": 122,
+        "title": "Fix rnn+symmetry training",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 120,
+        "title": "Formatting fixes",
+        "state": "closed",
+        "merged_at": "2025-10-24T12:14:18Z"
+      },
+      {
+        "number": 118,
+        "title": "Fix: make act_inference return policy mean (without std dev) at deployment time",
+        "state": "closed",
+        "merged_at": "2025-10-08T07:18:00Z"
+      },
+      {
+        "number": 116,
+        "title": "Fix incorrect teacher obs normalizer input size",
+        "state": "closed",
+        "merged_at": "2025-10-06T12:18:35Z"
+      },
+      {
+        "number": 114,
+        "title": "Adds perceptive actor-critic class",
+        "state": "closed",
+        "merged_at": "2025-11-26T11:09:02Z"
+      },
+      {
+        "number": 112,
+        "title": "Adds state-dependent standard deviation for the PPO actor",
+        "state": "closed",
+        "merged_at": "2025-09-18T08:01:56Z"
+      },
+      {
+        "number": 111,
+        "title": "Removes hardcoded policy obs group for symmetry",
+        "state": "closed",
+        "merged_at": "2025-09-01T13:01:22Z"
+      },
+      {
+        "number": 110,
+        "title": "Feat: support RL2 based on v2.3.1",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 109,
+        "title": "Allows torch device type to be a string in VecEnv",
+        "state": "closed",
+        "merged_at": "2025-09-02T04:44:07Z"
+      },
+      {
+        "number": 108,
+        "title": "<deleted>",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 104,
+        "title": "Refactor: Use algorithm's device for actions to ensure consistency",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 101,
+        "title": "Include run_name in training logs for better run traceability",
+        "state": "closed",
+        "merged_at": "2025-11-28T14:48:15Z"
+      },
+      {
+        "number": 99,
+        "title": "Add reshuffle_each_epoch argument to control mini-batch shuffling per…",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 98,
+        "title": "Allow policy to be loaded on CPU.",
+        "state": "closed",
+        "merged_at": "2025-07-16T15:23:18Z"
+      },
+      {
+        "number": 94,
+        "title": "Adds the RNN parameters to the optimizer for Distillation",
+        "state": "closed",
+        "merged_at": "2025-05-30T10:44:04Z"
+      },
+      {
+        "number": 91,
+        "title": "Adds gradient cap for teacher student distillation",
+        "state": "closed",
+        "merged_at": "2025-05-09T14:26:19Z"
+      },
+      {
+        "number": 90,
+        "title": "Algorithms",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 87,
+        "title": "Fixes unexpected keyword argument `learning_rate` within `RandomNetworkDistillation`",
+        "state": "closed",
+        "merged_at": "2025-05-09T15:02:11Z"
+      },
+      {
+        "number": 86,
+        "title": "Fixes issue with unexpected keyword argument `learning_rate` for `RandomNetworkDistillation`",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 85,
+        "title": "Fixes logging issue by replacing `.pop` with `.get` for `class_name` in config",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 84,
+        "title": "Upload video to wandb",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 83,
+        "title": "Fixes git repository code storage function",
+        "state": "closed",
+        "merged_at": "2025-04-09T07:23:08Z"
+      },
+      {
+        "number": 82,
+        "title": "Disable distribution mean gradient propagation into action noise std for StudentTeacher",
+        "state": "closed",
+        "merged_at": "2025-04-09T07:26:39Z"
+      },
+      {
+        "number": 81,
+        "title": "Bounded Action Space",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 80,
+        "title": "More Flexible WandB Interface",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 78,
+        "title": "Refactor: Use `self.device` for model loading in `torch.load()` to en…",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 77,
+        "title": "Fix padding shape in split_and_pad_trajectories to support arbitrary additional dimensions",
+        "state": "closed",
+        "merged_at": "2025-04-09T07:23:26Z"
+      },
+      {
+        "number": 76,
+        "title": "Help on Vision-Input and RNN layer",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 75,
+        "title": "Changes ETA to hh:mm:ss format",
+        "state": "closed",
+        "merged_at": "2025-04-09T07:25:19Z"
+      },
+      {
+        "number": 74,
+        "title": "Add convolution networks for actor critic",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 72,
+        "title": "Fixes parsing if `rnd` and `symmetry` configs not available",
+        "state": "closed",
+        "merged_at": "2025-03-05T11:45:05Z"
+      },
+      {
+        "number": 71,
+        "title": "Fixes on policy runner to handle RND intrinsic rewards properly",
+        "state": "closed",
+        "merged_at": "2025-03-05T11:46:49Z"
+      },
+      {
+        "number": 69,
+        "title": "Corrects disabling of arguments when creating Normal distribution",
+        "state": "closed",
+        "merged_at": "2025-02-25T17:05:36Z"
+      },
+      {
+        "number": 68,
+        "title": "Adds flag for per-batch advantage normalization",
+        "state": "closed",
+        "merged_at": "2025-02-25T17:05:50Z"
+      },
+      {
+        "number": 67,
+        "title": "Adds support for log-std parameter in ActorCritic",
+        "state": "closed",
+        "merged_at": "2025-02-25T17:06:10Z"
+      },
+      {
+        "number": 66,
+        "title": "Stops gradient propogation through ActorCritic std-dev",
+        "state": "closed",
+        "merged_at": "2025-02-24T16:06:28Z"
+      },
+      {
+        "number": 65,
+        "title": "Fixes mean_entropy logging by dividing by num_updates",
+        "state": "closed",
+        "merged_at": "2025-02-24T18:04:43Z"
+      },
+      {
+        "number": 60,
+        "title": "Fix key check in on_policy_runner.py",
+        "state": "closed",
+        "merged_at": "2025-02-12T11:52:39Z"
+      },
+      {
+        "number": 56,
+        "title": "Update license in all files and maintainers",
+        "state": "closed",
+        "merged_at": "2025-02-07T20:51:48Z"
+      },
+      {
+        "number": 54,
+        "title": "Adds support for pip packaging",
+        "state": "closed",
+        "merged_at": "2025-02-07T12:45:28Z"
+      },
+      {
+        "number": 51,
+        "title": "Algorithms",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 50,
+        "title": "Fixes bug in ActorCriticRecurrent hidden state reset",
+        "state": "closed",
+        "merged_at": "2025-02-24T15:34:30Z"
+      },
+      {
+        "number": 35,
+        "title": "Fixed the problem of the reset function of Memory corresponding to actor_critic_recurrent",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 32,
+        "title": "fix: make the last iteration end with 0 instead of 9",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 31,
+        "title": "Fixes error caused by non UTF-8 characters in git diff",
+        "state": "closed",
+        "merged_at": "2025-02-07T20:56:42Z"
+      },
+      {
+        "number": 30,
+        "title": "Saves internal count of EmpiricalNormalization for resuming training",
+        "state": "closed",
+        "merged_at": "2025-02-07T20:55:12Z"
+      },
+      {
+        "number": 29,
+        "title": "Accounts for start_iter when computing ETA",
+        "state": "closed",
+        "merged_at": "2025-02-25T18:28:02Z"
+      },
+      {
+        "number": 28,
+        "title": "Fix mask for RNN hidden states reset",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 23,
+        "title": "Feature/wandb video recording",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 19,
+        "title": "added notice on algorithms branch to README",
+        "state": "closed",
+        "merged_at": "2024-01-31T17:47:36Z"
+      },
+      {
+        "number": 18,
+        "title": "Updates wandb and neptune logging",
+        "state": "closed",
+        "merged_at": "2023-12-11T11:11:02Z"
+      },
+      {
+        "number": 16,
+        "title": "small fix to adapt to new configs from orbit",
+        "state": "closed",
+        "merged_at": "2023-10-31T20:59:13Z"
+      },
+      {
+        "number": 15,
+        "title": "fix to split and pad for RNN policies",
+        "state": "closed",
+        "merged_at": "2023-10-25T23:30:09Z"
+      },
+      {
+        "number": 14,
+        "title": "Updates RSL-RL to version 2.0",
+        "state": "closed",
+        "merged_at": "2023-11-01T23:43:02Z"
+      },
+      {
+        "number": 12,
+        "title": "fixed a bug with rnn padding and unpadding",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 8,
+        "title": "fix iteration increments",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 4,
+        "title": "Update README.md",
+        "state": "closed",
+        "merged_at": "2021-11-16T08:33:18Z"
+      },
+      {
+        "number": 3,
+        "title": "Update setup.py",
+        "state": "closed",
+        "merged_at": null
+      },
+      {
+        "number": 2,
+        "title": "remove bogus line",
+        "state": "closed",
+        "merged_at": "2021-11-12T12:31:48Z"
+      }
+    ],
+    "old_fork_branch_count": 31,
+    "old_fork_source": "rsl_rl/algorithms/ppo.py",
+    "old_fork_source_checks": [
+      {
+        "branch": "Afloat16/fix-noncontiguous-gradient-reduction",
+        "ref": "f73cb0f21e517af798b3f58426448849be8e3d39",
+        "sha": "85e70c61284de0778f602b509b8bfc5a45a22df7",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "Afloat16/fix-rollout-hidden-state-dtype",
+        "ref": "c41d548c1de7714b184c91b6a18335b622c4399c",
+        "sha": "85e70c61284de0778f602b509b8bfc5a45a22df7",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/fix-checkpoint-save-atomic-20261112",
+        "ref": "50436bc228963d9369824c312fb7fb5dacc4965d",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/fix-distribution-validation-scope-20261112",
+        "ref": "7ee6935ea26adfde29c529f75cccef2e04f4c677",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/fix-recurrent-reset-rollout-state-20261112",
+        "ref": "eb8cba2d13e7805119fd77c4f95bfbcf6b1dca6a",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/fix-rnn-runtime-state-conversion-20261112",
+        "ref": "3c4c2fe888cde4f6a5af178fd399fbe093030edf",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/fix-sac-frozen-critic-20261112",
+        "ref": "280c7799e6e1b8422a270f1d66db0a2893ca867a",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/fix-tensorboard-writer-close-20261112",
+        "ref": "c22f80d1190173a8c96b4b96729c684866009400",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/perf-recurrent-hidden-batch-selection-20261112",
+        "ref": "4e4998c1e9babbc620bd357a0273af9ac842f6c1",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/perf-rnd-target-autograd-20261112",
+        "ref": "b346e867d7661b2e6ef7ccb34af1cb7f6848bfde",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "batch/perf-symmetry-metric-autograd-20261112",
+        "ref": "0050d0cb26cfb5449c8abcbff1c54ccb06ab8072",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/beta-action-entropy-20261029",
+        "ref": "59757058face5e7bfe8d659309d59de4bf39ef1d",
+        "sha": "85e70c61284de0778f602b509b8bfc5a45a22df7",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/cnn-recurrent-peer-batches-20261112",
+        "ref": "7899e0a5d77820448eb23b630eacebdc2f01f4ea",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/distribution-parameter-precision-20261112",
+        "ref": "98430f7c78eeeff68ab908e529304bb4d8e2cd85",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/distribution-validation-scope-20261112",
+        "ref": "5bf70b0cee330e4dcec4204cc7d74367eeb949f5",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/observation-moment-precision-20261112",
+        "ref": "d0e076288b959043394ad2befd844c2ced2146b0",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/onnx-example-input-dtype-20261112",
+        "ref": "4fd3c912fa22ad371c8a338680da3d2103826534",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/recurrent-rnd-padding-loss-20261112",
+        "ref": "74bc34b8a2e91c232fc40377d80273bc0f0dda59",
+        "sha": "88bbfd9472dc005a7ff65c3b24b3b9549d3d916d",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/rnd-target-autograd-storage-20261112",
+        "ref": "48d654b180036df367332e06b22b9102f3f3de86",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/running-variance-cancellation-20261112",
+        "ref": "0ab730acd8359b0f90f450a80e645dc312ee8734",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/sac-preserve-frozen-critics-20261112",
+        "ref": "2e959b00b5d1b7a20320f501769c1dbf0c1e834d",
+        "sha": "6dca98804647f75d3814e91e29e60fca7b32ae69",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/shared-ppo-gradient-clipping-20261112",
+        "ref": "f741d0c985d17302c8609c0f05c3a3862b78644a",
+        "sha": "33859721abd317f579409c9130f3bc56c79f6d12",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/small-kernel-padding-20261029",
+        "ref": "dff6d3f07a9d3f6ad20322ff86731f7635924d7b",
+        "sha": "85e70c61284de0778f602b509b8bfc5a45a22df7",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix/vector-reward-normalization-20261029",
+        "ref": "7a5e7ecee9adc11793de9e1a4ab1783831817402",
+        "sha": "85e70c61284de0778f602b509b8bfc5a45a22df7",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix-ppo-singleton-advantages-20261010",
+        "ref": "2349f1ac81be451a966196358e711e4b4fd40088",
+        "sha": "9b397cabf82faf9a94275116154ea28351515a0a",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - torch.squeeze(batch.old_actions_log_prob))  # type: ignore\n                surrogate = -torch.squeeze(batch.advantages) * ratio  # type: ignore\n                surrogate_clipped = -torch.squeeze(batch.advantages) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n             "
+      },
+      {
+        "branch": "fix-qualified-callable-resolution",
+        "ref": "e410f2cb74f9633447425d45c485d4177d8a4f74",
+        "sha": "85e70c61284de0778f602b509b8bfc5a45a22df7",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "fix-rollout-minibatch-remainders-20261009",
+        "ref": "9a687b8519d4bf9e8a4ca9b707179e8366d384bd",
+        "sha": "96abb9c6eeed2915527fb4e4007a91f0b41fc0c0",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - torch.squeeze(batch.old_actions_log_prob))  # type: ignore\n                surrogate = -torch.squeeze(batch.advantages) * ratio  # type: ignore\n                surrogate_clipped = -torch.squeeze(batch.advantages) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n             "
+      },
+      {
+        "branch": "logging/aggregate-episode-samples",
+        "ref": "270f9ced617dc7634bff0850521891a3b1ce477a",
+        "sha": "85e70c61284de0778f602b509b8bfc5a45a22df7",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - batch.old_actions_log_prob.squeeze(-1))  # type: ignore\n                surrogate = -batch.advantages.squeeze(-1) * ratio  # type: ignore\n                surrogate_clipped = -batch.advantages.squeeze(-1) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n                    va"
+      },
+      {
+        "branch": "main",
+        "ref": "857de6165c5fd479726ec8ac5c9303a497766f30",
+        "sha": "6204f6440941c9ea750f287a55e0161be35d70f9",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - torch.squeeze(batch.old_actions_log_prob))  # type: ignore\n                surrogate = -torch.squeeze(batch.advantages) * ratio  # type: ignore\n                surrogate_clipped = -torch.squeeze(batch.advantages) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n             "
+      },
+      {
+        "branch": "rsl-discounted-reward-alias",
+        "ref": "eac959fa3bfad4f13f88a8968aee1d2d13e1bd59",
+        "sha": "6204f6440941c9ea750f287a55e0161be35d70f9",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - torch.squeeze(batch.old_actions_log_prob))  # type: ignore\n                surrogate = -torch.squeeze(batch.advantages) * ratio  # type: ignore\n                surrogate_clipped = -torch.squeeze(batch.advantages) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n             "
+      },
+      {
+        "branch": "rsl-rnd-schedule-checkpoint",
+        "ref": "b566cd63602cef73224d4ea395f1a12f22407f6f",
+        "sha": "96abb9c6eeed2915527fb4e4007a91f0b41fc0c0",
+        "expression": "# Surrogate loss\n                ratio = torch.exp(actions_log_prob - torch.squeeze(batch.old_actions_log_prob))  # type: ignore\n                surrogate = -torch.squeeze(batch.advantages) * ratio  # type: ignore\n                surrogate_clipped = -torch.squeeze(batch.advantages) * torch.clamp(  # type: ignore\n                    ratio, 1.0 - self.clip_param, 1.0 + self.clip_param\n                )\n                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()\n\n                # Value function loss\n                if self.use_clipped_value_loss:\n                    value_clipped = batch.values + (values - batch.values).clamp(-self.clip_param, self.clip_param)\n             "
+      }
+    ],
+    "related_prs": [
+      {
+        "number": 190,
+        "finding": "Closed standard-deviation bound proposal touches only distribution.py; it does not prevent overflow of a high-dimensional likelihood ratio with normal standard deviations 1 and 0.1."
+      },
+      {
+        "number": 249,
+        "finding": "Merged squeeze(-1) correction for recurrent surrogate broadcasting; no exp/clipping changes."
+      },
+      {
+        "number": 219,
+        "finding": "Merged mixed-precision context support; no bounded ratio implementation."
+      }
+    ],
+    "upstream_head_rechecked": "8945bdcbc364f388e14caebf547dbf302d89e491",
+    "prior_campaign_patch": "First new rsl_rl time-axis fix leaves production ppo.py unchanged; both independent source SHAs were combined and tested."
+  },
+  "integration": {
+    "with_source_sha": "479edc3df3e9bad8549f3fd8be0224ded50e1a6e",
+    "branch": "validation/rsl-recurrent-ratio-integration-20261115",
+    "sha": "3851eb5394252e248b799b2a3a6fd8b4b85f6cfe",
+    "run_id": 43674471515,
+    "run_url": "https://github.com/Afloat16/rsl_rl/actions/runs/43674471515",
+    "status": "success",
+    "exact_source_composition_files": 4,
+    "focused": {
+      "passed": 13,
+      "deselected": 46
+    },
+    "full_cpu": {
+      "passed": 300,
+      "skipped": 6,
+      "warnings": 2,
+      "seconds": 11.09
+    },
+    "note": "Both patches are independently based on upstream. Their production changes are disjoint; test additions were combined and verified against the immutable source SHAs."
+  },
+  "pull_request": {
+    "title": "Avoid overflow in saturated PPO surrogate branches",
+    "body": "PPO exponentiates the log-probability ratio before applying its clipping objective. For a nonnegative advantage, the objective is already bounded above in ratio space, but a finite float32 log ratio can overflow during exponentiation. The resulting backward pass can multiply an infinite exponential by a zero clipping gradient and corrupt the policy parameters. A zero advantage also produces a NaN loss through zero times infinity.\n\nBound the log ratio by `log1p(clip_param)` before exponentiation only where the advantage is nonnegative. This uses the existing PPO clipping threshold and preserves the clipped objective and its policy gradients. Negative advantages keep their existing ratio path, including meaningful large-ratio penalties.\n\nThe regression collects real Gaussian actions, then fits the current means to those actions and changes the standard deviation from 1 to 0.1. With 64 action dimensions the log ratio is finite (184.9753): unchanged source reports the correct saturated loss of -2.4 but produces NaN gradients and parameters. The corrected update remains finite and matches the original formula evaluated in float64. Controls cover zero advantages at both ratio extremes, both clipping branches and the non-saturated negative-advantage objective.\n\nValidation on base `8945bdcbc364f388e14caebf547dbf302d89e491`, Python 3.12.3, PyTorch 2.7.1+cpu and TensorDict 0.7.2:\n\n- Unchanged source: 2 regression failures and 5 passing controls; corrected source: all 7 pass.\n- Complete CPU suite: 294 passed, 6 CUDA-only cases skipped, including Gloo and JIT/ONNX tests.\n- All configured pre-commit hooks and `git diff --check` pass.\n\nThis change addresses branches whose mathematical policy objective is finite. It does not cap the unbounded negative-advantage objective or claim to prevent every possible overflow.\n\nValidation: https://github.com/Afloat16/rsl_rl/actions/runs/43674281880\n",
+    "prefilled_url": "https://github.com/leggedrobotics/rsl_rl/compare/main...Afloat16:rsl_rl:fix/ppo-clipped-ratio-overflow-20261115?expand=1&title=Avoid%20overflow%20in%20saturated%20PPO%20surrogate%20branches&body=PPO%20exponentiates%20the%20log-probability%20ratio%20before%20applying%20its%20clipping%20objective.%20For%20a%20nonnegative%20advantage%2C%20the%20objective%20is%20already%20bounded%20above%20in%20ratio%20space%2C%20but%20a%20finite%20float32%20log%20ratio%20can%20overflow%20during%20exponentiation.%20The%20resulting%20backward%20pass%20can%20multiply%20an%20infinite%20exponential%20by%20a%20zero%20clipping%20gradient%20and%20corrupt%20the%20policy%20parameters.%20A%20zero%20advantage%20also%20produces%20a%20NaN%20loss%20through%20zero%20times%20infinity.%0A%0ABound%20the%20log%20ratio%20by%20%60log1p(clip_param)%60%20before%20exponentiation%20only%20where%20the%20advantage%20is%20nonnegative.%20This%20uses%20the%20existing%20PPO%20clipping%20threshold%20and%20preserves%20the%20clipped%20objective%20and%20its%20policy%20gradients.%20Negative%20advantages%20keep%20their%20existing%20ratio%20path%2C%20including%20meaningful%20large-ratio%20penalties.%0A%0AThe%20regression%20collects%20real%20Gaussian%20actions%2C%20then%20fits%20the%20current%20means%20to%20those%20actions%20and%20changes%20the%20standard%20deviation%20from%201%20to%200.1.%20With%2064%20action%20dimensions%20the%20log%20ratio%20is%20finite%20(184.9753)%3A%20unchanged%20source%20reports%20the%20correct%20saturated%20loss%20of%20-2.4%20but%20produces%20NaN%20gradients%20and%20parameters.%20The%20corrected%20update%20remains%20finite%20and%20matches%20the%20original%20formula%20evaluated%20in%20float64.%20Controls%20cover%20zero%20advantages%20at%20both%20ratio%20extremes%2C%20both%20clipping%20branches%20and%20the%20non-saturated%20negative-advantage%20objective.%0A%0AValidation%20on%20base%20%608945bdcbc364f388e14caebf547dbf302d89e491%60%2C%20Python%203.12.3%2C%20PyTorch%202.7.1%2Bcpu%20and%20TensorDict%200.7.2%3A%0A%0A-%20Unchanged%20source%3A%202%20regression%20failures%20and%205%20passing%20controls%3B%20corrected%20source%3A%20all%207%20pass.%0A-%20Complete%20CPU%20suite%3A%20294%20passed%2C%206%20CUDA-only%20cases%20skipped%2C%20including%20Gloo%20and%20JIT%2FONNX%20tests.%0A-%20All%20configured%20pre-commit%20hooks%20and%20%60git%20diff%20--check%60%20pass.%0A%0AThis%20change%20addresses%20branches%20whose%20mathematical%20policy%20objective%20is%20finite.%20It%20does%20not%20cap%20the%20unbounded%20negative-advantage%20objective%20or%20claim%20to%20prevent%20every%20possible%20overflow.%0A%0AValidation%3A%20https%3A%2F%2Fgithub.com%2FAfloat16%2Frsl_rl%2Factions%2Fruns%2F43674281880%0A",
+    "attempt": {
+      "error": "GitHub API error 403: {\"message\":\"Resource not accessible by integration\",\"documentation_url\":\"https://docs.github.com/rest/pulls/pulls#create-a-pull-request\",\"status\":\"403\"}",
+      "error_code": "FORBIDDEN",
+      "error_data": {
+        "message": "Resource not accessible by integration",
+        "documentation_url": "https://docs.github.com/rest/pulls/pulls#create-a-pull-request",
+        "status": "403"
+      }
+    }
+  }
+}
