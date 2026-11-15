@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 30
     env:
       BASE_SHA: 8945bdcbc364f388e14caebf547dbf302d89e491
-      CANDIDATE_SHA: 523bb148aff9ca53d3a9bb9568bd14e40995d1ac
+      CANDIDATE_SHA: 479edc3df3e9bad8549f3fd8be0224ded50e1a6e
       PYTHONPATH: .
       OMP_NUM_THREADS: 1
       OPENBLAS_NUM_THREADS: 1
@@ -68,7 +68,7 @@ jobs:
           uv run --no-sync python .github/validation/recurrent_time_axis_probe.py
           uv run --no-sync python -m pytest tests/models/test_rnn_model.py tests/algorithms/test_ppo.py -k 'training_batch_preserves_time_dimension or one_step_recurrent_entropy' -q
       - name: Run complete CPU suite including Gloo and exports
-        run: uv run --no-sync python -m pytest tests/ -q --junitxml=/tmp/full-suite.xml
+        run: uv run --no-sync python -m pytest tests/ -q -ra --junitxml=/tmp/full-suite.xml
       - name: Check source diff
         run: git diff --check "$BASE_SHA" "$CANDIDATE_SHA"
 
@@ -78,7 +78,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
-          ref: 523bb148aff9ca53d3a9bb9568bd14e40995d1ac
+          ref: 479edc3df3e9bad8549f3fd8be0224ded50e1a6e
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
         with:
           version: "0.13.4"

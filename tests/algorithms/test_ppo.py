@@ -392,7 +392,9 @@ class TestPPOLosses:
             storage.advantages.zero_()
 
         reference(obs, stochastic_output=True)
-        expected_loss = -torch.distributions.Normal(reference.output_mean, reference.output_std).entropy().sum(-1).mean()
+        expected_loss = (
+            -torch.distributions.Normal(reference.output_mean, reference.output_std).entropy().sum(-1).mean()
+        )
         expected_loss.backward()
 
         losses, _ = ppo.update()
