@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 30
     env:
       BASE_SHA: 8945bdcbc364f388e14caebf547dbf302d89e491
-      CANDIDATE_SHA: ccc97a99a586c07ddaf688d738c3dfbc16790a01
+      CANDIDATE_SHA: 725dde6daa9e2617642eef2a3f35ca7ca4ca1188
       PYTHONPATH: .
       OMP_NUM_THREADS: 1
       OPENBLAS_NUM_THREADS: 1
@@ -78,7 +78,7 @@ jobs:
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
-          ref: ccc97a99a586c07ddaf688d738c3dfbc16790a01
+          ref: 725dde6daa9e2617642eef2a3f35ca7ca4ca1188
       - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
         with:
           version: "0.13.4"

@@ -419,7 +419,6 @@ class TestPPOLosses:
 
         assert losses["surrogate"] == pytest.approx(expected)
 
-
     @pytest.mark.parametrize(
         "num_actions, advantage, offset",
         [(64, 2.0, 0.0), (64, 0.0, 0.0), (64, 0.0, 10.0), (4, 2.0, 0.0), (4, -2.0, 0.0), (4, -2.0, 4.0), (4, 2.0, 4.0)],
