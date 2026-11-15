@@ -36,7 +36,8 @@ def _empty_batch_normalization_worker(rank: int, world_size: int, store_file: st
                 torch.testing.assert_close(normalizer.mean, expected.mean(0))
                 torch.testing.assert_close(normalizer.std, expected.std(0, unbiased=False))
                 torch.testing.assert_close(
-                    normalizer(expected), (expected - expected.mean(0)) / (expected.std(0, unbiased=False) + normalizer.eps)
+                    normalizer(expected),
+                    (expected - expected.mean(0)) / (expected.std(0, unbiased=False) + normalizer.eps),
                 )
             else:
                 assert normalizer.count == 0
