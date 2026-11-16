@@ -83,8 +83,8 @@ class RNNModel(MLPModel):
         # Extract and concatenate observation groups and normalize
         latent = super().get_latent(obs)
         # Pass through the RNN
-        latent = self.rnn(latent, masks, hidden_state).squeeze(0)
-        return latent
+        latent = self.rnn(latent, masks, hidden_state)
+        return latent.squeeze(0) if masks is None else latent
 
     def reset(self, dones: torch.Tensor | None = None, hidden_state: HiddenState = None) -> None:
         """Reset the recurrent hidden state of the RNN."""
