@@ -1,0 +1,40 @@
+................                                                         [100%]
+=============================== warnings summary ===============================
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/.venv-rsl/lib/python3.12/site-packages/torch/nn/modules/rnn.py:313: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    if self.input_size != input.size(-1):
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/.venv-rsl/lib/python3.12/site-packages/torch/nn/modules/rnn.py:346: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    if hx.size() != expected_hidden_size:
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+  /workspace/scratch/4bed741d4966/.venv-rsl/lib/python3.12/site-packages/torch/onnx/symbolic_opset9.py:4277: UserWarning: Exporting a model to ONNX with a batch_size other than 1, with a variable length with GRU can cause an error when running the ONNX model with a different batch size. Make sure to save the model with a batch size of 1, or define the initial states (h0/c0) as inputs of the model. 
+    warnings.warn(
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/.venv-rsl/lib/python3.12/site-packages/torch/onnx/symbolic_opset9.py:4277: UserWarning: Exporting a model to ONNX with a batch_size other than 1, with a variable length with LSTM can cause an error when running the ONNX model with a different batch size. Make sure to save the model with a batch size of 1, or define the initial states (h0/c0) as inputs of the model. 
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+16 passed, 24 warnings in 2.13s

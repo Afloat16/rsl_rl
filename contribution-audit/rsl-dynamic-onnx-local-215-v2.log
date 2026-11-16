@@ -1,0 +1,57 @@
+................                                                         [100%]
+=============================== warnings summary ===============================
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-False-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-False-lstm]
+  /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/contextlib.py:144: UserWarning: The tensor attributes self.rnn._flat_weights[0], self.rnn._flat_weights[1], self.rnn._flat_weights[2], self.rnn._flat_weights[3], self.rnn._flat_weights[4], self.rnn._flat_weights[5], self.rnn._flat_weights[6], self.rnn._flat_weights[7] were assigned during export. Such attributes must be registered as buffers using the `register_buffer` API (https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.register_buffer).
+    next(self.gen)
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-mlp]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-cnn]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-mlp]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-cnn]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/repos/rsl-dynamic-onnx/rsl_rl/runners/on_policy_runner.py:220: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter has become the default. Learn more about the new export logic: https://docs.pytorch.org/docs/stable/onnx_export.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html
+    torch.onnx.export(
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-mlp]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-cnn]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-mlp]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-cnn]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/.venv-rsl-latest/lib/python3.12/site-packages/torch/onnx/_internal/torchscript_exporter/utils.py:218: DeprecationWarning: The feature will be removed. Please remove usage of this function
+    setup_onnx_logging(verbose) as log_ctx,
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/.venv-rsl-latest/lib/python3.12/site-packages/torch/nn/modules/rnn.py:328: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    if self.input_size != input.size(-1):
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/.venv-rsl-latest/lib/python3.12/site-packages/torch/nn/modules/rnn.py:361: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+    if hx.size() != expected_hidden_size:
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-gru]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-gru]
+  /workspace/scratch/4bed741d4966/.venv-rsl-latest/lib/python3.12/site-packages/torch/onnx/_internal/torchscript_exporter/symbolic_opset9.py:4604: UserWarning: Exporting a model to ONNX with a batch_size other than 1, with a variable length with GRU can cause an error when running the ONNX model with a different batch size. Make sure to save the model with a batch size of 1, or define the initial states (h0/c0) as inputs of the model. 
+    return _generic_rnn(
+
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[shape-True-lstm]
+tests/runners/test_on_policy_runner.py::TestOnnxBatchExport::test_batch_shape_and_inference[inference-True-lstm]
+  /workspace/scratch/4bed741d4966/.venv-rsl-latest/lib/python3.12/site-packages/torch/onnx/_internal/torchscript_exporter/symbolic_opset9.py:4496: UserWarning: Exporting a model to ONNX with a batch_size other than 1, with a variable length with LSTM can cause an error when running the ONNX model with a different batch size. Make sure to save the model with a batch size of 1, or define the initial states (h0/c0) as inputs of the model. 
+    return _generic_rnn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+16 passed, 32 warnings in 17.94s

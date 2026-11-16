@@ -1,0 +1,2109 @@
+{
+  "heads": 235,
+  "python_blobs": 1735,
+  "matches": [
+    {
+      "sha": "667c96abe5cddd98fc9bb77c612b503fc34324bb",
+      "paths": [
+        "rsl_rl/runners/on_policy_runner.py"
+      ],
+      "hits": [
+        {
+          "line": 198,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    },
+    {
+      "sha": "c1072cfc62ae392dd5885cec4c99b9d51a26e549",
+      "paths": [
+        "tests/models/test_cnn_model.py"
+      ],
+      "hits": [
+        {
+          "line": 221,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    },
+    {
+      "sha": "99330e252ffb9186d46bab9d9ed46964281a3c77",
+      "paths": [
+        "tests/models/test_mlp_model.py"
+      ],
+      "hits": [
+        {
+          "line": 195,
+          "text": "dynamic_axes={},"
+        },
+        {
+          "line": 230,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    },
+    {
+      "sha": "3f90d8fa0b39ab99d6af3938f25cebfe1e41aec4",
+      "paths": [
+        "tests/models/test_rnn_model.py"
+      ],
+      "hits": [
+        {
+          "line": 268,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    },
+    {
+      "sha": "ae00c774418ec904a66e9157f3bed1ccec93e3ea",
+      "paths": [
+        "rsl_rl/runners/on_policy_runner.py"
+      ],
+      "hits": [
+        {
+          "line": 199,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    },
+    {
+      "sha": "ea20a5d068be585594b6da2db9892dcac69a3808",
+      "paths": [
+        "rsl_rl/runners/on_policy_runner.py"
+      ],
+      "hits": [
+        {
+          "line": 198,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    },
+    {
+      "sha": "ae2945ce395ee75eac377f289947e92af51713ed",
+      "paths": [
+        "robot_rl/utils/exporter.py"
+      ],
+      "hits": [
+        {
+          "line": 131,
+          "text": "dynamic_axes={},"
+        },
+        {
+          "line": 144,
+          "text": "dynamic_axes={},"
+        },
+        {
+          "line": 195,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    },
+    {
+      "sha": "6e3fe8b9ec8857a1139e9663bfc4c316c6cc563a",
+      "paths": [
+        "rsl_rl/algorithms/actor_critic.py"
+      ],
+      "hits": [
+        {
+          "line": 166,
+          "text": "dynamic_axes={},"
+        }
+      ]
+    }
+  ],
+  "conclusion": "All eight matching historical blobs only set dynamic_axes={}; no dynamic batch support. All renamed paths and intermediate/reverted variants included.",
+  "export_variants": [
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> nn.Module:\n        \"\"\"Return a version of the model compatible with ONNX export.\"\"\"\n        return _OnnxCNNModel(self)",
+      "blobs": [
+        {
+          "sha": "6eab5cd016bc33248b950fda64836be55045a5df",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "80a9d386f19c70dec1790ea83bc625b82fed4333",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "d191af10a6cd8254ce3997b688fe823bba35d950",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "b2abba2050900ac3c8639609a42f217b8269b4d2",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "6120dbfd9aee1de94c08f78165b815c6849454a3",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "a01293a7b39e871d1e67db5ad8aa4bc2c0fe8ae7",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "b135ebdc1c68c1c8c87ab9e13cfb06dca18c9b12",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:\n        \"\"\"Return representative dummy inputs for ONNX tracing.\"\"\"\n        dummy_1d = torch.zeros(1, self.obs_dim_1d)\n        dummy_2d = []\n        for i in range(len(self.obs_groups_2d)):\n            h, w = self.obs_dims_2d[i]\n            c = self.obs_channels_2d[i]\n            dummy_2d.append(torch.zeros(1, c, h, w))\n        return (dummy_1d, *dummy_2d)",
+      "blobs": [
+        {
+          "sha": "6eab5cd016bc33248b950fda64836be55045a5df",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "80a9d386f19c70dec1790ea83bc625b82fed4333",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "d191af10a6cd8254ce3997b688fe823bba35d950",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "b2abba2050900ac3c8639609a42f217b8269b4d2",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "6120dbfd9aee1de94c08f78165b815c6849454a3",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "b135ebdc1c68c1c8c87ab9e13cfb06dca18c9b12",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "c46b4508a3a0912a39b1a13866fd5f187679a006",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "f83a29377beea08a32e8ca6d40b8e12f648f625a",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "77e0747d4c2fc5d6338dbad734e43bf718ab8f2f",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "e4aa15c30be3f036f873a796efd426de16dd8404",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "4e97bd48f1839fdb4fbf644dc598f701cb71b5d8",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "9cd3e006f53258c594f9fa708fa807856ffb5248",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "9a170af48a44e3ba8e95e998dbf21adc533e927c",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> nn.Module:\n        \"\"\"Return a version of the model compatible with ONNX export.\"\"\"\n        return _OnnxMLPModel(self)",
+      "blobs": [
+        {
+          "sha": "72f1390246fdbfa8ebdc2c895d2cc0736d78014a",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "3515c12d3d7f80846bf8ef245e2f3b8b14aa2449",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "c4cf0fed8673f9985f2dbb6491fcf04d1f97573f",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "bba05b7e82c3cfc03453027da283e70850893f83",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "a03ba67b84b6f3bde41c2a9ee8e91d5819045f3c",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "4acbb8b22babb21a00db8ff7e607aeb9553bfef1",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "dbc95e3f713ebd812851fcbc15bececcf421126c",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "9fd6d54fc656f094a5055ba46ea8ed4c0c9b4a10",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> torch.nn.Module:\n        \"\"\"ONNX export is not implemented for QMLPModel.\"\"\"\n        raise NotImplementedError(\"QMLPModel does not support ONNX export.\")",
+      "blobs": [
+        {
+          "sha": "72f1390246fdbfa8ebdc2c895d2cc0736d78014a",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "a03ba67b84b6f3bde41c2a9ee8e91d5819045f3c",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "4acbb8b22babb21a00db8ff7e607aeb9553bfef1",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor]:\n        \"\"\"Return representative dummy inputs for ONNX tracing.\"\"\"\n        return (torch.zeros(1, self.input_size),)",
+      "blobs": [
+        {
+          "sha": "72f1390246fdbfa8ebdc2c895d2cc0736d78014a",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "3515c12d3d7f80846bf8ef245e2f3b8b14aa2449",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "c4cf0fed8673f9985f2dbb6491fcf04d1f97573f",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "bba05b7e82c3cfc03453027da283e70850893f83",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "4acbb8b22babb21a00db8ff7e607aeb9553bfef1",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "dbc95e3f713ebd812851fcbc15bececcf421126c",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "9fd6d54fc656f094a5055ba46ea8ed4c0c9b4a10",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "fad97316d3c34198d7ea6717f18cf455c76e439f",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "43e89331929760d6ad4dd4dfaccc89cba29e6eae",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "32b55e8e0a82fa05a842a7ae7df71e49256ac610",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "b8bcfca4ee2f57c488a2de45a79938554c764576",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "86078c26b9aad3f7c3e6ee6c66120c3e5ea49cab",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "4a3d86dec78ec68e496bff0ae193759d54e26fe0",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "35a932fbdef50ba17f6085bb1b89c1422e96e538",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "57e51484218b8de16261192109ce0c6bb7cf9de9",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> nn.Module:\n        \"\"\"Return a version of the model compatible with ONNX export.\"\"\"\n        return _OnnxRNNModel(self)",
+      "blobs": [
+        {
+          "sha": "7e5e7864a945b6e1d0e51de79d0c901657d46311",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "712aa680ebe9206c940a59a539b1f1634d62ddcc",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "8ff63b894d6cae9f379485e4342d5f476a1703d9",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "955aab067999287aed4cff0b178adbe393fffea2",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "3125dbf7515eb98e9d88f21e6389b3e38750081b",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "1f9cfaf8a8a6938e74b6fca7233fa02e197bd687",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "930c6a1b6f0d21a21a9ecc651229079a549856a1",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:\n        \"\"\"Return representative dummy inputs for ONNX tracing.\"\"\"\n        obs = torch.zeros(1, self.input_size)\n        h_in = torch.zeros(self.num_layers, 1, self.hidden_size)\n        if self.rnn_type == \"lstm\":\n            c_in = torch.zeros(self.num_layers, 1, self.hidden_size)\n            return (obs, h_in, c_in)\n        return (obs, h_in)",
+      "blobs": [
+        {
+          "sha": "7e5e7864a945b6e1d0e51de79d0c901657d46311",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "712aa680ebe9206c940a59a539b1f1634d62ddcc",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "8ff63b894d6cae9f379485e4342d5f476a1703d9",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "955aab067999287aed4cff0b178adbe393fffea2",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "3125dbf7515eb98e9d88f21e6389b3e38750081b",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "930c6a1b6f0d21a21a9ecc651229079a549856a1",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "e464d5e71bf3bdcad40cffcc96d28a661fdc4f96",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "a541641541f2d55ee95af72aed4b42d02014de23",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "ce5933d06dd4851a9eb8b573a7f7b94d8fc74f44",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "9a29a9da1b0fd4c62fbeaee7163f7c5905440b2c",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_to_onnx",
+      "source": "def export_policy_to_onnx(self, path: str, filename: str = \"policy.onnx\", verbose: bool = False) -> None:\n        \"\"\"Export the model into an ONNX file.\"\"\"\n        onnx_model = self.alg.get_policy().as_onnx()\n        onnx_model.to(\"cpu\")\n        onnx_model.eval()\n\n        if not os.path.exists(path):\n            os.makedirs(path, exist_ok=True)\n        save_path = os.path.join(path, filename)\n\n        # Trace and save the model\n        torch.onnx.export(\n            onnx_model,\n            onnx_model.get_dummy_inputs(),  # type: ignore\n            save_path,\n            export_params=True,\n            opset_version=18,\n            verbose=verbose,\n            input_names=onnx_model.input_names,  # type: ignore\n            output_names=onnx_model.output_names,  # type: ignore\n        )",
+      "blobs": [
+        {
+          "sha": "75a23eb1dc48f28650afdadbb085743815dbbf26",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "c543f377fcc548b615272a9fcc72cdc09bbc66b8",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "f7ec41eee7a7c95b2987cf97c2bd8ae1a8c86700",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "e53ebc89eba5945187ec93137b019f9d45689c58",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "be566531b5ff22b62e7c47282fdadbf79ca07fcd",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "b11842e1c8bd3d7de5f3bef2fb8bedb8dd0a1884",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "4ee6fed120621ef348fe5aea4164862ff3e662e5",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "a28cf755d4fc7801af45d55f1d6dbc3f4c90a4c0",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "c15705b3f489f7fa17ff5310bddd1a318a9b4838",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "52e4717a2111ee5c2caab2369ec1185ebf9846f1",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "b3f584329117935939d42a7b3bc4fdf42ccf7d99",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "0f36882861757e2d404883614aa8efbc0a3ebc1d",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "bdbc996abfb7d208a2669ca82e155e25f9227db8",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "25fe6dd2f828f12e4f58616923a918324a59cf11",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "d8a13eab27bfbaf98b00a5df1b2743aa63d7645e",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "cf5cbf2c1bf1a114c161ee6e30b0bff718c92b1b",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self) -> None:\n        \"\"\"ONNX-exported CNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        model, _obs = _make_cnn_model(\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.eval()\n\n        onnx_model = model.as_onnx()\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\", \"image\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "c627c9b1e5d89d30781eb61e8b33c30ddedd0a46",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        },
+        {
+          "sha": "f4bad08ae972fc75496c81977438780e60cf72aa",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        },
+        {
+          "sha": "4611ba87780ea1560838c0c4da7a04dd7ac5b560",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        },
+        {
+          "sha": "aec2873914da546c10fdae3b2f4294b6fcf5a740",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        },
+        {
+          "sha": "4300640bafee1e37da3ab69aee5fd8954e2fe1c7",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self) -> None:\n        \"\"\"ONNX-exported MLP model should be a valid ONNX graph with correct I/O names.\"\"\"\n        actor, _obs = _make_mlp_model(stochastic=True)\n        actor.eval()\n\n        onnx_model = actor.as_onnx()\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "1aa86295d6a857087632001dbcd47ddcb5ffb10c",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "37c0e5f5149577fa7958f6e4ffbebf6d53f8bd48",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "aaeed4a6264fb336c3f9b79929c4cce047fe3c4c",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "d765d85a24eb8f56dd1c1555ed963913238c314a",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "e3d73ddaf2f7162e42dec069d308ffc5133c1235",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_with_normalization",
+      "source": "def test_onnx_export_with_normalization(self) -> None:\n        \"\"\"ONNX export should produce a valid graph when obs normalization is enabled.\"\"\"\n        model, _obs = _make_mlp_model(stochastic=True, obs_normalization=True)\n        model.train()\n\n        for _ in range(50):\n            shifted_obs = TensorDict(\n                {\"policy\": torch.randn(NUM_ENVS, OBS_DIM) + 5.0},\n                batch_size=[NUM_ENVS],\n            )\n            model.update_normalization(shifted_obs)\n\n        model.eval()\n        onnx_model = model.as_onnx()\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)",
+      "blobs": [
+        {
+          "sha": "1aa86295d6a857087632001dbcd47ddcb5ffb10c",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "37c0e5f5149577fa7958f6e4ffbebf6d53f8bd48",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "aaeed4a6264fb336c3f9b79929c4cce047fe3c4c",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "d765d85a24eb8f56dd1c1555ed963913238c314a",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "623cda0006819800e407f588e4f4967328c66da5",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "e3d73ddaf2f7162e42dec069d308ffc5133c1235",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self, rnn_type: str) -> None:\n        \"\"\"ONNX-exported RNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        obs = make_obs(1, OBS_DIM)\n        model = RNNModel(\n            obs,\n            {\"actor\": [\"policy\"]},\n            \"actor\",\n            NUM_ACTIONS,\n            hidden_dims=[32, 32],\n            activation=\"elu\",\n            rnn_type=rnn_type,\n            rnn_hidden_dim=16,\n            rnn_num_layers=1,\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.eval()\n\n        onnx_model = model.as_onnx()\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == onnx_model.input_names\n            assert [o.name for o in loaded.graph.output] == onnx_model.output_names",
+      "blobs": [
+        {
+          "sha": "b847ee801ed61ccc477d89d6b70cf12f7d862b2e",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        },
+        {
+          "sha": "2c5a387377bf1a7cf683ed7ab484be4db37c62ce",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        },
+        {
+          "sha": "0aede7cd540ddbd8ec18dcdcdd80d9b5848c816f",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        },
+        {
+          "sha": "6272a5295721c66bf7857740f2981ba30b0e2050",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        },
+        {
+          "sha": "739aa181ffe3880093d2134417d52a35e204bd3a",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        },
+        {
+          "sha": "d4e9941e026145c361f248ef7bbf97e3dc42720b",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_half_residual_onnx_keeps_rms_normalization_finite",
+      "source": "def test_half_residual_onnx_keeps_rms_normalization_finite() -> None:\n    \"\"\"The exported residual network matches native RMS normalization for large half inputs.\"\"\"\n    from io import BytesIO\n\n    from onnx.reference import ReferenceEvaluator\n\n    from rsl_rl.modules import ResidualMLP\n\n    model = ResidualMLP(2, 2, hidden_dim=2, num_blocks=0).half().eval()\n    with torch.no_grad():\n        model.input_layer.weight.copy_(torch.eye(2))\n        model.output_layer.weight.copy_(torch.eye(2))\n    inputs = torch.tensor([[2000.0, 4000.0]], dtype=torch.float16)\n    with torch.no_grad():\n        expected = model(inputs)\n    assert torch.isfinite(expected).all()\n    exported = BytesIO()\n    torch.onnx.export(model, (inputs,), exported, opset_version=18, dynamo=False, input_names=[\"obs\"])\n    actual = ReferenceEvaluator(exported.getvalue()).run(None, {\"obs\": inputs.numpy()})[0]\n    torch.testing.assert_close(torch.from_numpy(actual), expected, rtol=2e-3, atol=2e-3)",
+      "blobs": [
+        {
+          "sha": "edaa7de7193f394a8e3f318ab335a0ef1d72c04a",
+          "paths": [
+            "tests/algorithms/test_sac.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_half_residual_onnx_keeps_rms_normalization_finite",
+      "source": "def test_half_residual_onnx_keeps_rms_normalization_finite() -> None:\n    \"\"\"The exported residual network matches native RMS normalization for large half inputs.\"\"\"\n    from io import BytesIO\n    from onnx.reference import ReferenceEvaluator\n\n    from rsl_rl.modules import ResidualMLP\n\n    model = ResidualMLP(2, 2, hidden_dim=2, num_blocks=0).half().eval()\n    with torch.no_grad():\n        model.input_layer.weight.copy_(torch.eye(2))\n        model.output_layer.weight.copy_(torch.eye(2))\n    inputs = torch.tensor([[2000.0, 4000.0]], dtype=torch.float16)\n    with torch.no_grad():\n        expected = model(inputs)\n    assert torch.isfinite(expected).all()\n    exported = BytesIO()\n    torch.onnx.export(model, (inputs,), exported, opset_version=18, dynamo=False, input_names=[\"obs\"])\n    actual = ReferenceEvaluator(exported.getvalue()).run(None, {\"obs\": inputs.numpy()})[0]\n    torch.testing.assert_close(torch.from_numpy(actual), expected, rtol=2e-3, atol=2e-3)",
+      "blobs": [
+        {
+          "sha": "93d8ec635d35621e0aac9b0b999d24fd0ee02fe3",
+          "paths": [
+            "tests/algorithms/test_sac.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> nn.Module:\n        \"\"\"Reject the actor-only ONNX export interface for state-action critics.\"\"\"\n        raise NotImplementedError(\"ONNX export is not necessary because critics are not exported.\")",
+      "blobs": [
+        {
+          "sha": "80a9d386f19c70dec1790ea83bc625b82fed4333",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> torch.nn.Module:\n        \"\"\"Critics are not exported to ONNX.\"\"\"\n        raise NotImplementedError(\"ONNX export is not necessary because critics are not exported.\")",
+      "blobs": [
+        {
+          "sha": "3515c12d3d7f80846bf8ef245e2f3b8b14aa2449",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> nn.Module:\n        \"\"\"Reject the actor-only ONNX export interface for state-action critics.\"\"\"\n        raise NotImplementedError(\"ONNX export is not implemented for critics.\")",
+      "blobs": [
+        {
+          "sha": "d191af10a6cd8254ce3997b688fe823bba35d950",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> torch.nn.Module:\n        \"\"\"ONNX export is not implemented for QMLPModel.\"\"\"\n        raise NotImplementedError(\"ONNX export is not implemented for critics.\")",
+      "blobs": [
+        {
+          "sha": "c4cf0fed8673f9985f2dbb6491fcf04d1f97573f",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> nn.Module:\n        \"\"\"Reject the actor-only ONNX export interface for state-action critics.\"\"\"\n        raise NotImplementedError(\"QCNNModel does not support ONNX export.\")",
+      "blobs": [
+        {
+          "sha": "b2abba2050900ac3c8639609a42f217b8269b4d2",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_is_folded",
+      "source": "def test_onnx_export_is_folded(self) -> None:\n        \"\"\"The ONNX export uses a plain MLP and is a valid graph.\"\"\"\n        model = make_trained_actor()\n        onnx_model = model.as_onnx()\n        onnx_model.eval()\n        assert not any(isinstance(m, EquivariantLinear) for m in onnx_model.modules())\n        with torch.no_grad():\n            obs = make_obs()\n            assert torch.allclose(model(obs), onnx_model(obs[\"policy\"]), atol=1e-5)\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            onnx.checker.check_model(onnx.load(f.name))",
+      "blobs": [
+        {
+          "sha": "d2f6187648ce9222ef52356d8303b0cb63c49024",
+          "paths": [
+            "tests/models/test_mlp_model_equivariant.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self, rnn_type: str) -> None:\n        \"\"\"ONNX-exported RNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        obs = make_obs(1, OBS_DIM)\n        model = RNNModel(\n            obs,\n            {\"actor\": [\"policy\"]},\n            \"actor\",\n            NUM_ACTIONS,\n            hidden_dims=[32, 32],\n            activation=\"elu\",\n            rnn_type=rnn_type,\n            rnn_hidden_dim=16,\n            rnn_num_layers=1,\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.eval()\n\n        onnx_model = model.as_onnx()\n        onnx_model.eval()\n        assert len(onnx_model(*onnx_model.get_dummy_inputs())) == len(onnx_model.output_names)\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == onnx_model.input_names\n            assert [o.name for o in loaded.graph.output] == onnx_model.output_names",
+      "blobs": [
+        {
+          "sha": "c509f5a990568f25720d467f4c891d8910f4d707",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        },
+        {
+          "sha": "26be99f0e1928e6a009ff0f60022723dfa31477a",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:\n        \"\"\"Return representative dummy inputs for ONNX tracing.\"\"\"\n        reference = next(self.mlp.parameters())\n        dummy_1d = reference.new_zeros(1, self.obs_dim_1d)\n        dummy_2d = []\n        for i in range(len(self.obs_groups_2d)):\n            h, w = self.obs_dims_2d[i]\n            c = self.obs_channels_2d[i]\n            dummy_2d.append(reference.new_zeros(1, c, h, w))\n        return (dummy_1d, *dummy_2d)",
+      "blobs": [
+        {
+          "sha": "a01293a7b39e871d1e67db5ad8aa4bc2c0fe8ae7",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor]:\n        \"\"\"Return representative dummy inputs for ONNX tracing.\"\"\"\n        return (next(self.mlp.parameters()).new_zeros(1, self.input_size),)",
+      "blobs": [
+        {
+          "sha": "a03ba67b84b6f3bde41c2a9ee8e91d5819045f3c",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:\n        \"\"\"Return representative dummy inputs for ONNX tracing.\"\"\"\n        obs = self.rnn.weight_ih_l0.new_zeros(1, self.input_size)\n        h_in = self.rnn.weight_ih_l0.new_zeros(self.num_layers, 1, self.hidden_size)\n        if self.rnn_type == \"lstm\":\n            c_in = self.rnn.weight_ih_l0.new_zeros(self.num_layers, 1, self.hidden_size)\n            return (obs, h_in, c_in)\n        return (obs, h_in)",
+      "blobs": [
+        {
+          "sha": "1f9cfaf8a8a6938e74b6fca7233fa02e197bd687",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self, dtype: torch.dtype) -> None:\n        \"\"\"ONNX-exported CNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        model, _obs = _make_cnn_model(\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.to(dtype=dtype).eval()\n\n        onnx_model = model.as_onnx()\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n            expected_type = onnx.TensorProto.DOUBLE if dtype == torch.float64 else onnx.TensorProto.FLOAT\n            assert all(\n                value.type.tensor_type.elem_type == expected_type\n                for value in [*loaded.graph.input, *loaded.graph.output]\n            )\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\", \"image\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "574cd26f8ea23a0207b80302849c3ec59f69d3dc",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self, dtype: torch.dtype) -> None:\n        \"\"\"ONNX-exported MLP model should be a valid ONNX graph with correct I/O names.\"\"\"\n        actor, _obs = _make_mlp_model(stochastic=True)\n        actor.to(dtype=dtype).eval()\n\n        onnx_model = actor.as_onnx()\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n            expected_type = onnx.TensorProto.DOUBLE if dtype == torch.float64 else onnx.TensorProto.FLOAT\n            assert all(\n                value.type.tensor_type.elem_type == expected_type\n                for value in [*loaded.graph.input, *loaded.graph.output]\n            )\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "623cda0006819800e407f588e4f4967328c66da5",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self, rnn_type: str, dtype: torch.dtype) -> None:\n        \"\"\"ONNX-exported RNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        obs = make_obs(1, OBS_DIM)\n        model = RNNModel(\n            obs,\n            {\"actor\": [\"policy\"]},\n            \"actor\",\n            NUM_ACTIONS,\n            hidden_dims=[32, 32],\n            activation=\"elu\",\n            rnn_type=rnn_type,\n            rnn_hidden_dim=16,\n            rnn_num_layers=1,\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.to(dtype=dtype).eval()\n\n        onnx_model = model.as_onnx()\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n            expected_type = onnx.TensorProto.DOUBLE if dtype == torch.float64 else onnx.TensorProto.FLOAT\n            assert all(\n                value.type.tensor_type.elem_type == expected_type\n                for value in [*loaded.graph.input, *loaded.graph.output]\n            )\n\n            assert [i.name for i in loaded.graph.input] == onnx_model.input_names\n            assert [o.name for o in loaded.graph.output] == onnx_model.output_names",
+      "blobs": [
+        {
+          "sha": "1b99cddb75c09ddb1700fa358e4426a95130ef46",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self) -> nn.Module:\n        \"\"\"Return the same stateless representation for ONNX export.\"\"\"\n        return self.as_jit()",
+      "blobs": [
+        {
+          "sha": "6295aef08a1e79c49ed466cfd8286c091b56004f",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "4bc2ba116e0bcbc1a7024f04ef9a7a5eb1401d7e",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor]:\n        \"\"\"Return representative history input.\"\"\"\n        return (torch.zeros(1, self.history_length, self.obs_dim),)",
+      "blobs": [
+        {
+          "sha": "6295aef08a1e79c49ed466cfd8286c091b56004f",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "4bc2ba116e0bcbc1a7024f04ef9a7a5eb1401d7e",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "fedb8083e9e662de48ba4bf1eb18694931ced9e7",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "897d18a6c170cfb511a95e0b0e15100f26da8b57",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, torch.Tensor]:\n        \"\"\"Return representative history and goal inputs.\"\"\"\n        return torch.zeros(1, self.history_length, self.obs_dim), torch.zeros(1, self.goal_dim)",
+      "blobs": [
+        {
+          "sha": "6295aef08a1e79c49ed466cfd8286c091b56004f",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "4bc2ba116e0bcbc1a7024f04ef9a7a5eb1401d7e",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "fedb8083e9e662de48ba4bf1eb18694931ced9e7",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "897d18a6c170cfb511a95e0b0e15100f26da8b57",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_checkpoint_normalized_jit_and_onnx",
+      "source": "def test_checkpoint_normalized_jit_and_onnx(\n    tmp_path: Path, load_optimizer: bool, goal_dim: int, halflife: int | None\n) -> None:\n    \"\"\"Full loads, fresh optimizers and stateless deployment preserve normalized policy outputs.\"\"\"\n    from onnx.reference import ReferenceEvaluator\n\n    runner = OffPolicyRunner(ScalarEnv(goal_dim=goal_dim), _cfg(actor_ema_halflife=halflife), str(tmp_path / \"logs\"))\n    runner.learn(2)\n    checkpoint = str(tmp_path / \"learner.pt\")\n    runner.save(checkpoint)\n    restored = OffPolicyRunner(ScalarEnv(goal_dim=goal_dim), _cfg(actor_ema_halflife=halflife))\n    restored.load(checkpoint, load_cfg={**restored.alg.get_default_load_cfg(), \"optimizer\": load_optimizer})\n    assert restored.alg.iteration == runner.alg.iteration\n    assert restored.alg.learning_rate == runner.alg.learning_rate\n    assert restored.alg.storage.num_steps == 0 and not restored.alg.actor.history.any()\n    for key in runner.alg.optimizers:\n        assert bool(restored.alg.optimizers[key].state) is load_optimizer\n    policy = restored.get_inference_policy()\n    history, goal = torch.randn(4, 2, 2), torch.randn(4, goal_dim)\n    expected = policy.forward_history(history, goal)\n    torch.testing.assert_close(expected, runner.get_inference_policy().forward_history(history, goal), rtol=0, atol=0)\n    if halflife is not None:\n        assert not torch.equal(expected, restored.alg.actor.forward_history(history, goal))\n    restored.export_policy_to_jit(str(tmp_path))\n    restored.export_policy_to_onnx(str(tmp_path))\n    onnx_model = onnx.load(str(tmp_path / \"policy.onnx\"))\n    onnx.checker.check_model(onnx_model)\n    assert [value.name for value in onnx_model.graph.input] == (\n        [\"obs_history\", \"goal\"] if goal_dim else [\"obs_history\"]\n    )\n    exported = torch.jit.load(str(tmp_path / \"policy.pt\"))\n    inputs = (history, goal) if goal_dim else (history,)\n    torch.testing.assert_close(exported(*inputs), expected)\n    evaluator = ReferenceEvaluator(onnx_model)\n    actual = evaluator.run(None, dict(zip(evaluator.input_names, [value[:1].numpy() for value in inputs])))[0]\n    torch.testing.assert_close(torch.from_numpy(actual), expected[:1])",
+      "blobs": [
+        {
+          "sha": "31b8eea968bc9a9962bd9769cfa19db9a4eed85c",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "78d4988d5d3c37ed7720d128b4db5ac4a023ebe0",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "f8a402f91e8948d612a4997e3fd1057978617b10",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "b56e1f015dd9f5346213a432d2cf61f14eeb125c",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "90e6834f8f8225d7721c3531a13160c4c40210a3",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "50ff4c9951371a08db2549e5ca254d4a72581f5c",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "dca28cad6ed0dae7f2b817cbe04ca720f546cc51",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_checkpoint_normalized_jit_and_onnx",
+      "source": "def test_checkpoint_normalized_jit_and_onnx(\n    tmp_path: Path, load_optimizer: bool, goal_dim: int, halflife: int | None\n) -> None:\n    \"\"\"Full loads, fresh optimizers and stateless deployment preserve normalized policy outputs.\"\"\"\n    from onnx.reference import ReferenceEvaluator\n\n    runner = OffPolicyRunner(ScalarEnv(goal_dim=goal_dim), _cfg(actor_ema_halflife=halflife), str(tmp_path / \"logs\"))\n    runner.learn(2)\n    checkpoint = str(tmp_path / \"learner.pt\")\n    runner.save(checkpoint)\n    restored = OffPolicyRunner(ScalarEnv(goal_dim=goal_dim), _cfg(actor_ema_halflife=halflife))\n    restored.load(checkpoint, load_optimizer=load_optimizer)\n    assert restored.alg.iteration == runner.alg.iteration\n    assert restored.alg.learning_rate == runner.alg.learning_rate\n    assert restored.alg.storage.num_steps == 0 and not restored.alg.actor.history.any()\n    for key in runner.alg.optimizers:\n        assert bool(restored.alg.optimizers[key].state) is load_optimizer\n    policy = restored.get_inference_policy()\n    history, goal = torch.randn(4, 2, 2), torch.randn(4, goal_dim)\n    expected = policy.forward_history(history, goal)\n    torch.testing.assert_close(expected, runner.get_inference_policy().forward_history(history, goal), rtol=0, atol=0)\n    if halflife is not None:\n        assert not torch.equal(expected, restored.alg.actor.forward_history(history, goal))\n    restored.export_policy_to_jit(str(tmp_path))\n    restored.export_policy_to_onnx(str(tmp_path))\n    onnx_model = onnx.load(str(tmp_path / \"policy.onnx\"))\n    onnx.checker.check_model(onnx_model)\n    assert [value.name for value in onnx_model.graph.input] == (\n        [\"obs_history\", \"goal\"] if goal_dim else [\"obs_history\"]\n    )\n    exported = torch.jit.load(str(tmp_path / \"policy.pt\"))\n    inputs = (history, goal) if goal_dim else (history,)\n    torch.testing.assert_close(exported(*inputs), expected)\n    evaluator = ReferenceEvaluator(onnx_model)\n    actual = evaluator.run(None, dict(zip(evaluator.input_names, [value[:1].numpy() for value in inputs])))[0]\n    torch.testing.assert_close(torch.from_numpy(actual), expected[:1])",
+      "blobs": [
+        {
+          "sha": "6a3b0cbd36119edb8fa8b357556f41b2ce47334f",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_checkpoint_normalized_jit_and_onnx",
+      "source": "def test_checkpoint_normalized_jit_and_onnx(tmp_path: Path, load_optimizer: bool, goal_dim: int) -> None:\n    \"\"\"Full loads, fresh optimizers and stateless deployment preserve normalized policy outputs.\"\"\"\n    runner = OffPolicyRunner(ScalarEnv(goal_dim=goal_dim), _cfg(), str(tmp_path / \"logs\"))\n    runner.learn(2)\n    checkpoint = str(tmp_path / \"learner.pt\")\n    runner.save(checkpoint)\n    restored = OffPolicyRunner(ScalarEnv(goal_dim=goal_dim), _cfg())\n    restored.load(checkpoint, load_optimizer=load_optimizer)\n    assert restored.alg.iteration == runner.alg.iteration\n    assert restored.alg.learning_rate == runner.alg.learning_rate\n    assert restored.alg.storage.num_steps == 0 and not restored.alg.actor.history.any()\n    for key in runner.alg.optimizers:\n        assert bool(restored.alg.optimizers[key].state) is load_optimizer\n    history, goal = torch.randn(4, 2, 2), torch.randn(4, goal_dim)\n    runner.export_policy_to_jit(str(tmp_path))\n    runner.export_policy_to_onnx(str(tmp_path))\n    onnx_model = onnx.load(str(tmp_path / \"policy.onnx\"))\n    onnx.checker.check_model(onnx_model)\n    assert [value.name for value in onnx_model.graph.input] == (\n        [\"obs_history\", \"goal\"] if goal_dim else [\"obs_history\"]\n    )\n    exported = torch.jit.load(str(tmp_path / \"policy.pt\"))\n    inputs = (history, goal) if goal_dim else (history,)\n    torch.testing.assert_close(exported(*inputs), runner.alg.actor.forward_history(history, goal))",
+      "blobs": [
+        {
+          "sha": "c2c4b8c55831de70432fe77751b89bca0d09c806",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "88c3610039aba4700d89f5afd260b6692ecded0c",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        },
+        {
+          "sha": "7f111bc489a9c01bd5a4dbe2c00e88989db2c86a",
+          "paths": [
+            "tests/algorithms/test_supermimic.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self, verbose: bool = False) -> nn.Module:\n        \"\"\"Return the same stateless representation for ONNX export.\"\"\"\n        return self.as_jit()",
+      "blobs": [
+        {
+          "sha": "fedb8083e9e662de48ba4bf1eb18694931ced9e7",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        },
+        {
+          "sha": "897d18a6c170cfb511a95e0b0e15100f26da8b57",
+          "paths": [
+            "rsl_rl/models/supermimic_actor.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self, verbose: bool = False) -> nn.Module:\n        \"\"\"Return a version of the model compatible with ONNX export.\"\"\"\n        return _OnnxCNNModel(self, verbose)",
+      "blobs": [
+        {
+          "sha": "c46b4508a3a0912a39b1a13866fd5f187679a006",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "f83a29377beea08a32e8ca6d40b8e12f648f625a",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "77e0747d4c2fc5d6338dbad734e43bf718ab8f2f",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "e4aa15c30be3f036f873a796efd426de16dd8404",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "ebbf24a5c8c97ec27159e1978ddb44b9d0f56a95",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "4e97bd48f1839fdb4fbf644dc598f701cb71b5d8",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "c5af6a76510f0d0b23841b241d536c829d953dcf",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "9cd3e006f53258c594f9fa708fa807856ffb5248",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "9a170af48a44e3ba8e95e998dbf21adc533e927c",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "0ce11d972732f019e608f021545f3f065a11de5b",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "df3ff071c9faeb62a5cd9660e9e13cf111bf1f05",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "af3700365be7d283e7285ac26149d6a514dddee5",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "53519f66588e2ad4bde008c0f79c0804b9076a0d",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "603c74265b6d2b5553b9519935c00d37fa99fa3e",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "6d003c5c6392ca9f97eb150adc28d9bc9579b9f8",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "ece331b38d7d2253b3ac6d3dbc38b40a86d8b322",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "034cf46b6428e5b6a6270bbedb90de730de7be4c",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "f79cf4685a202902dda29d33fb428830e5798fae",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "905e7e36c4b99527f1d6f12d8194ebf9ce743f66",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "2e38e663b0aa38d5bd57de7f47ad9c19c0f44503",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "ddef978aa86deab3c8995d38e0ec13e1b02b45e1",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "e1aa043de528270226e566d432e38cfc02d0de8d",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "6b52dd0d2721ef64e660de7e7b6660252d7a3970",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "a60a486525a7f2ef7b1065e3dd141efcdb6174ac",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self, verbose: bool) -> nn.Module:\n        \"\"\"Return a version of the model compatible with ONNX export.\"\"\"\n        return _OnnxMLPModel(self, verbose)",
+      "blobs": [
+        {
+          "sha": "fad97316d3c34198d7ea6717f18cf455c76e439f",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "43e89331929760d6ad4dd4dfaccc89cba29e6eae",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "32b55e8e0a82fa05a842a7ae7df71e49256ac610",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "b8bcfca4ee2f57c488a2de45a79938554c764576",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "86078c26b9aad3f7c3e6ee6c66120c3e5ea49cab",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "4a3d86dec78ec68e496bff0ae193759d54e26fe0",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "35a932fbdef50ba17f6085bb1b89c1422e96e538",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "57e51484218b8de16261192109ce0c6bb7cf9de9",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "68f4515b1a47e09550e317c2f83c5951a5434156",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "6a7c0d821d513891581ac1e8d1f68f8f659fde19",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "b93859935c477ebd13221c6a1b97a9b3cf3c0d26",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "8c5acf1b6ca1e6a2cd307281bb25bfe67b8d3f03",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "3a01c1a799241591fab32520f45ab095a1c7c225",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "31dbf61376a13884b68dc6b42d7c2111d2a24a20",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "228a3a4f9c081f26ded00236f549cedb058e2f96",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "1c622623b3eec4d8dd7bc9f5d367e5142c8f174d",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "8eb0e0c27fef3191e6bcd05ff6cfeaca084578d1",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self, verbose: bool = False) -> nn.Module:\n        \"\"\"Return a version of the model compatible with ONNX export.\"\"\"\n        return _OnnxRNNModel(self, verbose)",
+      "blobs": [
+        {
+          "sha": "e464d5e71bf3bdcad40cffcc96d28a661fdc4f96",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "a541641541f2d55ee95af72aed4b42d02014de23",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "ce5933d06dd4851a9eb8b573a7f7b94d8fc74f44",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "9a29a9da1b0fd4c62fbeaee7163f7c5905440b2c",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "91f3be1e41c90225d65dae891d761eccdbb1e85c",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "52de48f5d53e438830387455d93b461e362f5a9a",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "3a7a272d7a454d2798d4ea28469c7611a1c58a11",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "fcf71056a73f4b4563421a423b7e62afe3d8483b",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "da4dc15e9c1564bf16505bf261ba14d533284e24",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "56812ccb2593a9365296c43e31b581bae122abbe",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "51df2c979a92382441bae1673b9bdc734daf2591",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "b802bcc51b90b2920bdb1a7f0b859813b8b8934f",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_to_onnx",
+      "source": "def export_policy_to_onnx(self, path: str, filename: str = \"policy.onnx\", verbose: bool = False) -> None:\n        \"\"\"Export the model into an ONNX file.\"\"\"\n        onnx_model = self.alg.get_policy().as_onnx(verbose=verbose)\n        onnx_model.to(\"cpu\")\n        onnx_model.eval()\n\n        if not os.path.exists(path):\n            os.makedirs(path, exist_ok=True)\n        save_path = os.path.join(path, filename)\n\n        # Trace and save the model\n        torch.onnx.export(\n            onnx_model,\n            onnx_model.get_dummy_inputs(),  # type: ignore\n            save_path,\n            export_params=True,\n            opset_version=18,\n            verbose=verbose,\n            input_names=onnx_model.input_names,  # type: ignore\n            output_names=onnx_model.output_names,  # type: ignore\n        )",
+      "blobs": [
+        {
+          "sha": "9ccd70b5d25320c6270fe9f58e3418672503199c",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "dcb98c1ff203226c566c54793dabe0f6ccd23eb0",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "8e092038b43f52d0f5ef7cdce11bafa89144aa8c",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "621ca913ae0962dd2af90bb2f13fbaf0db4d810f",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "9e37c894d8bc0ce8b34987aafec3e71a2dd97f9d",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "76be04a6c65dd3f9ce51ed42aee0be6529e11235",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "beed1bb483a4fc77796b49a2a4a92f98d4c9b860",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "2ce9fda66144ae301f304279adfce53cf7830047",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "dbd35bcb5ec25deed181cc74379a60c602aef4b1",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "714e2b8f5d10b7b8a9ad1464700faa12ed656f80",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "d268f3e6ae87b75dc00b65fe356503a9b65a6b16",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "2ea74f94fc58fa8ba48769559bf07b835061a358",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "8136d0c69ae3c787899035fd2f4f2c5908d0e1b8",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "c956d408aeb311ec38ed6ed0787a1095988ba211",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self) -> None:\n        \"\"\"ONNX-exported CNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        model, _obs = _make_cnn_model(\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.eval()\n\n        onnx_model = model.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\", \"image\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "9185cbc0925b225a1a9e1907d3fc1556c5495407",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        },
+        {
+          "sha": "64523c05c7ab67c5c2e36b62360e428bc48f3de3",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self) -> None:\n        \"\"\"ONNX-exported MLP model should be a valid ONNX graph with correct I/O names.\"\"\"\n        actor, _obs = _make_mlp_model(stochastic=True)\n        actor.eval()\n\n        onnx_model = actor.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "08312797cf67002d6092d3cb313a137e8433ba1d",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "f97765ebfe54e8c3d65f69abaaad74bc00800cd9",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_with_normalization",
+      "source": "def test_onnx_export_with_normalization(self) -> None:\n        \"\"\"ONNX export should produce a valid graph when obs normalization is enabled.\"\"\"\n        model, _obs = _make_mlp_model(stochastic=True, obs_normalization=True)\n        model.train()\n\n        for _ in range(50):\n            shifted_obs = TensorDict(\n                {\"policy\": torch.randn(NUM_ENVS, OBS_DIM) + 5.0},\n                batch_size=[NUM_ENVS],\n            )\n            model.update_normalization(shifted_obs)\n\n        model.eval()\n        onnx_model = model.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)",
+      "blobs": [
+        {
+          "sha": "08312797cf67002d6092d3cb313a137e8433ba1d",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        },
+        {
+          "sha": "f97765ebfe54e8c3d65f69abaaad74bc00800cd9",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self, rnn_type: str) -> None:\n        \"\"\"ONNX-exported RNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        obs = make_obs(1, OBS_DIM)\n        model = RNNModel(\n            obs,\n            {\"actor\": [\"policy\"]},\n            \"actor\",\n            NUM_ACTIONS,\n            hidden_dims=[32, 32],\n            activation=\"elu\",\n            rnn_type=rnn_type,\n            rnn_hidden_dim=16,\n            rnn_num_layers=1,\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.eval()\n\n        onnx_model = model.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == onnx_model.input_names\n            assert [o.name for o in loaded.graph.output] == onnx_model.output_names",
+      "blobs": [
+        {
+          "sha": "9678697c0c910da2b3e0bb240038b4cc7855f94c",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_is_folded",
+      "source": "def test_onnx_export_is_folded(self) -> None:\n        \"\"\"The ONNX export uses a plain MLP and is a valid graph.\"\"\"\n        model = make_trained_actor()\n        onnx_model = model.as_onnx(verbose=False)\n        onnx_model.eval()\n        assert not any(isinstance(m, EquivariantLinear) for m in onnx_model.modules())\n        with torch.no_grad():\n            obs = make_obs()\n            assert torch.allclose(model(obs), onnx_model(obs[\"policy\"]), atol=1e-5)\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n            )\n            onnx.checker.check_model(onnx.load(f.name))",
+      "blobs": [
+        {
+          "sha": "0406ba78b4dc0820a931453b5fa58f3df178db8e",
+          "paths": [
+            "tests/models/test_mlp_model_equivariant.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "as_onnx",
+      "source": "def as_onnx(self, verbose: bool = False) -> nn.Module:\n        \"\"\"Return a deterministic actor wrapper for ONNX export.\"\"\"\n        return _OnnxFlashSACActor(self, verbose)",
+      "blobs": [
+        {
+          "sha": "350c19ca2e332bbc9e0f7b82e6e704438e699e2c",
+          "paths": [
+            "rsl_rl/models/flashsac_models.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor]:\n        return (torch.zeros(1, self.input_size),)",
+      "blobs": [
+        {
+          "sha": "350c19ca2e332bbc9e0f7b82e6e704438e699e2c",
+          "paths": [
+            "rsl_rl/models/flashsac_models.py"
+          ]
+        },
+        {
+          "sha": "68f4515b1a47e09550e317c2f83c5951a5434156",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "6a7c0d821d513891581ac1e8d1f68f8f659fde19",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "b93859935c477ebd13221c6a1b97a9b3cf3c0d26",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "8c5acf1b6ca1e6a2cd307281bb25bfe67b8d3f03",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "3a01c1a799241591fab32520f45ab095a1c7c225",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "31dbf61376a13884b68dc6b42d7c2111d2a24a20",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "228a3a4f9c081f26ded00236f549cedb058e2f96",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "1c622623b3eec4d8dd7bc9f5d367e5142c8f174d",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        },
+        {
+          "sha": "8eb0e0c27fef3191e6bcd05ff6cfeaca084578d1",
+          "paths": [
+            "rsl_rl/models/mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self) -> None:\n        \"\"\"ONNX-exported actor is a valid graph with the expected I/O names.\"\"\"\n        actor, _ = _make_actor()\n        actor.eval()\n        onnx_model = actor.as_onnx(verbose=False)\n        onnx_model.eval()\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n                dynamo=False,\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n            assert [i.name for i in loaded.graph.input] == [\"obs\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "debb00091911e0eedc0b437abc417c3c644b1e48",
+          "paths": [
+            "tests/models/test_flashsac_models.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_matches_eager",
+      "source": "def test_onnx_export_matches_eager(self) -> None:\n        \"\"\"The ONNX-export wrapper reproduces the eager deterministic action.\"\"\"\n        actor, obs = _make_actor()\n        actor.eval()\n        onnx_model = actor.as_onnx(verbose=False)\n        onnx_model.eval()\n        obs_concat = torch.cat([obs[g] for g in actor.obs_groups], dim=-1)\n        assert torch.allclose(actor(obs), onnx_model(obs_concat), atol=1e-6)",
+      "blobs": [
+        {
+          "sha": "debb00091911e0eedc0b437abc417c3c644b1e48",
+          "paths": [
+            "tests/models/test_flashsac_models.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export",
+      "source": "def test_onnx_export(self) -> None:\n        \"\"\"Runner ONNX export should produce a policy.onnx file.\"\"\"\n        runner = _build_runner()\n        with tempfile.TemporaryDirectory() as d:\n            runner.export_policy_to_onnx(d, filename=\"policy.onnx\")\n            assert os.path.exists(os.path.join(d, \"policy.onnx\"))",
+      "blobs": [
+        {
+          "sha": "3405337d30378e0e305ac3f26b23f389a7422f09",
+          "paths": [
+            "tests/runners/test_off_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_to_onnx",
+      "source": "def export_policy_to_onnx(self, path: str, filename: str = \"policy.onnx\", verbose: bool = False) -> None:\n        \"\"\"Export the model into an ONNX file.\"\"\"\n        policy = _unwrap_compiled(self.alg.get_policy())\n        onnx_model = policy.as_onnx(verbose=verbose)\n        onnx_model.to(\"cpu\")\n        onnx_model.eval()\n\n        if not os.path.exists(path):\n            os.makedirs(path, exist_ok=True)\n        save_path = os.path.join(path, filename)\n\n        # Trace and save the model\n        torch.onnx.export(\n            onnx_model,\n            onnx_model.get_dummy_inputs(),  # type: ignore\n            save_path,\n            export_params=True,\n            opset_version=18,\n            verbose=verbose,\n            input_names=onnx_model.input_names,  # type: ignore\n            output_names=onnx_model.output_names,  # type: ignore\n        )",
+      "blobs": [
+        {
+          "sha": "42b614c050d621a0f9b8a7b8b987fe1904c64441",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_to_onnx",
+      "source": "def export_policy_to_onnx(self, path: str, filename: str = \"policy.onnx\", verbose: bool = False) -> None:\n        \"\"\"Export the model into an ONNX file.\"\"\"\n        policy = self._uncompiled_actor if self._uncompiled_actor is not None else self.alg.get_policy()\n        onnx_model = policy.as_onnx(verbose=verbose)\n        onnx_model.to(\"cpu\")\n        onnx_model.eval()\n\n        if not os.path.exists(path):\n            os.makedirs(path, exist_ok=True)\n        save_path = os.path.join(path, filename)\n\n        # Trace and save the model\n        torch.onnx.export(\n            onnx_model,\n            onnx_model.get_dummy_inputs(),  # type: ignore\n            save_path,\n            export_params=True,\n            opset_version=18,\n            verbose=verbose,\n            input_names=onnx_model.input_names,  # type: ignore\n            output_names=onnx_model.output_names,  # type: ignore\n        )",
+      "blobs": [
+        {
+          "sha": "29ced1d43024d78e1cd0acfae56591e57a08c007",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "d123f6671834c74c12e48a32e3e0b5089e2b74f7",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_to_onnx",
+      "source": "def export_policy_to_onnx(self, path: str, filename: str = \"policy.onnx\", verbose: bool = False) -> None:\n        \"\"\"Export the policy into an ONNX file.\"\"\"\n        onnx_model = self.alg.get_policy().as_onnx(verbose=verbose)\n        onnx_model.to(\"cpu\")\n        onnx_model.eval()\n\n        if not os.path.exists(path):\n            os.makedirs(path, exist_ok=True)\n        save_path = os.path.join(path, filename)\n\n        torch.onnx.export(\n            onnx_model,\n            onnx_model.get_dummy_inputs(),  # type: ignore\n            save_path,\n            export_params=True,\n            opset_version=18,\n            external_data=False,\n            verbose=verbose,\n            input_names=onnx_model.input_names,  # type: ignore\n            output_names=onnx_model.output_names,  # type: ignore\n        )",
+      "blobs": [
+        {
+          "sha": "a2f8280d628b7cc33a3fe581ceccd5b3d1c0c127",
+          "paths": [
+            "rsl_rl/runners/off_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_to_onnx",
+      "source": "def export_policy_to_onnx(self, path: str, filename: str = \"policy.onnx\", verbose: bool = False) -> None:\n        \"\"\"Export the model into an ONNX file.\"\"\"\n        onnx_model = self.alg.get_policy().as_onnx(verbose=verbose)\n        onnx_model.to(\"cpu\")\n        onnx_model.eval()\n\n        if not os.path.exists(path):\n            os.makedirs(path, exist_ok=True)\n        save_path = os.path.join(path, filename)\n\n        # Trace and save the model\n        torch.onnx.export(\n            onnx_model,\n            onnx_model.get_dummy_inputs(),  # type: ignore\n            save_path,\n            export_params=True,\n            opset_version=18,\n            external_data=False,\n            verbose=verbose,\n            input_names=onnx_model.input_names,  # type: ignore\n            output_names=onnx_model.output_names,  # type: ignore\n        )",
+      "blobs": [
+        {
+          "sha": "186a50bae0330ee9ab325e7f591869481a0228ec",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, list[torch.Tensor]]:\n        \"\"\"Return representative dummy inputs for ONNX tracing.\"\"\"\n        dummy_1d = torch.zeros(1, self.obs_dim_1d)\n        dummy_2d = []\n        for i in range(len(self.obs_groups_2d)):\n            h, w = self.obs_dims_2d[i]\n            c = self.obs_channels_2d[i]\n            dummy_2d.append(torch.zeros(1, c, h, w))\n        return (dummy_1d, dummy_2d)",
+      "blobs": [
+        {
+          "sha": "ebbf24a5c8c97ec27159e1978ddb44b9d0f56a95",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "c5af6a76510f0d0b23841b241d536c829d953dcf",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_to_onnx",
+      "source": "def export_policy_to_onnx(self, path: str, filename: str = \"policy.onnx\", verbose: bool = False) -> None:\n        \"\"\"Export the model into an ONNX file.\"\"\"\n        onnx_model = self.alg.get_policy().as_onnx(verbose=verbose)\n        onnx_model.to(\"cpu\")\n        onnx_model.eval()\n\n        if not os.path.exists(path):\n            os.makedirs(path, exist_ok=True)\n        save_path = os.path.join(path, filename)\n\n        # Trace and save the model\n        torch.onnx.export(\n            onnx_model,\n            onnx_model.get_dummy_inputs(),  # type: ignore\n            save_path,\n            export_params=True,\n            opset_version=18,\n            verbose=verbose,\n            input_names=onnx_model.input_names,  # type: ignore\n            output_names=onnx_model.output_names,  # type: ignore\n            dynamic_axes={},\n        )",
+      "blobs": [
+        {
+          "sha": "667c96abe5cddd98fc9bb77c612b503fc34324bb",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "ae00c774418ec904a66e9157f3bed1ccec93e3ea",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        },
+        {
+          "sha": "ea20a5d068be585594b6da2db9892dcac69a3808",
+          "paths": [
+            "rsl_rl/runners/on_policy_runner.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self) -> None:\n        \"\"\"ONNX-exported CNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        model, _obs = _make_cnn_model(\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.eval()\n\n        onnx_model = model.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n                dynamic_axes={},\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\", \"image\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "c1072cfc62ae392dd5885cec4c99b9d51a26e549",
+          "paths": [
+            "tests/models/test_cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self) -> None:\n        \"\"\"ONNX-exported MLP model should be a valid ONNX graph with correct I/O names.\"\"\"\n        actor, _obs = _make_mlp_model(stochastic=True)\n        actor.eval()\n\n        onnx_model = actor.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n                dynamic_axes={},\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == [\"obs\"]\n            assert [o.name for o in loaded.graph.output] == [\"actions\"]",
+      "blobs": [
+        {
+          "sha": "99330e252ffb9186d46bab9d9ed46964281a3c77",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_with_normalization",
+      "source": "def test_onnx_export_with_normalization(self) -> None:\n        \"\"\"ONNX export should produce a valid graph when obs normalization is enabled.\"\"\"\n        model, _obs = _make_mlp_model(stochastic=True, obs_normalization=True)\n        model.train()\n\n        for _ in range(50):\n            shifted_obs = TensorDict(\n                {\"policy\": torch.randn(NUM_ENVS, OBS_DIM) + 5.0},\n                batch_size=[NUM_ENVS],\n            )\n            model.update_normalization(shifted_obs)\n\n        model.eval()\n        onnx_model = model.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n                dynamic_axes={},\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)",
+      "blobs": [
+        {
+          "sha": "99330e252ffb9186d46bab9d9ed46964281a3c77",
+          "paths": [
+            "tests/models/test_mlp_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "test_onnx_export_model",
+      "source": "def test_onnx_export_model(self, rnn_type: str) -> None:\n        \"\"\"ONNX-exported RNN model should be a valid ONNX graph with correct I/O names.\"\"\"\n        obs = make_obs(1, OBS_DIM)\n        model = RNNModel(\n            obs,\n            {\"actor\": [\"policy\"]},\n            \"actor\",\n            NUM_ACTIONS,\n            hidden_dims=[32, 32],\n            activation=\"elu\",\n            rnn_type=rnn_type,\n            rnn_hidden_dim=16,\n            rnn_num_layers=1,\n            distribution_cfg={\"class_name\": \"GaussianDistribution\", \"init_std\": 1.0, \"std_type\": \"scalar\"},\n        )\n        model.eval()\n\n        onnx_model = model.as_onnx(verbose=False)\n        onnx_model.eval()\n\n        with tempfile.NamedTemporaryFile(suffix=\".onnx\") as f:\n            torch.onnx.export(\n                onnx_model,\n                onnx_model.get_dummy_inputs(),\n                f.name,\n                export_params=True,\n                opset_version=18,\n                input_names=onnx_model.input_names,\n                output_names=onnx_model.output_names,\n                dynamic_axes={},\n            )\n            loaded = onnx.load(f.name)\n            onnx.checker.check_model(loaded)\n\n            assert [i.name for i in loaded.graph.input] == onnx_model.input_names\n            assert [o.name for o in loaded.graph.output] == onnx_model.output_names",
+      "blobs": [
+        {
+          "sha": "3f90d8fa0b39ab99d6af3938f25cebfe1e41aec4",
+          "paths": [
+            "tests/models/test_rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:\n        dummy_1d = torch.zeros(1, self.obs_dim_1d)\n        dummy_2d = []\n        for i in range(len(self.obs_groups_2d)):\n            h, w = self.obs_dims_2d[i]\n            c = self.obs_channels_2d[i]\n            dummy_2d.append(torch.zeros(1, c, h, w))\n        return (dummy_1d, *dummy_2d)",
+      "blobs": [
+        {
+          "sha": "0ce11d972732f019e608f021545f3f065a11de5b",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "df3ff071c9faeb62a5cd9660e9e13cf111bf1f05",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "af3700365be7d283e7285ac26149d6a514dddee5",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "53519f66588e2ad4bde008c0f79c0804b9076a0d",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "603c74265b6d2b5553b9519935c00d37fa99fa3e",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "6d003c5c6392ca9f97eb150adc28d9bc9579b9f8",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "ece331b38d7d2253b3ac6d3dbc38b40a86d8b322",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "034cf46b6428e5b6a6270bbedb90de730de7be4c",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "f79cf4685a202902dda29d33fb428830e5798fae",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "905e7e36c4b99527f1d6f12d8194ebf9ce743f66",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "2e38e663b0aa38d5bd57de7f47ad9c19c0f44503",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "ddef978aa86deab3c8995d38e0ec13e1b02b45e1",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "e1aa043de528270226e566d432e38cfc02d0de8d",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "6b52dd0d2721ef64e660de7e7b6660252d7a3970",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        },
+        {
+          "sha": "a60a486525a7f2ef7b1065e3dd141efcdb6174ac",
+          "paths": [
+            "rsl_rl/models/cnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get_dummy_inputs",
+      "source": "def get_dummy_inputs(self) -> tuple[torch.Tensor, ...]:\n        obs = torch.zeros(1, self.input_size)\n        h_in = torch.zeros(self.num_layers, 1, self.hidden_size)\n        if self.rnn_type == \"lstm\":\n            c_in = torch.zeros(self.num_layers, 1, self.hidden_size)\n            return (obs, h_in, c_in)\n        return (obs, h_in)",
+      "blobs": [
+        {
+          "sha": "91f3be1e41c90225d65dae891d761eccdbb1e85c",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "52de48f5d53e438830387455d93b461e362f5a9a",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "3a7a272d7a454d2798d4ea28469c7611a1c58a11",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "fcf71056a73f4b4563421a423b7e62afe3d8483b",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "da4dc15e9c1564bf16505bf261ba14d533284e24",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "56812ccb2593a9365296c43e31b581bae122abbe",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "51df2c979a92382441bae1673b9bdc734daf2591",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        },
+        {
+          "sha": "b802bcc51b90b2920bdb1a7f0b859813b8b8934f",
+          "paths": [
+            "rsl_rl/models/rnn_model.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_policy_as_onnx",
+      "source": "def export_policy_as_onnx(\n    actor_critic: object, path: str, normalizer: object | None = None, filename=\"policy.onnx\", verbose=False, *args, **kwargs\n):\n    \"\"\"Export policy into a Torch ONNX file.\n\n    Args:\n        actor_critic: The actor-critic torch module.\n        normalizer: The empirical normalizer module. If None, Identity is used.\n        path: The path to the saving directory.\n        filename: The name of exported ONNX file. Defaults to \"policy.onnx\".\n        verbose: Whether to print the model summary. Defaults to False.\n    \"\"\"\n    if not os.path.exists(path):\n        os.makedirs(path, exist_ok=True)\n    policy_exporter = _OnnxPolicyExporter(actor_critic, normalizer, verbose)\n    policy_exporter.export(path, filename)",
+      "blobs": [
+        {
+          "sha": "ae2945ce395ee75eac377f289947e92af51713ed",
+          "paths": [
+            "robot_rl/utils/exporter.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_estimator_policy_as_onnx",
+      "source": "def export_estimator_policy_as_onnx(actor_critic: object, estimate_normalizer: object, path: str, filename=\"policy.onnx\", verbose=False) -> None:\n    \"\"\"Export policy into a Torch ONNX file.\n\n    Args:\n        actor_critic: The actor-critic torch module.\n        path: The path to the saving directory.\n        filename: The name of exported onnx file. Defaults to \"policy.onnx\".\n        verbose: Whether to print the model summary. Defaults to False.\n    \"\"\"\n    if not os.path.exists(path):\n        os.makedirs(path, exist_ok=True)\n    policy_exporter = _OnnxEstimatorPolicyExporter(actor_critic, estimate_normalizer, verbose)\n    policy_exporter.export(path, filename)",
+      "blobs": [
+        {
+          "sha": "ae2945ce395ee75eac377f289947e92af51713ed",
+          "paths": [
+            "robot_rl/utils/exporter.py"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "export_onnx",
+      "source": "def export_onnx(self) -> Tuple[torch.nn.Module, torch.Tensor, Dict]:\n        self.eval_mode()\n\n        class ONNXActor(torch.nn.Module):\n            def __init__(self, model: torch.nn.Module):\n                super().__init__()\n\n                self.model = model\n\n            def forward(self, x: torch.Tensor, hidden_state: Tuple[torch.Tensor, torch.Tensor] = None):\n                if hidden_state is None:\n                    return self.model(x)\n\n                data = self.model(x, hidden_state=hidden_state)\n                hidden_state = self.model.last_hidden_state\n\n                return data, hidden_state\n\n        model = ONNXActor(self.actor)\n        kwargs = dict(\n            export_params=True,\n            opset_version=11,\n            verbose=True,\n            dynamic_axes={},\n        )\n\n        kwargs[\"input_names\"] = [\"observations\"]\n        kwargs[\"output_names\"] = [\"actions\"]\n\n        args = torch.zeros(1, self._actor_input_size)\n\n        if self.actor.recurrent:\n            hidden_state = (\n                torch.zeros(self.actor._features[0].num_layers, 1, self.actor._features[0].hidden_size),\n                torch.zeros(self.actor._features[0].num_layers, 1, self.actor._features[0].hidden_size),\n            )\n            args = (args, {\"hidden_state\": hidden_state})\n\n        return model, args, kwargs",
+      "blobs": [
+        {
+          "sha": "6e3fe8b9ec8857a1139e9663bfc4c316c6cc563a",
+          "paths": [
+            "rsl_rl/algorithms/actor_critic.py"
+          ]
+        }
+      ]
+    }
+  ]
+}
