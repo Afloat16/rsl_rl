@@ -208,6 +208,14 @@ class OnPolicyRunner:
         save_path = os.path.join(path, filename)
 
         export_kwargs = {}
+        if dynamic_batch:
+            export_kwargs["dynamo"] = False
+            export_kwargs["dynamic_axes"] = {
+                name: {1 if policy.is_recurrent and index > 0 else 0: "batch"}
+                for names in (onnx_model.input_names, onnx_model.output_names)
+                for index, name in enumerate(names)
+            }
+
         # Trace and save the model
         torch.onnx.export(
             onnx_model,
