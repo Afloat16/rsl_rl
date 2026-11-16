@@ -400,6 +400,7 @@ def test_cuda_graph_delayed_actor_and_resume() -> None:
 
 
 def test_target_normalization_is_current_on_first_bootstrap() -> None:
+    """The first target forward uses the same updated input statistics as the online critic."""
     alg = _build_sac()
     alg.num_updates = 1
     obs = DummyEnv().get_observations() + 100.0
