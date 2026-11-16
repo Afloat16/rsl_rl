@@ -149,6 +149,21 @@ class TestSequentialConsistency:
     """Tests that hidden state accumulates context over sequential steps."""
 
     @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
+    def test_single_step_batch_preserves_time_dimension(self, rnn_type: str) -> None:
+        """A one-step update batch matches rollout inference without dropping its time axis."""
+        model, obs = _make_rnn_model(rnn_type=rnn_type)
+        expected = model(obs)
+        model.reset()
+        state = torch.zeros(1, NUM_ENVS, 16)
+        hidden_state = (state, state.clone()) if rnn_type == "lstm" else state
+        masks = torch.ones(1, NUM_ENVS, dtype=torch.bool)
+
+        actual = model(obs.unsqueeze(0), masks=masks, hidden_state=hidden_state)
+
+        assert actual.shape == (1, NUM_ENVS, NUM_ACTIONS)
+        torch.testing.assert_close(actual[0], expected)
+
+    @pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
     def test_hidden_state_accumulates_context(self, rnn_type: str) -> None:
         """Running multiple steps should change the output compared to a fresh model."""
         model, obs = _make_rnn_model(rnn_type=rnn_type)
