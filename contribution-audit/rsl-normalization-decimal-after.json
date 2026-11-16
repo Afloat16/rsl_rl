@@ -1,0 +1,179 @@
+{
+  "reference_precision": 100,
+  "cases": {
+    "constant_float32": [
+      {
+        "count": 8,
+        "mean": 1.9999999360571385e+38,
+        "reference_mean": 1.9999999360571385e+38,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 11,
+        "mean": 1.9999999360571385e+38,
+        "reference_mean": 1.9999999360571385e+38,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 12,
+        "mean": 1.9999999360571385e+38,
+        "reference_mean": 1.9999999360571385e+38,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      }
+    ],
+    "constant_float64": [
+      {
+        "count": 8,
+        "mean": 1e+308,
+        "reference_mean": 1e+308,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 11,
+        "mean": 1e+308,
+        "reference_mean": 1e+308,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 12,
+        "mean": 1e+308,
+        "reference_mean": 1e+308,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      }
+    ],
+    "opposite_means_float32": [
+      {
+        "count": 1,
+        "mean": -1.5000000520515486e+19,
+        "reference_mean": -1.5000000520515486e+19,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 2,
+        "mean": 0.0,
+        "reference_mean": 0.0,
+        "std": 1.5000000520515486e+19,
+        "reference_std": 1.5000000520515486e+19,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      }
+    ],
+    "opposite_means_float64": [
+      {
+        "count": 1,
+        "mean": -1e+154,
+        "reference_mean": -1e+154,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 2,
+        "mean": 0.0,
+        "reference_mean": 0.0,
+        "std": 1e+154,
+        "reference_std": 1e+154,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      }
+    ],
+    "weighted_float64": [
+      {
+        "count": 1,
+        "mean": 0.0,
+        "reference_mean": 0.0,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 3,
+        "mean": 0.6666666666666666,
+        "reference_mean": 0.6666666666666666,
+        "std": 0.4714045207910317,
+        "reference_std": 0.4714045207910317,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 2.220446049250313e-16,
+        "passed": true
+      }
+    ],
+    "pooled_float64": [
+      {
+        "count": 8,
+        "mean": 3.5,
+        "reference_mean": 3.5,
+        "std": 3.122498999199199,
+        "reference_std": 3.122498999199199,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 2.220446049250313e-16,
+        "passed": true
+      }
+    ],
+    "partitioned_float64": [
+      {
+        "count": 1,
+        "mean": 0.0,
+        "reference_mean": 0.0,
+        "std": 0.0,
+        "reference_std": 0.0,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 0.0,
+        "passed": true
+      },
+      {
+        "count": 3,
+        "mean": 0.6666666666666666,
+        "reference_mean": 0.6666666666666666,
+        "std": 0.4714045207910317,
+        "reference_std": 0.4714045207910317,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 2.220446049250313e-16,
+        "passed": true
+      },
+      {
+        "count": 8,
+        "mean": 3.4999999999999996,
+        "reference_mean": 3.5,
+        "std": 3.122498999199199,
+        "reference_std": 3.122498999199199,
+        "normalized_finite": true,
+        "normalized_max_abs_error": 2.220446049250313e-16,
+        "passed": true
+      }
+    ]
+  }
+}
