@@ -259,3 +259,28 @@ class TestDistillationMixedPrecision:
         assert torch.isfinite(torch.tensor(loss_dict["behavior"]))
         after = list(alg.student.parameters())
         assert any(not torch.equal(b, a) for b, a in zip(before, after)), "student params should change"
+
+
+@pytest.mark.parametrize("rnn_type", ["gru", "lstm"])
+def test_recurrent_student_backpropagates_across_episode_resets(rnn_type: str) -> None:
+    """Episode resets preserve gradients through the other student's recurrent trajectories."""
+    torch.manual_seed(43)
+    obs = make_obs(NUM_ENVS, OBS_DIM)
+    groups = {"student": ["policy"], "teacher": ["policy"]}
+    student = RNNModel(
+        obs, groups, "student", NUM_ACTIONS, hidden_dims=[8], rnn_hidden_dim=8, rnn_type=rnn_type
+    )
+    teacher = MLPModel(obs, groups, "teacher", NUM_ACTIONS, hidden_dims=[8])
+    storage = RolloutStorage("distillation", NUM_ENVS, NUM_STEPS, obs, [NUM_ACTIONS])
+    alg = Distillation(student, teacher, storage, gradient_length=3)
+    for _ in range(2):
+        with torch.inference_mode():
+            for step in range(NUM_STEPS):
+                alg.act(obs)
+                obs = make_obs(NUM_ENVS, OBS_DIM)
+                dones = torch.tensor([step % 3 == 1, False, step % 4 == 2, False])
+                alg.process_env_step(obs, torch.zeros(NUM_ENVS), dones, {})
+        before = [p.detach().clone() for p in student.parameters()]
+        losses, _ = alg.update()
+        assert torch.isfinite(torch.tensor(losses["behavior"]))
+        assert any(not torch.equal(p, old) for p, old in zip(student.parameters(), before))
