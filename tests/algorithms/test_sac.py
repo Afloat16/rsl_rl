@@ -402,6 +402,7 @@ def test_cuda_graph_delayed_actor_and_resume() -> None:
 def test_half_residual_onnx_keeps_rms_normalization_finite() -> None:
     """The exported residual network matches native RMS normalization for large half inputs."""
     from io import BytesIO
+
     from onnx.reference import ReferenceEvaluator
 
     from rsl_rl.modules import ResidualMLP
