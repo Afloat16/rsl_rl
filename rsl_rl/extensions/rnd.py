@@ -119,6 +119,7 @@ class RandomNetworkDistillation(nn.Module):
 
         # Make target network not trainable
         self.target.eval()
+        self.target.requires_grad_(False)
 
         # Optimizer for the predictor (the target is frozen)
         self.optimizer = torch.optim.Adam(self.predictor.parameters(), lr=learning_rate)
