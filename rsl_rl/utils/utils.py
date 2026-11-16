@@ -438,6 +438,8 @@ def reduce_gradients_in_buckets(params: Iterable[torch.nn.Parameter], world_size
         filled_bytes = 0
         end = start
         while end < len(grads):
+            if grads[end].dtype != grads[start].dtype or grads[end].device != grads[start].device:
+                break
             # A smaller gradient is packed with others until the bucket is full
             grad_bytes = grads[end].numel() * grads[end].element_size()
             if filled_bytes + grad_bytes > bucket_bytes:

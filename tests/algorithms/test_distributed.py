@@ -213,6 +213,24 @@ def _distillation_worker(rank: int, world_size: int, store_file: str, reduce_gra
 class TestReduceParametersLocal:
     """Single-process tests for ``reduce_parameters``."""
 
+    def test_mixed_dtypes_respect_bucket_size(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Packing different gradient dtypes cannot enlarge a buffer through type promotion."""
+        params = [nn.Parameter(torch.ones(2, dtype=torch.float32)), nn.Parameter(torch.ones(1, dtype=torch.float64))]
+        for param in params:
+            param.grad = torch.full_like(param, 3.0)
+        buffer_sizes = []
+
+        def all_reduce(tensor: torch.Tensor, op: object) -> None:
+            buffer_sizes.append(tensor.numel() * tensor.element_size())
+            tensor.mul_(2)
+
+        monkeypatch.setattr(torch.distributed, "all_reduce", all_reduce)
+        reduce_gradients_in_buckets(params, world_size=2, bucket_mb=16 / (1024 * 1024))
+
+        assert max(buffer_sizes) <= 16
+        for param in params:
+            torch.testing.assert_close(param.grad, torch.full_like(param, 3.0))
+
     def test_none_gradients_are_left_untouched(self) -> None:
         """Parameters without gradients must stay ``None`` and must not require dist init."""
         ppo, _obs = _build_ppo(multi_gpu_cfg={"global_rank": 0, "world_size": 2})
