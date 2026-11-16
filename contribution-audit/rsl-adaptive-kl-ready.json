@@ -1,1 +1,51 @@
-{"key":"adaptive_kl_monotonic","branch":"afloat16/adaptive-kl-lr-direction-20261116","validation_branch":"afloat16/rsl-validation-adaptive-kl-20261116","before_sha":"5ac92cef1461dca36d7a05a71faccc5a0b91fec6","before_tree":"ff8282ee4e3459289051d5f56272ab3068d0adf0","validation_pr":18,"base_sha":"ea39cc2ae4a615c3d70d4ed9055d8b6e3b4c8acd","status":"ready","local_before":"2 failed, 29 passed","local_after":"274 passed, 6 skipped; distributed module excluded","before_run":43910781906,"before_job":133451778249,"after_sha":"a23bc1267d6bd5401a29e65c2d0c80a6451216ea","after_tree":"04fda1480c19697c0ee3dd0c162a82c6c3d72886","repo":"leggedrobotics/rsl_rl","fork":"Afloat16/rsl_rl","title":"Preserve the direction of adaptive KL learning-rate changes","body":"## Problem\n\nPPO's adaptive schedule can reverse its intended response when an explicitly configured or restored learning rate lies outside its usual bounds:\n\n- With `learning_rate=1e-6`, a high KL changes the rate to `1e-5`: a tenfold **increase** in the branch intended to reduce the update size.\n- With `learning_rate=0.02`, a small positive KL changes the rate to `0.01`: a **decrease** in the branch intended to increase it.\n\nThese values are applied to the actual optimizer before its step, so this affects model updates, not only the reported rate.\n\n## Changes\n\nBound each adaptive adjustment by the current learning rate as well as the existing floor or ceiling. A high-KL adjustment can only lower or retain the rate; a low-KL adjustment can only raise or retain it. Rates within the existing `[1e-5, 1e-2]` range keep their current behavior. A rate outside that range is retained when the existing bound would otherwise reverse the adjustment; this does not add continued scaling beyond the bounds or a new configuration option.\n\n## Validation\n\nThe regressions collect a real rollout, shift the Gaussian policy mean to produce a measured high or low KL, and run a complete PPO update. Actor and critic parameters are compared exactly with an independent fixed-rate PPO update using the expected rate. The cases cover both inversions and both ordinary in-range directions; existing tests retain the boundary-clamping cases.\n\n- [Original implementation with the regressions](https://github.com/Afloat16/rsl_rl/actions/runs/43910781906): **2 failed, 277 passed, 6 skipped**.\n- [Fixed complete suite](https://github.com/Afloat16/rsl_rl/actions/runs/43911365103): all Python **3.9, 3.10, 3.11 and 3.12** jobs passed; the recorded Python 3.12 job reports **279 passed, 6 skipped**.\n- [Lint](https://github.com/Afloat16/rsl_rl/actions/runs/43911365120), [documentation](https://github.com/Afloat16/rsl_rl/actions/runs/43911365150), and local `pre-commit run --all-files` passed.\n","head":"5a4811e3403b96085661ee99f575d0f8a58e8b6d","tree":"04fda1480c19697c0ee3dd0c162a82c6c3d72886","base":"main","before":{"sha":"5ac92cef1461dca36d7a05a71faccc5a0b91fec6","run":43910781906,"job":133451778249,"result":"2 failed, 277 passed, 6 skipped"},"after":{"sha":"a23bc1267d6bd5401a29e65c2d0c80a6451216ea","run":43911365103,"job":133453825959,"result":"279 passed, 6 skipped","python_versions":["3.9","3.10","3.11","3.12"],"lint":43911365120,"docs":43911365150},"maintainer_can_modify":false,"policy_exception":"Automatic approval review rejected maintainer-edit/secrets access on preceding PR; use the safer unchecked permission and record AGENTS exception","compare_url":"https://github.com/leggedrobotics/rsl_rl/compare/main...Afloat16:rsl_rl:afloat16/adaptive-kl-lr-direction-20261116?expand=1","dedupe":"235 historical heads / 1735 Python blobs; all 14 related AST variants retain the same reversing clamp, including older renamed paths and intermediate commits"}
+{
+  "key": "adaptive_kl_monotonic",
+  "branch": "afloat16/adaptive-kl-lr-direction-20261116",
+  "validation_branch": "afloat16/rsl-validation-adaptive-kl-20261116",
+  "before_sha": "5ac92cef1461dca36d7a05a71faccc5a0b91fec6",
+  "before_tree": "ff8282ee4e3459289051d5f56272ab3068d0adf0",
+  "validation_pr": 18,
+  "base_sha": "ea39cc2ae4a615c3d70d4ed9055d8b6e3b4c8acd",
+  "status": "published",
+  "local_before": "2 failed, 29 passed",
+  "local_after": "274 passed, 6 skipped; distributed module excluded",
+  "before_run": 43910781906,
+  "before_job": 133451778249,
+  "after_sha": "a23bc1267d6bd5401a29e65c2d0c80a6451216ea",
+  "after_tree": "04fda1480c19697c0ee3dd0c162a82c6c3d72886",
+  "repo": "leggedrobotics/rsl_rl",
+  "fork": "Afloat16/rsl_rl",
+  "title": "Preserve the direction of adaptive KL learning-rate changes",
+  "body": "## Problem\n\nPPO's adaptive schedule can reverse its intended response when an explicitly configured or restored learning rate lies outside its usual bounds:\n\n- With `learning_rate=1e-6`, a high KL changes the rate to `1e-5`: a tenfold **increase** in the branch intended to reduce the update size.\n- With `learning_rate=0.02`, a small positive KL changes the rate to `0.01`: a **decrease** in the branch intended to increase it.\n\nThese values are applied to the actual optimizer before its step, so this affects model updates, not only the reported rate.\n\n## Changes\n\nBound each adaptive adjustment by the current learning rate as well as the existing floor or ceiling. A high-KL adjustment can only lower or retain the rate; a low-KL adjustment can only raise or retain it. Rates within the existing `[1e-5, 1e-2]` range keep their current behavior. A rate outside that range is retained when the existing bound would otherwise reverse the adjustment; this does not add continued scaling beyond the bounds or a new configuration option.\n\n## Validation\n\nThe regressions collect a real rollout, shift the Gaussian policy mean to produce a measured high or low KL, and run a complete PPO update. Actor and critic parameters are compared exactly with an independent fixed-rate PPO update using the expected rate. The cases cover both inversions and both ordinary in-range directions; existing tests retain the boundary-clamping cases.\n\n- [Original implementation with the regressions](https://github.com/Afloat16/rsl_rl/actions/runs/43910781906): **2 failed, 277 passed, 6 skipped**.\n- [Fixed complete suite](https://github.com/Afloat16/rsl_rl/actions/runs/43911365103): all Python **3.9, 3.10, 3.11 and 3.12** jobs passed; the recorded Python 3.12 job reports **279 passed, 6 skipped**.\n- [Lint](https://github.com/Afloat16/rsl_rl/actions/runs/43911365120), [documentation](https://github.com/Afloat16/rsl_rl/actions/runs/43911365150), and local `pre-commit run --all-files` passed.\n",
+  "head": "5a4811e3403b96085661ee99f575d0f8a58e8b6d",
+  "tree": "04fda1480c19697c0ee3dd0c162a82c6c3d72886",
+  "base": "main",
+  "before": {
+    "sha": "5ac92cef1461dca36d7a05a71faccc5a0b91fec6",
+    "run": 43910781906,
+    "job": 133451778249,
+    "result": "2 failed, 277 passed, 6 skipped"
+  },
+  "after": {
+    "sha": "a23bc1267d6bd5401a29e65c2d0c80a6451216ea",
+    "run": 43911365103,
+    "job": 133453825959,
+    "result": "279 passed, 6 skipped",
+    "python_versions": [
+      "3.9",
+      "3.10",
+      "3.11",
+      "3.12"
+    ],
+    "lint": 43911365120,
+    "docs": 43911365150
+  },
+  "maintainer_can_modify": false,
+  "policy_exception": "Automatic approval review rejected maintainer-edit/secrets access on preceding PR; use the safer unchecked permission and record AGENTS exception",
+  "compare_url": "https://github.com/leggedrobotics/rsl_rl/compare/main...Afloat16:rsl_rl:afloat16/adaptive-kl-lr-direction-20261116?expand=1",
+  "dedupe": "235 historical heads / 1735 Python blobs; all 14 related AST variants retain the same reversing clamp, including older renamed paths and intermediate commits",
+  "number": 298,
+  "url": "https://github.com/leggedrobotics/rsl_rl/pull/298",
+  "published_at": "2026-11-16T16:53:51Z",
+  "verified_at": "2026-11-16T16:54:19.255755+00:00"
+}
