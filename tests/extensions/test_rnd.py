@@ -100,6 +100,24 @@ class TestIntrinsicReward:
 class TestPredictorLoss:
     """Tests for :meth:`RandomNetworkDistillation.compute_loss` and the built-in optimizer."""
 
+    def test_target_forward_does_not_save_backward_activations(self) -> None:
+        """The fixed target does not retain activations for unused parameter gradients."""
+        rnd, obs = _make_rnd()
+        saved = []
+
+        def pack(tensor: torch.Tensor) -> torch.Tensor:
+            saved.append(tensor)
+            return tensor
+
+        with torch.autograd.graph.saved_tensors_hooks(pack, lambda tensor: tensor):
+            target = rnd.target(rnd.get_rnd_state(obs))
+
+        assert not saved
+        assert not target.requires_grad
+        rnd.compute_loss(obs).backward()
+        assert any(parameter.grad is not None for parameter in rnd.predictor.parameters())
+        assert all(parameter.grad is None for parameter in rnd.target.parameters())
+
     def test_compute_loss_is_finite_scalar(self) -> None:
         """The MSE loss should be a finite, non-negative scalar tensor."""
         rnd, obs = _make_rnd()
