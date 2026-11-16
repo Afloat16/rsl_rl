@@ -1,0 +1,704 @@
+﻿2026-11-16T16:47:31.5036838Z Current runner version: '2.338.2'
+2026-11-16T16:47:31.5055954Z ##[group]Runner Image Provisioner
+2026-11-16T16:47:31.5056607Z Hosted Compute Agent
+2026-11-16T16:47:31.5057010Z Version: 20261103.629
+2026-11-16T16:47:31.5057542Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-16T16:47:31.5058086Z Build Date: 2026-11-03T17:26:59Z
+2026-11-16T16:47:31.5058585Z Worker ID: {0fc2bb9f-c9a7-4afd-a3d5-4fc808b03e84}
+2026-11-16T16:47:31.5059105Z Region: us-west-2
+2026-11-16T16:47:31.5059484Z Cloud: AWS
+2026-11-16T16:47:31.5059892Z ##[endgroup]
+2026-11-16T16:47:31.5061224Z ##[group]Operating System
+2026-11-16T16:47:31.5061709Z Ubuntu
+2026-11-16T16:47:31.5062088Z 24.04.5
+2026-11-16T16:47:31.5062455Z LTS
+2026-11-16T16:47:31.5062858Z ##[endgroup]
+2026-11-16T16:47:31.5063264Z ##[group]Runner Image
+2026-11-16T16:47:31.5063682Z Image: ubuntu-24.04
+2026-11-16T16:47:31.5064136Z Version: 20261111.127.1
+2026-11-16T16:47:31.5065059Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261111.127/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-16T16:47:31.5066180Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261111.127
+2026-11-16T16:47:31.5066867Z ##[endgroup]
+2026-11-16T16:47:31.5067654Z ##[group]GITHUB_TOKEN Permissions
+2026-11-16T16:47:31.5069238Z Contents: read
+2026-11-16T16:47:31.5069674Z Metadata: read
+2026-11-16T16:47:31.5070069Z ##[endgroup]
+2026-11-16T16:47:31.5071828Z Secret source: Actions
+2026-11-16T16:47:31.5072490Z Cache mode: write
+2026-11-16T16:47:31.5072994Z Prepare workflow directory
+2026-11-16T16:47:31.5305274Z Prepare all required actions
+2026-11-16T16:47:31.5342448Z Getting action download info
+2026-11-16T16:47:31.8587906Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-16T16:47:34.7765614Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-16T16:47:35.1704058Z Complete job name: test (3.12)
+2026-11-16T16:47:35.2259784Z ##[group]Run actions/checkout@v4
+2026-11-16T16:47:35.2260374Z with:
+2026-11-16T16:47:35.2260662Z   repository: Afloat16/rsl_rl
+2026-11-16T16:47:35.2263358Z   token: ***
+2026-11-16T16:47:35.2263672Z   ssh-strict: true
+2026-11-16T16:47:35.2263956Z   ssh-user: git
+2026-11-16T16:47:35.2264270Z   persist-credentials: true
+2026-11-16T16:47:35.2264575Z   clean: true
+2026-11-16T16:47:35.2264870Z   sparse-checkout-cone-mode: true
+2026-11-16T16:47:35.2265248Z   fetch-depth: 1
+2026-11-16T16:47:35.2265511Z   fetch-tags: false
+2026-11-16T16:47:35.2265818Z   show-progress: true
+2026-11-16T16:47:35.2266110Z   lfs: false
+2026-11-16T16:47:35.2266383Z   submodules: false
+2026-11-16T16:47:35.2266698Z   set-safe-directory: true
+2026-11-16T16:47:35.2267020Z   allow-unsafe-pr-checkout: false
+2026-11-16T16:47:35.2267486Z ##[endgroup]
+2026-11-16T16:47:40.8710019Z Syncing repository: Afloat16/rsl_rl
+2026-11-16T16:47:40.8711663Z ##[group]Getting Git version info
+2026-11-16T16:47:40.8712191Z Working directory is '/home/runner/work/rsl_rl/rsl_rl'
+2026-11-16T16:47:40.8712842Z [command]/usr/bin/git version
+2026-11-16T16:47:41.2538486Z git version 2.56.1
+2026-11-16T16:47:41.2554039Z ##[endgroup]
+2026-11-16T16:47:41.2566170Z Temporarily overriding HOME='/home/runner/work/_temp/b8101f8c-66d5-46e3-9152-63b7b5138bf4' before making global git config changes
+2026-11-16T16:47:41.2567192Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-16T16:47:41.2570415Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/rsl_rl/rsl_rl
+2026-11-16T16:47:41.3356640Z Deleting the contents of '/home/runner/work/rsl_rl/rsl_rl'
+2026-11-16T16:47:41.3361395Z ##[group]Initializing the repository
+2026-11-16T16:47:41.3366230Z [command]/usr/bin/git init /home/runner/work/rsl_rl/rsl_rl
+2026-11-16T16:47:41.5254992Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-16T16:47:41.5255782Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-16T16:47:41.5256567Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-16T16:47:41.5257488Z hint: call:
+2026-11-16T16:47:41.5257812Z hint:
+2026-11-16T16:47:41.5258195Z hint: 	git config --global init.defaultBranch <name>
+2026-11-16T16:47:41.5258550Z hint:
+2026-11-16T16:47:41.5258921Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-16T16:47:41.5259374Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-16T16:47:41.5260188Z hint:
+2026-11-16T16:47:41.5260433Z hint: 	git branch -m <name>
+2026-11-16T16:47:41.5260741Z hint:
+2026-11-16T16:47:41.5261513Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-16T16:47:41.5262117Z Initialized empty Git repository in /home/runner/work/rsl_rl/rsl_rl/.git/
+2026-11-16T16:47:41.5268461Z [command]/usr/bin/git remote add origin https://github.com/Afloat16/rsl_rl
+2026-11-16T16:47:41.5318802Z ##[endgroup]
+2026-11-16T16:47:41.5319337Z ##[group]Disabling automatic garbage collection
+2026-11-16T16:47:41.5321884Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-16T16:47:41.5345530Z ##[endgroup]
+2026-11-16T16:47:41.5346078Z ##[group]Setting up auth
+2026-11-16T16:47:41.5350711Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T16:47:41.5377117Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T16:47:42.0758117Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T16:47:42.0787149Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T16:47:42.0946560Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T16:47:42.0970754Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T16:47:42.1130051Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-16T16:47:42.1159320Z ##[endgroup]
+2026-11-16T16:47:42.1160033Z ##[group]Fetching the repository
+2026-11-16T16:47:42.1173843Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +5094cae304bf00c112b8be60e933f576973a4997:refs/remotes/pull/18/merge
+2026-11-16T16:47:42.7623424Z From https://github.com/Afloat16/rsl_rl
+2026-11-16T16:47:42.7623942Z  * [new ref]         5094cae304bf00c112b8be60e933f576973a4997 -> pull/18/merge
+2026-11-16T16:47:42.7649207Z ##[endgroup]
+2026-11-16T16:47:42.7649770Z ##[group]Determining the checkout info
+2026-11-16T16:47:42.7650177Z ##[endgroup]
+2026-11-16T16:47:42.7650557Z [command]/usr/bin/git sparse-checkout disable
+2026-11-16T16:47:42.7712010Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-16T16:47:42.7736192Z ##[group]Checking out the ref
+2026-11-16T16:47:42.7737906Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/18/merge
+2026-11-16T16:47:42.7814343Z Note: switching to 'refs/remotes/pull/18/merge'.
+2026-11-16T16:47:42.7814598Z 
+2026-11-16T16:47:42.7814800Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-16T16:47:42.7815225Z changes and commit them, and you can discard any commits you make in this
+2026-11-16T16:47:42.7815661Z state without impacting any branches by switching back to a branch.
+2026-11-16T16:47:42.7815907Z 
+2026-11-16T16:47:42.7816064Z If you want to create a new branch to retain commits you create, you may
+2026-11-16T16:47:42.7816451Z do so (now or later) by using -c with the switch command. Example:
+2026-11-16T16:47:42.7816694Z 
+2026-11-16T16:47:42.7816844Z   git switch -c <new-branch-name>
+2026-11-16T16:47:42.7817007Z 
+2026-11-16T16:47:42.7817172Z Or undo this operation with:
+2026-11-16T16:47:42.7817455Z 
+2026-11-16T16:47:42.7817579Z   git switch -
+2026-11-16T16:47:42.7817751Z 
+2026-11-16T16:47:42.7817927Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-16T16:47:42.7818298Z 
+2026-11-16T16:47:42.7818591Z HEAD is now at 5094cae Merge a23bc1267d6bd5401a29e65c2d0c80a6451216ea into ea39cc2ae4a615c3d70d4ed9055d8b6e3b4c8acd
+2026-11-16T16:47:42.7825325Z ##[endgroup]
+2026-11-16T16:47:42.7859981Z [command]/usr/bin/git log -1 --format=%H
+2026-11-16T16:47:42.7877381Z 5094cae304bf00c112b8be60e933f576973a4997
+2026-11-16T16:47:42.8093394Z ##[group]Run actions/setup-python@v5
+2026-11-16T16:47:42.8093678Z with:
+2026-11-16T16:47:42.8093920Z   python-version: 3.12
+2026-11-16T16:47:42.8094187Z   cache: pip
+2026-11-16T16:47:42.8094408Z   check-latest: false
+2026-11-16T16:47:42.8096764Z   token: ***
+2026-11-16T16:47:42.8097013Z   update-environment: true
+2026-11-16T16:47:42.8097302Z   allow-prereleases: false
+2026-11-16T16:47:42.8097565Z   freethreaded: false
+2026-11-16T16:47:42.8097803Z ##[endgroup]
+2026-11-16T16:47:42.9126237Z ##[group]Installed versions
+2026-11-16T16:47:43.1444856Z (node:2151) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-16T16:47:43.1445722Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-16T16:47:43.1446292Z Successfully set up CPython (3.12.16)
+2026-11-16T16:47:43.1447087Z ##[endgroup]
+2026-11-16T16:47:43.2185229Z [command]/opt/hostedtoolcache/Python/3.12.16/x64/bin/pip cache dir
+2026-11-16T16:47:48.1827317Z /home/runner/.cache/pip
+2026-11-16T16:47:48.5443257Z pip cache is not found
+2026-11-16T16:47:48.5562004Z ##[group]Run python -m pip install --upgrade pip
+2026-11-16T16:47:48.5562440Z [36;1mpython -m pip install --upgrade pip[0m
+2026-11-16T16:47:48.5562901Z [36;1mpip install torch --index-url https://download.pytorch.org/whl/cpu[0m
+2026-11-16T16:47:48.5563265Z [36;1mpip install -e ".[test]"[0m
+2026-11-16T16:47:48.9745895Z shell: /usr/bin/bash -e {0}
+2026-11-16T16:47:48.9746215Z env:
+2026-11-16T16:47:48.9746506Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:47:48.9746938Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+2026-11-16T16:47:48.9747345Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:47:48.9747701Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:47:48.9748088Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:47:48.9748437Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+2026-11-16T16:47:48.9748768Z ##[endgroup]
+2026-11-16T16:47:51.3883904Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (26.3)
+2026-11-16T16:47:53.3007025Z Looking in indexes: https://download.pytorch.org/whl/cpu
+2026-11-16T16:47:53.4216287Z Collecting torch
+2026-11-16T16:47:53.4820854Z   Downloading torch-2.15.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (35 kB)
+2026-11-16T16:47:53.5093114Z Collecting filelock (from torch)
+2026-11-16T16:47:53.5638531Z   Downloading filelock-4.2.4-py3-none-any.whl.metadata (2.0 kB)
+2026-11-16T16:47:53.5829972Z Collecting typing-extensions>=4.13.0 (from torch)
+2026-11-16T16:47:53.5915163Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-11-16T16:47:53.6050449Z Collecting setuptools>=77.0.3 (from torch)
+2026-11-16T16:47:53.6129511Z   Downloading setuptools-78.1.0-py3-none-any.whl.metadata (6.6 kB)
+2026-11-16T16:47:53.6320103Z Collecting sympy>=1.13.3 (from torch)
+2026-11-16T16:47:53.6419352Z   Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+2026-11-16T16:47:53.6795578Z Collecting networkx>=2.5.1 (from torch)
+2026-11-16T16:47:53.6882505Z   Downloading networkx-3.7-py3-none-any.whl.metadata (6.7 kB)
+2026-11-16T16:47:53.7027357Z Collecting jinja2 (from torch)
+2026-11-16T16:47:53.7110122Z   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+2026-11-16T16:47:53.7308741Z Collecting fsspec>=0.8.5 (from torch)
+2026-11-16T16:47:53.7393469Z   Downloading fsspec-2026.9.0-py3-none-any.whl.metadata (10 kB)
+2026-11-16T16:47:53.7631799Z Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch)
+2026-11-16T16:47:53.7743542Z   Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+2026-11-16T16:47:53.7949526Z Collecting MarkupSafe>=2.0 (from jinja2->torch)
+2026-11-16T16:47:53.8045529Z   Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+2026-11-16T16:47:53.8308713Z Downloading torch-2.15.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (209.5 MB)
+2026-11-16T16:47:54.7490038Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 209.5/209.5 MB 232.7 MB/s  0:00:00
+2026-11-16T16:47:54.7579151Z Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+2026-11-16T16:47:54.7850208Z Downloading networkx-3.7-py3-none-any.whl (2.1 MB)
+2026-11-16T16:47:54.8108505Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 101.1 MB/s  0:00:00
+2026-11-16T16:47:54.8191488Z Downloading setuptools-78.1.0-py3-none-any.whl (1.3 MB)
+2026-11-16T16:47:54.8342991Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 82.9 MB/s  0:00:00
+2026-11-16T16:47:54.8432484Z Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+2026-11-16T16:47:54.8670072Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 276.9 MB/s  0:00:00
+2026-11-16T16:47:54.8777269Z Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+2026-11-16T16:47:54.8812503Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 142.9 MB/s  0:00:00
+2026-11-16T16:47:54.8904444Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-11-16T16:47:54.9005041Z Downloading filelock-4.2.4-py3-none-any.whl (162 kB)
+2026-11-16T16:47:54.9144157Z Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+2026-11-16T16:47:54.9242448Z Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+2026-11-16T16:47:55.2942863Z Installing collected packages: mpmath, typing-extensions, sympy, setuptools, networkx, MarkupSafe, fsspec, filelock, jinja2, torch
+2026-11-16T16:48:10.6521484Z 
+2026-11-16T16:48:10.6534579Z Successfully installed MarkupSafe-3.0.3 filelock-4.2.4 fsspec-2026.9.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.7 setuptools-78.1.0 sympy-1.14.0 torch-2.15.0+cpu typing-extensions-4.16.0
+2026-11-16T16:48:11.4959348Z Obtaining file:///home/runner/work/rsl_rl/rsl_rl
+2026-11-16T16:48:11.4973483Z   Installing build dependencies: started
+2026-11-16T16:48:13.0449272Z   Installing build dependencies: finished with status 'done'
+2026-11-16T16:48:13.0454347Z   Checking if build backend supports build_editable: started
+2026-11-16T16:48:13.4493303Z   Checking if build backend supports build_editable: finished with status 'done'
+2026-11-16T16:48:13.4499885Z   Getting requirements to build editable: started
+2026-11-16T16:48:13.6936521Z   Getting requirements to build editable: finished with status 'done'
+2026-11-16T16:48:13.6942698Z   /tmp/pip-build-env-047al8i2/overlay/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:55: BuildBackendWarning: 'tool.setuptools.license-files' is deprecated in favor of 'project.license-files' (available on setuptools>=77.0.0).
+2026-11-16T16:48:13.6943654Z   !!
+2026-11-16T16:48:13.6943916Z   
+2026-11-16T16:48:13.6944190Z           ********************************************************************************
+2026-11-16T16:48:13.6944545Z   
+2026-11-16T16:48:13.6944878Z           By 2027-Feb-18, you need to update your project and remove deprecated calls
+2026-11-16T16:48:13.6945266Z           or your builds will no longer be supported.
+2026-11-16T16:48:13.6945541Z   
+2026-11-16T16:48:13.6945956Z           See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license-files for details.
+2026-11-16T16:48:13.6946769Z           ********************************************************************************
+2026-11-16T16:48:13.6947071Z   
+2026-11-16T16:48:13.6947283Z   !!
+2026-11-16T16:48:13.6947504Z     _apply_tool_table(dist, config, filename)
+2026-11-16T16:48:13.6949477Z   Preparing editable metadata (pyproject.toml): started
+2026-11-16T16:48:13.8399465Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+2026-11-16T16:48:13.8403689Z   /tmp/pip-build-env-047al8i2/overlay/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:55: BuildBackendWarning: 'tool.setuptools.license-files' is deprecated in favor of 'project.license-files' (available on setuptools>=77.0.0).
+2026-11-16T16:48:13.8404616Z   !!
+2026-11-16T16:48:13.8404917Z   
+2026-11-16T16:48:13.8405268Z           ********************************************************************************
+2026-11-16T16:48:13.8405606Z   
+2026-11-16T16:48:13.8405963Z           By 2027-Feb-18, you need to update your project and remove deprecated calls
+2026-11-16T16:48:13.8406389Z           or your builds will no longer be supported.
+2026-11-16T16:48:13.8406711Z   
+2026-11-16T16:48:13.8407185Z           See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license-files for details.
+2026-11-16T16:48:13.8407722Z           ********************************************************************************
+2026-11-16T16:48:13.8408054Z   
+2026-11-16T16:48:13.8408250Z   !!
+2026-11-16T16:48:13.8408458Z     _apply_tool_table(dist, config, filename)
+2026-11-16T16:48:13.8435012Z Requirement already satisfied: torch>=2.6.0 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from rsl-rl-lib==5.5.2) (2.15.0+cpu)
+2026-11-16T16:48:13.9320027Z Collecting tensordict>=0.7.0 (from rsl-rl-lib==5.5.2)
+2026-11-16T16:48:13.9875207Z   Downloading tensordict-0.15.6-py3-none-any.whl.metadata (13 kB)
+2026-11-16T16:48:14.1602539Z Collecting numpy>=1.16.4 (from rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.1692110Z   Downloading numpy-2.5.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+2026-11-16T16:48:14.1871832Z Collecting tensorboard (from rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.1964700Z   Downloading tensorboard-2.21.0-py3-none-any.whl.metadata (1.8 kB)
+2026-11-16T16:48:14.2170739Z Collecting GitPython (from rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.2263057Z   Downloading gitpython-3.2.1-py3-none-any.whl.metadata (13 kB)
+2026-11-16T16:48:14.2784204Z Collecting onnx (from rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.2870005Z   Downloading onnx-1.23.2-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.7 kB)
+2026-11-16T16:48:14.3488270Z Collecting onnxscript>=0.5.4 (from rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.3582262Z   Downloading onnxscript-0.7.2-py3-none-any.whl.metadata (13 kB)
+2026-11-16T16:48:14.3859168Z Collecting pytest (from rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.3947777Z   Downloading pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+2026-11-16T16:48:14.4210491Z Collecting ml_dtypes (from onnxscript>=0.5.4->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.4298396Z   Downloading ml_dtypes-0.7.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (11 kB)
+2026-11-16T16:48:14.4453240Z Collecting onnx_ir<2,>=0.1.16 (from onnxscript>=0.5.4->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.4539633Z   Downloading onnx_ir-1.1.0-py3-none-any.whl.metadata (3.3 kB)
+2026-11-16T16:48:14.4619242Z Collecting packaging (from onnxscript>=0.5.4->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.4628077Z   Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+2026-11-16T16:48:14.4639575Z Requirement already satisfied: typing_extensions>=4.10 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from onnxscript>=0.5.4->rsl-rl-lib==5.5.2) (4.16.0)
+2026-11-16T16:48:14.4655878Z Requirement already satisfied: sympy>=1.13 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from onnx_ir<2,>=0.1.16->onnxscript>=0.5.4->rsl-rl-lib==5.5.2) (1.14.0)
+2026-11-16T16:48:14.5671455Z Collecting protobuf>=6.31.1 (from onnx->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.5759704Z   Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+2026-11-16T16:48:14.5800168Z Requirement already satisfied: mpmath<1.4,>=1.1.0 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from sympy>=1.13->onnx_ir<2,>=0.1.16->onnxscript>=0.5.4->rsl-rl-lib==5.5.2) (1.3.0)
+2026-11-16T16:48:14.5952382Z Collecting cloudpickle (from tensordict>=0.7.0->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.6038952Z   Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+2026-11-16T16:48:14.6187333Z Collecting pyvers<0.3.0,>=0.2.0 (from tensordict>=0.7.0->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.6282968Z   Downloading pyvers-0.2.3-py3-none-any.whl.metadata (5.8 kB)
+2026-11-16T16:48:14.6319261Z Requirement already satisfied: filelock in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from torch>=2.6.0->rsl-rl-lib==5.5.2) (4.2.4)
+2026-11-16T16:48:14.6323777Z Requirement already satisfied: setuptools>=77.0.3 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from torch>=2.6.0->rsl-rl-lib==5.5.2) (78.1.0)
+2026-11-16T16:48:14.6327539Z Requirement already satisfied: networkx>=2.5.1 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from torch>=2.6.0->rsl-rl-lib==5.5.2) (3.7)
+2026-11-16T16:48:14.6330515Z Requirement already satisfied: jinja2 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from torch>=2.6.0->rsl-rl-lib==5.5.2) (3.1.6)
+2026-11-16T16:48:14.6333944Z Requirement already satisfied: fsspec>=0.8.5 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from torch>=2.6.0->rsl-rl-lib==5.5.2) (2026.9.0)
+2026-11-16T16:48:14.6534820Z Collecting gitdb<5,>=4.0.1 (from GitPython->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.6620058Z   Downloading gitdb-4.0.12-py3-none-any.whl.metadata (1.2 kB)
+2026-11-16T16:48:14.6760142Z Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->GitPython->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.6856667Z   Downloading smmap-5.0.3-py3-none-any.whl.metadata (4.6 kB)
+2026-11-16T16:48:14.6889218Z Requirement already satisfied: MarkupSafe>=2.0 in /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages (from jinja2->torch>=2.6.0->rsl-rl-lib==5.5.2) (3.0.3)
+2026-11-16T16:48:14.7013632Z Collecting iniconfig>=2 (from pytest->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.7101771Z   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+2026-11-16T16:48:14.7253343Z Collecting pluggy<2,>=1.6 (from pytest->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.7342772Z   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+2026-11-16T16:48:14.7527504Z Collecting pygments>=2.15 (from pytest->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.7616869Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+2026-11-16T16:48:14.7776128Z Collecting absl-py>=0.4 (from tensorboard->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:14.7861689Z   Downloading absl_py-2.5.1-py3-none-any.whl.metadata (3.3 kB)
+2026-11-16T16:48:15.1552013Z Collecting grpcio<2.0,>=1.74.0 (from tensorboard->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:15.1648080Z   Downloading grpcio-1.85.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+2026-11-16T16:48:15.1827455Z Collecting markdown>=2.6.8 (from tensorboard->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:15.1914358Z   Downloading markdown-3.11.3-py3-none-any.whl.metadata (5.1 kB)
+2026-11-16T16:48:15.3035608Z Collecting pillow (from tensorboard->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:15.3132308Z   Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+2026-11-16T16:48:15.3302568Z Collecting tensorboard-data-server<0.8.0,>=0.7.0 (from tensorboard->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:15.3388215Z   Downloading tensorboard_data_server-0.7.2-py3-none-manylinux_2_31_x86_64.whl.metadata (1.1 kB)
+2026-11-16T16:48:15.3575569Z Collecting werkzeug>=1.0.1 (from tensorboard->rsl-rl-lib==5.5.2)
+2026-11-16T16:48:15.3665533Z   Downloading werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+2026-11-16T16:48:15.3808049Z Downloading numpy-2.5.5-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (15.7 MB)
+2026-11-16T16:48:15.4951912Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.7/15.7 MB 167.4 MB/s  0:00:00
+2026-11-16T16:48:15.5044399Z Downloading onnxscript-0.7.2-py3-none-any.whl (754 kB)
+2026-11-16T16:48:15.5101378Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 754.2/754.2 kB 145.0 MB/s  0:00:00
+2026-11-16T16:48:15.5235967Z Downloading onnx_ir-1.1.0-py3-none-any.whl (192 kB)
+2026-11-16T16:48:15.5377868Z Downloading ml_dtypes-0.7.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (463 kB)
+2026-11-16T16:48:15.5493803Z Downloading onnx-1.23.2-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (8.9 MB)
+2026-11-16T16:48:15.6285055Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.9/8.9 MB 112.8 MB/s  0:00:00
+2026-11-16T16:48:15.6375883Z Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
+2026-11-16T16:48:15.6517613Z Downloading tensordict-0.15.6-py3-none-any.whl (876 kB)
+2026-11-16T16:48:15.6562717Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 876.0/876.0 kB 226.0 MB/s  0:00:00
+2026-11-16T16:48:15.6649332Z Downloading pyvers-0.2.3-py3-none-any.whl (11 kB)
+2026-11-16T16:48:15.6783814Z Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+2026-11-16T16:48:15.6884543Z Downloading gitpython-3.2.1-py3-none-any.whl (231 kB)
+2026-11-16T16:48:15.6982878Z Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+2026-11-16T16:48:15.7084083Z Downloading smmap-5.0.3-py3-none-any.whl (24 kB)
+2026-11-16T16:48:15.7108498Z Using cached packaging-26.3-py3-none-any.whl (129 kB)
+2026-11-16T16:48:15.7197146Z Downloading pytest-9.2.0-py3-none-any.whl (411 kB)
+2026-11-16T16:48:15.7303455Z Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+2026-11-16T16:48:15.7401406Z Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+2026-11-16T16:48:15.7497773Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+2026-11-16T16:48:15.7581145Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 149.0 MB/s  0:00:00
+2026-11-16T16:48:15.7681542Z Downloading tensorboard-2.21.0-py3-none-any.whl (5.5 MB)
+2026-11-16T16:48:15.7956365Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 215.7 MB/s  0:00:00
+2026-11-16T16:48:15.8053136Z Downloading grpcio-1.85.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (7.4 MB)
+2026-11-16T16:48:15.8326208Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.4/7.4 MB 279.0 MB/s  0:00:00
+2026-11-16T16:48:15.8415002Z Downloading tensorboard_data_server-0.7.2-py3-none-manylinux_2_31_x86_64.whl (6.6 MB)
+2026-11-16T16:48:15.8856476Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 298.9 MB/s  0:00:00
+2026-11-16T16:48:15.8943471Z Downloading absl_py-2.5.1-py3-none-any.whl (137 kB)
+2026-11-16T16:48:15.9057042Z Downloading markdown-3.11.3-py3-none-any.whl (116 kB)
+2026-11-16T16:48:15.9158506Z Downloading werkzeug-3.1.9-py3-none-any.whl (228 kB)
+2026-11-16T16:48:15.9265833Z Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+2026-11-16T16:48:15.9588689Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 238.6 MB/s  0:00:00
+2026-11-16T16:48:16.0425039Z Building wheels for collected packages: rsl-rl-lib
+2026-11-16T16:48:16.0431438Z   Building editable for rsl-rl-lib (pyproject.toml): started
+2026-11-16T16:48:16.2060303Z   Building editable for rsl-rl-lib (pyproject.toml): finished with status 'done'
+2026-11-16T16:48:16.2064432Z   /tmp/pip-build-env-047al8i2/overlay/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:55: BuildBackendWarning: 'tool.setuptools.license-files' is deprecated in favor of 'project.license-files' (available on setuptools>=77.0.0).
+2026-11-16T16:48:16.2065849Z   !!
+2026-11-16T16:48:16.2066265Z   
+2026-11-16T16:48:16.2066752Z           ********************************************************************************
+2026-11-16T16:48:16.2067205Z   
+2026-11-16T16:48:16.2067587Z           By 2027-Feb-18, you need to update your project and remove deprecated calls
+2026-11-16T16:48:16.2068025Z           or your builds will no longer be supported.
+2026-11-16T16:48:16.2068409Z   
+2026-11-16T16:48:16.2068939Z           See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license-files for details.
+2026-11-16T16:48:16.2069601Z           ********************************************************************************
+2026-11-16T16:48:16.2070004Z   
+2026-11-16T16:48:16.2070255Z   !!
+2026-11-16T16:48:16.2070600Z     _apply_tool_table(dist, config, filename)
+2026-11-16T16:48:16.2071752Z   /tmp/pip-build-env-047al8i2/overlay/lib/python3.12/site-packages/setuptools/command/editable_wheel.py:354: BuildBackendWarning: Editable installation.
+2026-11-16T16:48:16.2072596Z   !!
+2026-11-16T16:48:16.2072896Z   
+2026-11-16T16:48:16.2073527Z           ********************************************************************************
+2026-11-16T16:48:16.2074073Z           Please be careful with folders in your working directory with the same
+2026-11-16T16:48:16.2074653Z           name as your package as they may take precedence during imports.
+2026-11-16T16:48:16.2075151Z           ********************************************************************************
+2026-11-16T16:48:16.2075591Z   
+2026-11-16T16:48:16.2075861Z   !!
+2026-11-16T16:48:16.2076275Z     with strategy, WheelFile(wheel_path, "w") as wheel_obj:
+2026-11-16T16:48:16.2077143Z   Created wheel for rsl-rl-lib: filename=rsl_rl_lib-5.5.2-0.editable-py3-none-any.whl size=41448 sha256=1a38db71b06c5aa2c45c56a4f92ba0cd04d57d4c2cdaa0f84e4f3371d1befda3
+2026-11-16T16:48:16.2078265Z   Stored in directory: /tmp/pip-ephem-wheel-cache-k863xtuo/wheels/2c/18/74/a18ad4975789ad13f280b90664623c2f080808bcf793fbff49
+2026-11-16T16:48:16.2098386Z Successfully built rsl-rl-lib
+2026-11-16T16:48:16.2569555Z Installing collected packages: werkzeug, tensorboard-data-server, smmap, pyvers, pygments, protobuf, pluggy, pillow, packaging, numpy, markdown, iniconfig, grpcio, cloudpickle, absl-py, tensorboard, pytest, ml_dtypes, gitdb, tensordict, onnx, GitPython, onnx_ir, onnxscript, rsl-rl-lib
+2026-11-16T16:48:20.7953026Z 
+2026-11-16T16:48:20.7975357Z Successfully installed GitPython-3.2.1 absl-py-2.5.1 cloudpickle-3.1.2 gitdb-4.0.12 grpcio-1.85.1 iniconfig-2.3.1 markdown-3.11.3 ml_dtypes-0.7.0 numpy-2.5.5 onnx-1.23.2 onnx_ir-1.1.0 onnxscript-0.7.2 packaging-26.3 pillow-13.0.0 pluggy-1.7.0 protobuf-7.36.2 pygments-2.21.0 pytest-9.2.0 pyvers-0.2.3 rsl-rl-lib-5.5.2 smmap-5.0.3 tensorboard-2.21.0 tensorboard-data-server-0.7.2 tensordict-0.15.6 werkzeug-3.1.9
+2026-11-16T16:48:20.9119841Z ##[group]Run pytest tests/ -v --tb=short
+2026-11-16T16:48:20.9120229Z [36;1mpytest tests/ -v --tb=short[0m
+2026-11-16T16:48:20.9147872Z shell: /usr/bin/bash -e {0}
+2026-11-16T16:48:20.9148208Z env:
+2026-11-16T16:48:20.9148504Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:48:20.9148946Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+2026-11-16T16:48:20.9149331Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:48:20.9149715Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:48:20.9150061Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+2026-11-16T16:48:20.9150529Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+2026-11-16T16:48:20.9150893Z ##[endgroup]
+2026-11-16T16:48:24.7354584Z ============================= test session starts ==============================
+2026-11-16T16:48:24.7355536Z platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0 -- /opt/hostedtoolcache/Python/3.12.16/x64/bin/python
+2026-11-16T16:48:24.7356494Z cachedir: .pytest_cache
+2026-11-16T16:48:24.7356873Z rootdir: /home/runner/work/rsl_rl/rsl_rl
+2026-11-16T16:48:24.7357284Z configfile: pyproject.toml
+2026-11-16T16:48:25.4803362Z collecting ... collected 285 items
+2026-11-16T16:48:25.4803738Z 
+2026-11-16T16:48:25.5159629Z tests/algorithms/test_distillation.py::TestDistillationLoss::test_loss_decreases_over_updates PASSED [  0%]
+2026-11-16T16:48:25.5214449Z tests/algorithms/test_distillation.py::TestDistillationLoss::test_gradient_accumulation_step_count PASSED [  0%]
+2026-11-16T16:48:25.5279020Z tests/algorithms/test_distillation.py::TestDistillationLoss::test_update_changes_student_but_not_teacher PASSED [  1%]
+2026-11-16T16:48:25.5343242Z tests/algorithms/test_distillation.py::TestDistillationLoss::test_normalization_uses_rollout_after_student_update PASSED [  1%]
+2026-11-16T16:48:25.5468049Z tests/algorithms/test_distillation.py::TestDistillationLoss::test_update_keeps_recurrent_teacher_hidden_state PASSED [  1%]
+2026-11-16T16:48:25.5558147Z tests/algorithms/test_distillation.py::TestCheckpoint::test_resume_with_default_selection_and_fresh_optimizer PASSED [  2%]
+2026-11-16T16:48:25.5590807Z tests/algorithms/test_distillation.py::TestCheckpoint::test_load_rl_checkpoint_as_teacher[None] PASSED [  2%]
+2026-11-16T16:48:25.5618734Z tests/algorithms/test_distillation.py::TestCheckpoint::test_load_rl_checkpoint_as_teacher[load_cfg1] PASSED [  2%]
+2026-11-16T16:48:25.5634334Z tests/algorithms/test_distillation.py::TestGradientBudgetWarning::test_warns_when_budget_is_not_divisible PASSED [  3%]
+2026-11-16T16:48:25.5649223Z tests/algorithms/test_distillation.py::TestGradientBudgetWarning::test_no_warning_when_budget_is_divisible[3-1] PASSED [  3%]
+2026-11-16T16:48:25.5668460Z tests/algorithms/test_distillation.py::TestGradientBudgetWarning::test_no_warning_when_budget_is_divisible[4-1] PASSED [  3%]
+2026-11-16T16:48:25.5683639Z tests/algorithms/test_distillation.py::TestGradientBudgetWarning::test_no_warning_when_budget_is_divisible[12-1] PASSED [  4%]
+2026-11-16T16:48:25.5698016Z tests/algorithms/test_distillation.py::TestGradientBudgetWarning::test_no_warning_when_budget_is_divisible[5-5] PASSED [  4%]
+2026-11-16T16:48:25.5712163Z tests/algorithms/test_distillation.py::TestGradientBudgetWarning::test_no_warning_when_budget_is_divisible[8-2] PASSED [  4%]
+2026-11-16T16:48:25.5731968Z tests/algorithms/test_distillation.py::TestDistillationMixedPrecision::test_flag_defaults_to_false PASSED [  5%]
+2026-11-16T16:48:25.5800353Z tests/algorithms/test_distillation.py::TestDistillationMixedPrecision::test_update_runs_with_mixed_precision PASSED [  5%]
+2026-11-16T16:48:25.5820829Z tests/algorithms/test_distributed.py::TestReduceParametersLocal::test_none_gradients_are_left_untouched PASSED [  5%]
+2026-11-16T16:48:28.0753233Z tests/algorithms/test_distributed.py::TestDistributedAlgorithms::test_chunked_reduce_matches_full_concat PASSED [  6%]
+2026-11-16T16:48:30.4998005Z tests/algorithms/test_distributed.py::TestDistributedAlgorithms::test_ppo_parameters_stay_in_sync PASSED [  6%]
+2026-11-16T16:48:32.9115219Z tests/algorithms/test_distributed.py::TestDistributedAlgorithms::test_distillation_student_stays_in_sync PASSED [  7%]
+2026-11-16T16:48:35.3036302Z tests/algorithms/test_distributed.py::TestDistributedAlgorithms::test_distillation_student_diverges_without_reduction PASSED [  7%]
+2026-11-16T16:48:35.3100830Z tests/algorithms/test_ppo.py::TestGAEComputation::test_singleton_advantage_is_preserved[False] PASSED [  7%]
+2026-11-16T16:48:35.3147683Z tests/algorithms/test_ppo.py::TestGAEComputation::test_singleton_advantage_is_preserved[True] PASSED [  8%]
+2026-11-16T16:48:35.3171371Z tests/algorithms/test_ppo.py::TestGAEComputation::test_gae_returns_hand_computed PASSED [  8%]
+2026-11-16T16:48:35.3190567Z tests/algorithms/test_ppo.py::TestGAEComputation::test_gae_terminal_state_cuts_bootstrap PASSED [  8%]
+2026-11-16T16:48:35.3227900Z tests/algorithms/test_ppo.py::TestGAEComputation::test_advantage_normalization_global PASSED [  9%]
+2026-11-16T16:48:35.3250493Z tests/algorithms/test_ppo.py::TestTimeoutBootstrapping::test_timeout_adds_bootstrap_to_reward PASSED [  9%]
+2026-11-16T16:48:35.3279140Z tests/algorithms/test_ppo.py::TestTimeoutBootstrapping::test_rnd_step_metrics_exclude_timeout_bootstrap PASSED [  9%]
+2026-11-16T16:48:35.3342626Z tests/algorithms/test_ppo.py::TestNormalizationUpdates::test_normalization_uses_rollout_after_policy_update PASSED [ 10%]
+2026-11-16T16:48:35.3496525Z tests/algorithms/test_ppo.py::TestPPOLosses::test_recurrent_surrogate_matches_per_transition_objective PASSED [ 10%]
+2026-11-16T16:48:35.3546678Z tests/algorithms/test_ppo.py::TestPPOLosses::test_surrogate_loss_clipping[1.0-1.5--1.2] PASSED [ 10%]
+2026-11-16T16:48:35.3594387Z tests/algorithms/test_ppo.py::TestPPOLosses::test_surrogate_loss_clipping[-1.0-0.5-0.8] PASSED [ 11%]
+2026-11-16T16:48:35.3641377Z tests/algorithms/test_ppo.py::TestPPOLosses::test_surrogate_loss_clipping[1.0-0.5--0.5] PASSED [ 11%]
+2026-11-16T16:48:35.3688457Z tests/algorithms/test_ppo.py::TestPPOLosses::test_value_loss_clipping[True-0.0-0.64] PASSED [ 11%]
+2026-11-16T16:48:35.3737109Z tests/algorithms/test_ppo.py::TestPPOLosses::test_value_loss_clipping[False-0.0-0.0] PASSED [ 12%]
+2026-11-16T16:48:35.3782377Z tests/algorithms/test_ppo.py::TestPPOLosses::test_value_loss_clipping[True--1.0-1.0] PASSED [ 12%]
+2026-11-16T16:48:35.3887718Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_adaptation_preserves_the_kl_direction[1e-06-0.2-1e-06] PASSED [ 12%]
+2026-11-16T16:48:35.3981710Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_adaptation_preserves_the_kl_direction[0.02-0.01-0.02] PASSED [ 13%]
+2026-11-16T16:48:35.4079846Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_adaptation_preserves_the_kl_direction[0.001-0.2-0.0006666666666666666] PASSED [ 13%]
+2026-11-16T16:48:35.4175607Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_adaptation_preserves_the_kl_direction[0.001-0.01-0.0015] PASSED [ 14%]
+2026-11-16T16:48:35.4225496Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_update_adapts_optimizer_lr[0.03-0.001-0.0006666666666666666] PASSED [ 14%]
+2026-11-16T16:48:35.4274400Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_update_adapts_optimizer_lr[0.002-0.001-0.0015] PASSED [ 14%]
+2026-11-16T16:48:35.4323135Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_update_adapts_optimizer_lr[0.01-0.001-0.001] PASSED [ 15%]
+2026-11-16T16:48:35.4371857Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_update_adapts_optimizer_lr[0.0-0.001-0.001] PASSED [ 15%]
+2026-11-16T16:48:35.4418647Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_update_adapts_optimizer_lr[0.03-1.2e-05-1e-05] PASSED [ 15%]
+2026-11-16T16:48:35.4469250Z tests/algorithms/test_ppo.py::TestAdaptiveLearningRate::test_update_adapts_optimizer_lr[0.002-0.008-0.01] PASSED [ 16%]
+2026-11-16T16:48:35.4487009Z tests/algorithms/test_ppo.py::TestMixedPrecision::test_flag_defaults_to_false PASSED [ 16%]
+2026-11-16T16:48:35.4627039Z tests/algorithms/test_ppo.py::TestMixedPrecision::test_update_runs_with_mixed_precision PASSED [ 16%]
+2026-11-16T16:48:35.4675646Z tests/algorithms/test_ppo.py::TestCheckpoint::test_rnd_weight_schedule_resumes PASSED [ 17%]
+2026-11-16T16:48:35.4723841Z tests/algorithms/test_ppo.py::TestCheckpoint::test_selected_rnd_restores_its_optimizer_with_fresh_policy_optimizer PASSED [ 17%]
+2026-11-16T16:48:35.4758450Z tests/algorithms/test_ppo.py::TestCheckpoint::test_legacy_checkpoint_without_rnd_counter_loads PASSED [ 17%]
+2026-11-16T16:48:35.4787774Z tests/algorithms/test_ppo.py::TestSharedCNNEncoders::test_shared_parameters_are_stepped_once PASSED [ 18%]
+2026-11-16T16:48:35.4816669Z tests/algorithms/test_sac.py::test_cnn_actor_is_rejected_at_construction PASSED [ 18%]
+2026-11-16T16:48:35.4827424Z tests/algorithms/test_sac.py::test_non_q_critic_is_rejected_at_construction PASSED [ 18%]
+2026-11-16T16:48:36.7575171Z tests/algorithms/test_sac.py::test_standard_runner_and_direct_drive[cpu] PASSED [ 19%]
+2026-11-16T16:48:36.7581736Z tests/algorithms/test_sac.py::test_standard_runner_and_direct_drive[cuda:0] SKIPPED [ 19%]
+2026-11-16T16:48:36.7676108Z tests/algorithms/test_sac.py::test_n_step_targets_at_episode_boundaries[boundaries-cpu] PASSED [ 20%]
+2026-11-16T16:48:36.7680262Z tests/algorithms/test_sac.py::test_n_step_targets_at_episode_boundaries[boundaries-cuda:0] SKIPPED [ 20%]
+2026-11-16T16:48:36.7771590Z tests/algorithms/test_sac.py::test_n_step_targets_at_episode_boundaries[wrapped-cpu] PASSED [ 20%]
+2026-11-16T16:48:36.7775503Z tests/algorithms/test_sac.py::test_n_step_targets_at_episode_boundaries[wrapped-cuda:0] SKIPPED [ 21%]
+2026-11-16T16:48:36.7859049Z tests/algorithms/test_sac.py::test_n_step_targets_at_episode_boundaries[independent-cpu] PASSED [ 21%]
+2026-11-16T16:48:36.7864418Z tests/algorithms/test_sac.py::test_n_step_targets_at_episode_boundaries[independent-cuda:0] SKIPPED [ 21%]
+2026-11-16T16:48:36.8341505Z tests/algorithms/test_sac.py::test_terminal_observations_and_missing_final PASSED [ 22%]
+2026-11-16T16:48:36.8803117Z tests/algorithms/test_sac.py::test_opt_in_flash_components_and_export[None-False] PASSED [ 22%]
+2026-11-16T16:48:37.7736998Z tests/algorithms/test_sac.py::test_opt_in_flash_components_and_export[ResidualMLP-False] PASSED [ 22%]
+2026-11-16T16:48:37.8232367Z tests/algorithms/test_sac.py::test_opt_in_flash_components_and_export[None-True] PASSED [ 23%]
+2026-11-16T16:48:37.9493507Z tests/algorithms/test_sac.py::test_symmetry_replay_endpoints_and_actor_loss[False] PASSED [ 23%]
+2026-11-16T16:48:38.0819365Z tests/algorithms/test_sac.py::test_symmetry_replay_endpoints_and_actor_loss[True] PASSED [ 23%]
+2026-11-16T16:48:38.0826705Z tests/algorithms/test_sac.py::test_cuda_graph_delayed_actor_and_resume SKIPPED [ 24%]
+2026-11-16T16:48:38.0847601Z tests/extensions/test_rnd.py::TestIntrinsicReward::test_intrinsic_reward_is_non_negative PASSED [ 24%]
+2026-11-16T16:48:38.0863485Z tests/extensions/test_rnd.py::TestIntrinsicReward::test_intrinsic_reward_is_finite PASSED [ 24%]
+2026-11-16T16:48:38.1381478Z tests/extensions/test_rnd.py::TestIntrinsicReward::test_predictor_training_reduces_reward PASSED [ 25%]
+2026-11-16T16:48:38.1397812Z tests/extensions/test_rnd.py::TestIntrinsicReward::test_zero_weight_produces_zero_reward PASSED [ 25%]
+2026-11-16T16:48:38.1414125Z tests/extensions/test_rnd.py::TestIntrinsicReward::test_update_counter_increments PASSED [ 25%]
+2026-11-16T16:48:38.1428948Z tests/extensions/test_rnd.py::TestPredictorLoss::test_compute_loss_is_finite_scalar PASSED [ 26%]
+2026-11-16T16:48:38.1445435Z tests/extensions/test_rnd.py::TestPredictorLoss::test_compute_loss_is_graph_connected PASSED [ 26%]
+2026-11-16T16:48:38.1465195Z tests/extensions/test_rnd.py::TestPredictorLoss::test_default_optimizer_updates_predictor_only PASSED [ 27%]
+2026-11-16T16:48:38.1484978Z tests/extensions/test_rnd.py::TestWeightSchedules::test_constant_schedule PASSED [ 27%]
+2026-11-16T16:48:38.1502579Z tests/extensions/test_rnd.py::TestWeightSchedules::test_step_schedule_before_final PASSED [ 27%]
+2026-11-16T16:48:38.1518469Z tests/extensions/test_rnd.py::TestWeightSchedules::test_step_schedule_at_final PASSED [ 28%]
+2026-11-16T16:48:38.1536020Z tests/extensions/test_rnd.py::TestWeightSchedules::test_linear_schedule_interpolation PASSED [ 28%]
+2026-11-16T16:48:38.1558121Z tests/extensions/test_rnd.py::TestWeightSchedules::test_linear_schedule_past_final_step PASSED [ 28%]
+2026-11-16T16:48:38.1567610Z tests/extensions/test_symmetry.py::TestAugmentBatch::test_augmentation_doubles_batch PASSED [ 29%]
+2026-11-16T16:48:38.1575023Z tests/extensions/test_symmetry.py::TestAugmentBatch::test_scalar_tensors_are_repeated PASSED [ 29%]
+2026-11-16T16:48:38.1583997Z tests/extensions/test_symmetry.py::TestAugmentBatch::test_observations_and_actions_are_mirrored PASSED [ 29%]
+2026-11-16T16:48:38.1592125Z tests/extensions/test_symmetry.py::TestAugmentBatch::test_noop_when_augmentation_disabled PASSED [ 30%]
+2026-11-16T16:48:38.1614100Z tests/extensions/test_symmetry.py::TestComputeLoss::test_returns_finite_scalar PASSED [ 30%]
+2026-11-16T16:48:38.1628998Z tests/extensions/test_symmetry.py::TestComputeLoss::test_graph_connected_when_mirror_loss_enabled PASSED [ 30%]
+2026-11-16T16:48:38.1644305Z tests/extensions/test_symmetry.py::TestComputeLoss::test_detached_when_mirror_loss_disabled PASSED [ 31%]
+2026-11-16T16:48:38.1658501Z tests/extensions/test_symmetry.py::TestComputeLoss::test_augments_observations_when_not_previously_augmented PASSED [ 31%]
+2026-11-16T16:48:38.1673557Z tests/extensions/test_symmetry.py::TestComputeLoss::test_does_not_re_augment_when_batch_already_augmented PASSED [ 31%]
+2026-11-16T16:48:38.1683572Z tests/extensions/test_symmetry.py::TestComputeLoss::test_zero_loss_when_actor_is_symmetry_equivariant PASSED [ 32%]
+2026-11-16T16:48:38.2104989Z tests/models/test_cnn_model.py::test_custom_network_forward_and_export PASSED [ 32%]
+2026-11-16T16:48:38.2130768Z tests/models/test_cnn_model.py::TestCNNLatentConcatenation::test_latent_contains_1d_and_cnn_features PASSED [ 32%]
+2026-11-16T16:48:38.2151493Z tests/models/test_cnn_model.py::TestCNNLatentConcatenation::test_1d_portion_matches_normalized_obs PASSED [ 33%]
+2026-11-16T16:48:38.2173528Z tests/models/test_cnn_model.py::TestCNNLatentConcatenation::test_cnn_portion_changes_with_image PASSED [ 33%]
+2026-11-16T16:48:38.2180164Z tests/models/test_cnn_model.py::TestCNNOutputDimComputation::test_no_padding_shrinks_output PASSED [ 34%]
+2026-11-16T16:48:38.2187101Z tests/models/test_cnn_model.py::TestCNNOutputDimComputation::test_same_padding_preserves_dim PASSED [ 34%]
+2026-11-16T16:48:38.2193975Z tests/models/test_cnn_model.py::TestCNNOutputDimComputation::test_stride_reduces_output PASSED [ 34%]
+2026-11-16T16:48:38.2212931Z tests/models/test_cnn_model.py::TestCNNOutputDimComputation::test_computed_dim_matches_actual_tensor PASSED [ 35%]
+2026-11-16T16:48:38.2219805Z tests/models/test_cnn_model.py::TestCNNOutputDimComputation::test_max_pool_halves_output PASSED [ 35%]
+2026-11-16T16:48:38.2242027Z tests/models/test_cnn_model.py::TestCNNSharing::test_shared_cnns_are_same_object PASSED [ 35%]
+2026-11-16T16:48:38.2270260Z tests/models/test_cnn_model.py::TestCNNSharing::test_shared_cnns_produce_identical_latent_cnn_portion PASSED [ 36%]
+2026-11-16T16:48:38.2308851Z tests/models/test_cnn_model.py::TestCNNSharing::test_shared_cnn_gradient_reaches_both_models PASSED [ 36%]
+2026-11-16T16:48:38.2576610Z tests/models/test_cnn_model.py::TestCNNModelJITExport::test_jit_export_model PASSED [ 36%]
+2026-11-16T16:48:38.8278151Z tests/models/test_cnn_model.py::TestCNNModelONNXExport::test_onnx_export_model PASSED [ 37%]
+2026-11-16T16:48:38.8298702Z tests/models/test_mlp_model.py::TestMLPModelModes::test_deterministic_returns_mean PASSED [ 37%]
+2026-11-16T16:48:38.8321594Z tests/models/test_mlp_model.py::TestMLPModelModes::test_stochastic_differs_from_deterministic PASSED [ 37%]
+2026-11-16T16:48:38.8334397Z tests/models/test_mlp_model.py::TestMLPModelModes::test_no_distribution_returns_raw_mlp PASSED [ 38%]
+2026-11-16T16:48:38.8367943Z tests/models/test_mlp_model.py::TestMLPModelNormalization::test_normalization_changes_output PASSED [ 38%]
+2026-11-16T16:48:38.8379042Z tests/models/test_mlp_model.py::TestObsGroupConcatenation::test_concatenation_order_is_preserved PASSED [ 38%]
+2026-11-16T16:48:38.8391576Z tests/models/test_mlp_model.py::TestObsGroupConcatenation::test_reversed_order_gives_different_latent PASSED [ 39%]
+2026-11-16T16:48:38.8527723Z tests/models/test_mlp_model.py::TestMLPModelExport::test_jit_export_model PASSED [ 39%]
+2026-11-16T16:48:38.8673901Z tests/models/test_mlp_model.py::TestMLPModelExport::test_jit_export_with_normalization PASSED [ 40%]
+2026-11-16T16:48:39.5258009Z tests/models/test_mlp_model.py::TestMLPModelExport::test_onnx_export_model PASSED [ 40%]
+2026-11-16T16:48:40.0517482Z tests/models/test_mlp_model.py::TestMLPModelExport::test_onnx_export_with_normalization PASSED [ 40%]
+2026-11-16T16:48:40.0531441Z tests/models/test_mlp_model.py::test_q_model_export_is_not_supported[as_jit] PASSED [ 41%]
+2026-11-16T16:48:40.0542201Z tests/models/test_mlp_model.py::test_q_model_export_is_not_supported[as_onnx] PASSED [ 41%]
+2026-11-16T16:48:40.0661766Z tests/models/test_mlp_model.py::test_composed_network_distribution_initialization[None-HeteroscedasticGaussianDistribution] PASSED [ 41%]
+2026-11-16T16:48:40.0774576Z tests/models/test_mlp_model.py::test_composed_network_distribution_initialization[None-BetaDistribution] PASSED [ 42%]
+2026-11-16T16:48:40.1004542Z tests/models/test_mlp_model.py::test_composed_network_distribution_initialization[ResidualMLP-HeteroscedasticGaussianDistribution] PASSED [ 42%]
+2026-11-16T16:48:40.1208577Z tests/models/test_mlp_model.py::test_composed_network_distribution_initialization[ResidualMLP-BetaDistribution] PASSED [ 42%]
+2026-11-16T16:48:40.2003457Z tests/models/test_rnn_model.py::test_custom_network_forward_and_export PASSED [ 43%]
+2026-11-16T16:48:40.2024959Z tests/models/test_rnn_model.py::TestHiddenStateReset::test_reset_done_env_zeros_its_state[gru] PASSED [ 43%]
+2026-11-16T16:48:40.2297768Z tests/models/test_rnn_model.py::TestHiddenStateReset::test_reset_done_env_zeros_its_state[lstm] PASSED [ 43%]
+2026-11-16T16:48:40.2315406Z tests/models/test_rnn_model.py::TestHiddenStateReset::test_full_reset_clears_all_state[gru] PASSED [ 44%]
+2026-11-16T16:48:40.2332895Z tests/models/test_rnn_model.py::TestHiddenStateReset::test_full_reset_clears_all_state[lstm] PASSED [ 44%]
+2026-11-16T16:48:40.2348702Z tests/models/test_rnn_model.py::TestHiddenStateDetach::test_detach_breaks_gradient[gru] PASSED [ 44%]
+2026-11-16T16:48:40.2364695Z tests/models/test_rnn_model.py::TestHiddenStateDetach::test_detach_breaks_gradient[lstm] PASSED [ 45%]
+2026-11-16T16:48:40.2380310Z tests/models/test_rnn_model.py::TestHiddenStateDetach::test_detach_preserves_values[gru] PASSED [ 45%]
+2026-11-16T16:48:40.2397030Z tests/models/test_rnn_model.py::TestHiddenStateDetach::test_detach_preserves_values[lstm] PASSED [ 45%]
+2026-11-16T16:48:40.2417438Z tests/models/test_rnn_model.py::TestSequentialConsistency::test_hidden_state_accumulates_context[gru] PASSED [ 46%]
+2026-11-16T16:48:40.2440262Z tests/models/test_rnn_model.py::TestSequentialConsistency::test_hidden_state_accumulates_context[lstm] PASSED [ 46%]
+2026-11-16T16:48:40.2462693Z tests/models/test_rnn_model.py::TestSequentialConsistency::test_reset_restores_fresh_behavior[gru] PASSED [ 47%]
+2026-11-16T16:48:40.2487537Z tests/models/test_rnn_model.py::TestSequentialConsistency::test_reset_restores_fresh_behavior[lstm] PASSED [ 47%]
+2026-11-16T16:48:40.3099100Z tests/models/test_rnn_model.py::TestRNNModelJITExport::test_jit_export_model[gru] PASSED [ 47%]
+2026-11-16T16:48:40.3806828Z tests/models/test_rnn_model.py::TestRNNModelJITExport::test_jit_export_model[lstm] PASSED [ 48%]
+2026-11-16T16:48:40.4414591Z tests/models/test_rnn_model.py::TestRNNModelJITExport::test_jit_export_sequential_consistency[gru] PASSED [ 48%]
+2026-11-16T16:48:40.5022537Z tests/models/test_rnn_model.py::TestRNNModelJITExport::test_jit_export_sequential_consistency[lstm] PASSED [ 48%]
+2026-11-16T16:48:41.2344147Z tests/models/test_rnn_model.py::TestRNNModelONNXExport::test_onnx_export_model[gru] PASSED [ 49%]
+2026-11-16T16:48:41.8163447Z tests/models/test_rnn_model.py::TestRNNModelONNXExport::test_onnx_export_model[lstm] PASSED [ 49%]
+2026-11-16T16:48:41.8176783Z tests/modules/test_distribution.py::TestGaussianDistribution::test_log_prob_standard_normal PASSED [ 49%]
+2026-11-16T16:48:41.8185943Z tests/modules/test_distribution.py::TestGaussianDistribution::test_log_prob_nonzero_mean PASSED [ 50%]
+2026-11-16T16:48:41.8194378Z tests/modules/test_distribution.py::TestGaussianDistribution::test_entropy_analytical PASSED [ 50%]
+2026-11-16T16:48:41.8203414Z tests/modules/test_distribution.py::TestGaussianDistribution::test_kl_divergence_analytical PASSED [ 50%]
+2026-11-16T16:48:41.8212454Z tests/modules/test_distribution.py::TestGaussianDistribution::test_kl_divergence_identical_is_zero PASSED [ 51%]
+2026-11-16T16:48:41.8222824Z tests/modules/test_distribution.py::TestGaussianDistribution::test_scalar_vs_log_std_equivalence PASSED [ 51%]
+2026-11-16T16:48:41.8234650Z tests/modules/test_distribution.py::TestGaussianDistribution::test_log_prob_gradient_flows_to_mean PASSED [ 51%]
+2026-11-16T16:48:41.8243705Z tests/modules/test_distribution.py::TestGaussianDistribution::test_std_clamped_to_range_scalar PASSED [ 52%]
+2026-11-16T16:48:41.8252418Z tests/modules/test_distribution.py::TestGaussianDistribution::test_std_clamped_to_range_log PASSED [ 52%]
+2026-11-16T16:48:41.8259274Z tests/modules/test_distribution.py::TestGaussianDistribution::test_std_range_min_floor PASSED [ 52%]
+2026-11-16T16:48:41.8272966Z tests/modules/test_distribution.py::TestGaussianDistribution::test_learn_std_scalar PASSED [ 53%]
+2026-11-16T16:48:41.8286414Z tests/modules/test_distribution.py::TestGaussianDistribution::test_learn_std_log PASSED [ 53%]
+2026-11-16T16:48:41.8295388Z tests/modules/test_distribution.py::TestHeteroscedasticGaussianDistribution::test_update_splits_mean_and_std PASSED [ 54%]
+2026-11-16T16:48:41.8303012Z tests/modules/test_distribution.py::TestHeteroscedasticGaussianDistribution::test_deterministic_output_returns_mean PASSED [ 54%]
+2026-11-16T16:48:41.8310879Z tests/modules/test_distribution.py::TestHeteroscedasticGaussianDistribution::test_log_std_parameterization PASSED [ 54%]
+2026-11-16T16:48:41.8317319Z tests/modules/test_distribution.py::TestHeteroscedasticGaussianDistribution::test_input_dim_is_pair PASSED [ 55%]
+2026-11-16T16:48:41.8325461Z tests/modules/test_distribution.py::TestHeteroscedasticGaussianDistribution::test_std_clamped_to_range_scalar PASSED [ 55%]
+2026-11-16T16:48:41.8333352Z tests/modules/test_distribution.py::TestHeteroscedasticGaussianDistribution::test_std_clamped_to_range_log PASSED [ 55%]
+2026-11-16T16:48:41.8339624Z tests/modules/test_distribution.py::TestHeteroscedasticGaussianDistribution::test_std_range_min_floor PASSED [ 56%]
+2026-11-16T16:48:41.8347925Z tests/modules/test_distribution.py::TestBetaDistribution::test_alpha_beta_greater_than_one PASSED [ 56%]
+2026-11-16T16:48:41.8357245Z tests/modules/test_distribution.py::TestBetaDistribution::test_samples_within_action_range PASSED [ 56%]
+2026-11-16T16:48:41.8367767Z tests/modules/test_distribution.py::TestBetaDistribution::test_log_prob_unit_range_matches_torch PASSED [ 57%]
+2026-11-16T16:48:41.8378016Z tests/modules/test_distribution.py::TestBetaDistribution::test_log_prob_jacobian_correction PASSED [ 57%]
+2026-11-16T16:48:41.8386178Z tests/modules/test_distribution.py::TestBetaDistribution::test_deterministic_output_matches_module PASSED [ 57%]
+2026-11-16T16:48:41.8397830Z tests/modules/test_distribution.py::TestBetaDistribution::test_log_prob_gradient_flows PASSED [ 58%]
+2026-11-16T16:48:41.8415797Z tests/modules/test_distribution.py::test_squashed_gaussian_per_dimension_ranges_and_sample_gradients PASSED [ 58%]
+2026-11-16T16:48:41.8427600Z tests/modules/test_distribution.py::test_squashed_gaussian_standard_deviation_range[kwargs0-expected0] PASSED [ 58%]
+2026-11-16T16:48:41.8437860Z tests/modules/test_distribution.py::test_squashed_gaussian_standard_deviation_range[kwargs1-expected1] PASSED [ 59%]
+2026-11-16T16:48:41.8448513Z tests/modules/test_distribution.py::test_squashed_gaussian_standard_deviation_range[kwargs2-expected2] PASSED [ 59%]
+2026-11-16T16:48:41.8464677Z tests/modules/test_distribution.py::test_squashed_gaussian_initial_standard_deviation[kwargs0] PASSED [ 60%]
+2026-11-16T16:48:41.8480852Z tests/modules/test_distribution.py::test_squashed_gaussian_initial_standard_deviation[kwargs1] PASSED [ 60%]
+2026-11-16T16:48:41.8576289Z tests/modules/test_normalization.py::TestEmpiricalNormalization::test_convergence_to_known_distribution PASSED [ 60%]
+2026-11-16T16:48:41.8584848Z tests/modules/test_normalization.py::TestEmpiricalNormalization::test_forward_applies_normalization PASSED [ 61%]
+2026-11-16T16:48:41.8593960Z tests/modules/test_normalization.py::TestEmpiricalNormalization::test_until_stops_updates PASSED [ 61%]
+2026-11-16T16:48:41.8602108Z tests/modules/test_normalization.py::TestEmpiricalNormalization::test_eval_mode_freezes_stats PASSED [ 61%]
+2026-11-16T16:48:41.8636663Z tests/modules/test_normalization.py::TestEmpiricalNormalization::test_inverse_round_trip PASSED [ 62%]
+2026-11-16T16:48:41.8646546Z tests/modules/test_normalization.py::TestEmpiricalNormalization::test_single_sample_does_not_produce_nan PASSED [ 62%]
+2026-11-16T16:48:41.8654404Z tests/modules/test_normalization.py::TestEmpiricalNormalization::test_distributed_update_combines_mean_and_variance PASSED [ 62%]
+2026-11-16T16:48:41.8748971Z tests/modules/test_normalization.py::TestEmpiricalDiscountedVariationNormalization::test_constant_rewards_produce_stable_normalization PASSED [ 63%]
+2026-11-16T16:48:41.8757363Z tests/modules/test_normalization.py::TestEmpiricalDiscountedVariationNormalization::test_fresh_eval_normalizer_preserves_reward PASSED [ 63%]
+2026-11-16T16:48:41.8765727Z tests/modules/test_normalization.py::TestEmpiricalDiscountedVariationNormalization::test_zero_std_returns_raw_reward PASSED [ 63%]
+2026-11-16T16:48:41.8774013Z tests/modules/test_normalization.py::TestEmpiricalDiscountedVariationNormalization::test_in_place_scaling_of_output_does_not_change_history PASSED [ 64%]
+2026-11-16T16:48:41.8782555Z tests/modules/test_normalization.py::test_normalizer_standard_deviation_buffer_identity PASSED [ 64%]
+2026-11-16T16:48:41.8812575Z tests/runners/test_on_policy_runner.py::TestRunnerConstruction::test_runner_creates_algorithm PASSED [ 64%]
+2026-11-16T16:48:41.8834555Z tests/runners/test_on_policy_runner.py::TestRunnerConstruction::test_runner_sets_initial_iteration PASSED [ 65%]
+2026-11-16T16:48:41.9026207Z tests/runners/test_on_policy_runner.py::TestLearnLoop::test_learn_updates_parameters[mlp] PASSED [ 65%]
+2026-11-16T16:48:41.9385413Z tests/runners/test_on_policy_runner.py::TestLearnLoop::test_learn_updates_parameters[rnn] PASSED [ 65%]
+2026-11-16T16:48:41.9694065Z tests/runners/test_on_policy_runner.py::TestLearnLoop::test_learn_updates_parameters[cnn] PASSED [ 66%]
+2026-11-16T16:48:41.9955375Z tests/runners/test_on_policy_runner.py::TestLearnLoop::test_learn_advances_iteration_counter PASSED [ 66%]
+2026-11-16T16:48:42.0093203Z tests/runners/test_on_policy_runner.py::TestSaveLoad::test_save_creates_file PASSED [ 67%]
+2026-11-16T16:48:42.0473595Z tests/runners/test_on_policy_runner.py::TestSaveLoad::test_load_restores_parameters[mlp] PASSED [ 67%]
+2026-11-16T16:48:42.1193862Z tests/runners/test_on_policy_runner.py::TestSaveLoad::test_load_restores_parameters[rnn] PASSED [ 67%]
+2026-11-16T16:48:42.1762342Z tests/runners/test_on_policy_runner.py::TestSaveLoad::test_load_restores_parameters[cnn] PASSED [ 68%]
+2026-11-16T16:48:42.2218591Z tests/runners/test_on_policy_runner.py::TestSaveLoad::test_load_restores_iteration PASSED [ 68%]
+2026-11-16T16:48:42.2470809Z tests/runners/test_on_policy_runner.py::TestSaveLoad::test_load_restores_normalization_stats PASSED [ 68%]
+2026-11-16T16:48:42.2498757Z tests/runners/test_on_policy_runner.py::TestInferencePolicy::test_inference_policy_produces_actions[mlp] PASSED [ 69%]
+2026-11-16T16:48:42.2528880Z tests/runners/test_on_policy_runner.py::TestInferencePolicy::test_inference_policy_produces_actions[rnn] PASSED [ 69%]
+2026-11-16T16:48:42.2563217Z tests/runners/test_on_policy_runner.py::TestInferencePolicy::test_inference_policy_produces_actions[cnn] PASSED [ 69%]
+2026-11-16T16:48:42.2671805Z tests/runners/test_on_policy_runner.py::TestInferencePolicy::test_inference_loop PASSED [ 70%]
+2026-11-16T16:48:42.3189336Z tests/runners/test_on_policy_runner.py::TestDeterministicTraining::test_reproducibility[mlp] PASSED [ 70%]
+2026-11-16T16:48:42.4212799Z tests/runners/test_on_policy_runner.py::TestDeterministicTraining::test_reproducibility[rnn] PASSED [ 70%]
+2026-11-16T16:48:42.5007003Z tests/runners/test_on_policy_runner.py::TestDeterministicTraining::test_reproducibility[cnn] PASSED [ 71%]
+2026-11-16T16:48:42.5528081Z tests/runners/test_on_policy_runner.py::TestDeterministicTraining::test_different_seeds_diverge PASSED [ 71%]
+2026-11-16T16:48:42.5625570Z tests/runners/test_on_policy_runner.py::TestLoggingWriterLifecycle::test_learn_aborts_writer_when_training_raises PASSED [ 71%]
+2026-11-16T16:48:42.5904177Z tests/runners/test_on_policy_runner.py::TestLoggingWriterLifecycle::test_learn_stops_writer_when_training_completes PASSED [ 72%]
+2026-11-16T16:48:42.6062557Z tests/runners/test_on_policy_runner.py::test_jit_export_uses_evaluation_mode PASSED [ 72%]
+2026-11-16T16:48:42.6088309Z tests/runners/test_on_policy_runner.py::test_tensor_episode_length_limits PASSED [ 72%]
+2026-11-16T16:48:42.6241818Z tests/runners/test_on_policy_runner.py::test_load_without_optimizer_restores_models_and_iteration PASSED [ 73%]
+2026-11-16T16:48:42.6288040Z tests/runners/test_on_policy_runner.py::test_nonfinite_environment_outputs_raise_before_the_update PASSED [ 73%]
+2026-11-16T16:48:42.6346669Z tests/storage/test_replay_buffer.py::test_lazy_replay_ring_and_episode_validity PASSED [ 74%]
+2026-11-16T16:48:42.6361679Z tests/storage/test_replay_buffer.py::test_collection_allocation_and_clear PASSED [ 74%]
+2026-11-16T16:48:42.6368676Z tests/storage/test_replay_buffer.py::test_lazy_memory_budget_checks_minimum_window SKIPPED [ 74%]
+2026-11-16T16:48:42.6388192Z tests/storage/test_rollout_storage.py::TestMiniBatchGenerator::test_all_transitions_visited_in_one_epoch PASSED [ 75%]
+2026-11-16T16:48:42.6403210Z tests/storage/test_rollout_storage.py::TestMiniBatchGenerator::test_epoch_count_is_respected PASSED [ 75%]
+2026-11-16T16:48:42.6418691Z tests/storage/test_rollout_storage.py::TestMiniBatchGenerator::test_batch_fields_are_consistent PASSED [ 75%]
+2026-11-16T16:48:42.6431934Z tests/storage/test_rollout_storage.py::TestRecurrentMiniBatchGenerator::test_trajectory_count_matches_env_slice PASSED [ 76%]
+2026-11-16T16:48:42.6449065Z tests/storage/test_rollout_storage.py::TestRecurrentMiniBatchGenerator::test_obs_and_actions_refer_to_same_env_slice PASSED [ 76%]
+2026-11-16T16:48:42.6470127Z tests/storage/test_rollout_storage.py::TestRecurrentMiniBatchGenerator::test_epoch_count_is_respected PASSED [ 76%]
+2026-11-16T16:48:42.6488881Z tests/storage/test_rollout_storage.py::TestRecurrentMiniBatchGenerator::test_hidden_states_align_with_trajectory_starts PASSED [ 77%]
+2026-11-16T16:48:42.6499510Z tests/storage/test_rollout_storage.py::TestDistillationStorage::test_generator_yields_per_timestep_batches PASSED [ 77%]
+2026-11-16T16:48:42.6507534Z tests/storage/test_rollout_storage.py::TestDistillationStorage::test_rl_storage_rejects_distillation_generator PASSED [ 77%]
+2026-11-16T16:48:42.6519047Z tests/storage/test_rollout_storage.py::TestStorageOverflow::test_overflow_raises_error PASSED [ 78%]
+2026-11-16T16:48:42.6530725Z tests/storage/test_rollout_storage.py::TestStorageClear::test_clear_allows_new_transitions PASSED [ 78%]
+2026-11-16T16:48:42.6542988Z tests/storage/test_rollout_storage.py::TestStorageClear::test_clear_data_is_overwritten PASSED [ 78%]
+2026-11-16T16:48:42.6560436Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[1-5-3-2-False] PASSED [ 79%]
+2026-11-16T16:48:42.6579755Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[1-5-3-2-True] PASSED [ 79%]
+2026-11-16T16:48:42.6597568Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[1-7-4-3-False] PASSED [ 80%]
+2026-11-16T16:48:42.6618110Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[1-7-4-3-True] PASSED [ 80%]
+2026-11-16T16:48:42.6635688Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[1-6-4-3-False] PASSED [ 80%]
+2026-11-16T16:48:42.6658875Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[1-6-4-3-True] PASSED [ 81%]
+2026-11-16T16:48:42.6676937Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[3-5-3-2-False] PASSED [ 81%]
+2026-11-16T16:48:42.6698961Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[3-5-3-2-True] PASSED [ 81%]
+2026-11-16T16:48:42.6718931Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[3-7-4-3-False] PASSED [ 82%]
+2026-11-16T16:48:42.6744351Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[3-7-4-3-True] PASSED [ 82%]
+2026-11-16T16:48:42.6764268Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[3-6-4-3-False] PASSED [ 82%]
+2026-11-16T16:48:42.6790804Z tests/storage/test_rollout_storage.py::test_each_epoch_visits_every_sample_once[3-6-4-3-True] PASSED [ 83%]
+2026-11-16T16:48:42.6808135Z tests/storage/test_rollout_storage.py::test_remainder_batch_fields_stay_aligned[5-3-2-False] PASSED [ 83%]
+2026-11-16T16:48:42.6827977Z tests/storage/test_rollout_storage.py::test_remainder_batch_fields_stay_aligned[5-3-2-True] PASSED [ 83%]
+2026-11-16T16:48:42.6847981Z tests/storage/test_rollout_storage.py::test_remainder_batch_fields_stay_aligned[7-4-3-False] PASSED [ 84%]
+2026-11-16T16:48:42.6873592Z tests/storage/test_rollout_storage.py::test_remainder_batch_fields_stay_aligned[7-4-3-True] PASSED [ 84%]
+2026-11-16T16:48:42.6891777Z tests/storage/test_rollout_storage.py::test_recurrent_remainder_hidden_states_match_episode_starts[5-3-2] PASSED [ 84%]
+2026-11-16T16:48:42.6912897Z tests/storage/test_rollout_storage.py::test_recurrent_remainder_hidden_states_match_episode_starts[7-4-3] PASSED [ 85%]
+2026-11-16T16:48:42.6933978Z tests/storage/test_rollout_storage.py::test_recurrent_remainder_hidden_states_match_episode_starts[6-4-3] PASSED [ 85%]
+2026-11-16T16:48:42.6977370Z tests/storage/test_rollout_storage.py::test_remainder_trajectories_work_with_native_rnn_backward[5-3-2-gru] PASSED [ 85%]
+2026-11-16T16:48:42.7033540Z tests/storage/test_rollout_storage.py::test_remainder_trajectories_work_with_native_rnn_backward[5-3-2-lstm] PASSED [ 86%]
+2026-11-16T16:48:42.7087624Z tests/storage/test_rollout_storage.py::test_remainder_trajectories_work_with_native_rnn_backward[7-4-3-gru] PASSED [ 86%]
+2026-11-16T16:48:42.7154381Z tests/storage/test_rollout_storage.py::test_remainder_trajectories_work_with_native_rnn_backward[7-4-3-lstm] PASSED [ 87%]
+2026-11-16T16:48:42.7212609Z tests/storage/test_rollout_storage.py::test_ppo_can_learn_a_signal_present_only_in_the_last_transition PASSED [ 87%]
+2026-11-16T16:48:42.7226356Z tests/storage/test_rollout_storage.py::test_invalid_partition_counts_are_rejected[0-False] PASSED [ 87%]
+2026-11-16T16:48:42.7240016Z tests/storage/test_rollout_storage.py::test_invalid_partition_counts_are_rejected[0-True] PASSED [ 88%]
+2026-11-16T16:48:42.7253986Z tests/storage/test_rollout_storage.py::test_invalid_partition_counts_are_rejected[-1-False] PASSED [ 88%]
+2026-11-16T16:48:42.7267539Z tests/storage/test_rollout_storage.py::test_invalid_partition_counts_are_rejected[-1-True] PASSED [ 88%]
+2026-11-16T16:48:42.7281943Z tests/storage/test_rollout_storage.py::test_invalid_partition_counts_are_rejected[16-False] PASSED [ 89%]
+2026-11-16T16:48:42.7293847Z tests/storage/test_rollout_storage.py::test_invalid_partition_counts_are_rejected[16-True] PASSED [ 89%]
+2026-11-16T16:48:42.7305798Z tests/utils/test_check_nan.py::test_nonfinite_flags_name_their_sources PASSED [ 89%]
+2026-11-16T16:48:42.7319863Z tests/utils/test_logger.py::test_statistics_are_separate_from_losses PASSED [ 90%]
+2026-11-16T16:48:42.7332717Z tests/utils/test_logger.py::TestVideoUpload::test_each_video_is_uploaded_once PASSED [ 90%]
+2026-11-16T16:48:42.7351621Z tests/utils/test_logger.py::test_step_metrics_accumulate_over_completed_episodes PASSED [ 90%]
+2026-11-16T16:48:42.7365395Z tests/utils/test_logger.py::TestTimeSeries::test_log_writer_receives_no_time_series PASSED [ 91%]
+2026-11-16T16:48:42.7371848Z tests/utils/test_resolve_callable.py::TestResolveCallableDirect::test_direct_class PASSED [ 91%]
+2026-11-16T16:48:42.7377961Z tests/utils/test_resolve_callable.py::TestResolveCallableDirect::test_direct_function PASSED [ 91%]
+2026-11-16T16:48:42.7384108Z tests/utils/test_resolve_callable.py::TestResolveCallableDirect::test_direct_builtin PASSED [ 92%]
+2026-11-16T16:48:42.7390116Z tests/utils/test_resolve_callable.py::TestResolveCallableColonFormat::test_colon_format_class PASSED [ 92%]
+2026-11-16T16:48:42.7396242Z tests/utils/test_resolve_callable.py::TestResolveCallableColonFormat::test_colon_format_nested PASSED [ 92%]
+2026-11-16T16:48:42.7402400Z tests/utils/test_resolve_callable.py::TestResolveCallableColonFormat::test_colon_format_static_method PASSED [ 93%]
+2026-11-16T16:48:42.7410719Z tests/utils/test_resolve_callable.py::TestResolveCallableColonFormat::test_colon_format_invalid_module PASSED [ 93%]
+2026-11-16T16:48:42.7416908Z tests/utils/test_resolve_callable.py::TestResolveCallableColonFormat::test_colon_format_invalid_attr PASSED [ 94%]
+2026-11-16T16:48:42.7423016Z tests/utils/test_resolve_callable.py::TestResolveCallableDotFormat::test_dot_format_class PASSED [ 94%]
+2026-11-16T16:48:42.7429109Z tests/utils/test_resolve_callable.py::TestResolveCallableDotFormat::test_dot_format_nested PASSED [ 94%]
+2026-11-16T16:48:42.7435350Z tests/utils/test_resolve_callable.py::TestResolveCallableDotFormat::test_dot_format_static_method PASSED [ 95%]
+2026-11-16T16:48:42.7442807Z tests/utils/test_resolve_callable.py::TestResolveCallableDotFormat::test_dot_format_invalid_module PASSED [ 95%]
+2026-11-16T16:48:42.7448878Z tests/utils/test_resolve_callable.py::TestResolveCallableDotFormat::test_dot_format_invalid_attr PASSED [ 95%]
+2026-11-16T16:48:42.7455889Z tests/utils/test_resolve_callable.py::TestResolveCallableSimpleName::test_simple_name PASSED [ 96%]
+2026-11-16T16:48:42.7464679Z tests/utils/test_resolve_callable.py::TestResolveCallableSimpleName::test_simple_name_unknown PASSED [ 96%]
+2026-11-16T16:48:42.7471148Z tests/utils/test_resolve_callable.py::TestResolveCallableErrors::test_type_error_none PASSED [ 96%]
+2026-11-16T16:48:42.7477188Z tests/utils/test_resolve_callable.py::TestResolveCallableErrors::test_type_error_int PASSED [ 97%]
+2026-11-16T16:48:42.7484306Z tests/utils/test_resolve_callable.py::TestResolveCallableErrors::test_type_error_list PASSED [ 97%]
+2026-11-16T16:48:42.7495031Z tests/utils/test_trajectory_utils.py::TestSplitAndPad::test_split_and_pad_tensor_simple PASSED [ 97%]
+2026-11-16T16:48:42.7504234Z tests/utils/test_trajectory_utils.py::TestSplitAndPad::test_split_and_pad_tensor_high_dim PASSED [ 98%]
+2026-11-16T16:48:42.7513241Z tests/utils/test_trajectory_utils.py::TestSplitAndPad::test_split_and_pad_tensordict PASSED [ 98%]
+2026-11-16T16:48:42.7520435Z tests/utils/test_trajectory_utils.py::TestUnpad::test_unpad_tensor_identity PASSED [ 98%]
+2026-11-16T16:48:42.7528035Z tests/utils/test_trajectory_utils.py::TestUnpad::test_unpad_tensor_high_dim_identity PASSED [ 99%]
+2026-11-16T16:48:42.7536705Z tests/utils/test_trajectory_utils.py::TestUnpad::test_unpad_round_trip PASSED [ 99%]
+2026-11-16T16:48:43.0149675Z tests/utils/test_trajectory_utils.py::TestUnpad::test_unpad_tensordict_round_trip PASSED [100%]
+2026-11-16T16:48:43.0150065Z 
+2026-11-16T16:48:43.0150494Z =============================== warnings summary ===============================
+2026-11-16T16:48:43.0150869Z tests/algorithms/test_sac.py: 4 warnings
+2026-11-16T16:48:43.0151480Z tests/models/test_cnn_model.py: 2 warnings
+2026-11-16T16:48:43.0151810Z tests/models/test_mlp_model.py: 6 warnings
+2026-11-16T16:48:43.0152423Z tests/models/test_rnn_model.py: 5 warnings
+2026-11-16T16:48:43.0152726Z tests/runners/test_on_policy_runner.py: 1 warning
+2026-11-16T16:48:43.0153419Z   /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+2026-11-16T16:48:43.0154099Z     warnings.warn(
+2026-11-16T16:48:43.0154251Z 
+2026-11-16T16:48:43.0154432Z tests/algorithms/test_sac.py::test_standard_runner_and_direct_drive[cpu]
+2026-11-16T16:48:43.0154902Z tests/algorithms/test_sac.py::test_opt_in_flash_components_and_export[None-False]
+2026-11-16T16:48:43.0155435Z tests/algorithms/test_sac.py::test_opt_in_flash_components_and_export[ResidualMLP-False]
+2026-11-16T16:48:43.0156186Z tests/algorithms/test_sac.py::test_opt_in_flash_components_and_export[None-True]
+2026-11-16T16:48:43.0156635Z tests/runners/test_on_policy_runner.py::test_jit_export_uses_evaluation_mode
+2026-11-16T16:48:43.0157393Z   /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/torch/jit/_serialization.py:176: FutureWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+2026-11-16T16:48:43.0158013Z     warnings.warn(
+2026-11-16T16:48:43.0158130Z 
+2026-11-16T16:48:43.0158350Z tests/models/test_rnn_model.py::TestRNNModelONNXExport::test_onnx_export_model[gru]
+2026-11-16T16:48:43.0158848Z tests/models/test_rnn_model.py::TestRNNModelONNXExport::test_onnx_export_model[lstm]
+2026-11-16T16:48:43.0160232Z   /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/contextlib.py:144: UserWarning: The tensor attributes self.rnn._flat_weights[0], self.rnn._flat_weights[1], self.rnn._flat_weights[2], self.rnn._flat_weights[3] were assigned during export. Such attributes must be registered as buffers using the `register_buffer` API (https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.register_buffer).
+2026-11-16T16:48:43.0161728Z     next(self.gen)
+2026-11-16T16:48:43.0161847Z 
+2026-11-16T16:48:43.0162146Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2026-11-16T16:48:43.0162582Z ================= 279 passed, 6 skipped, 25 warnings in 18.02s =================
+2026-11-16T16:48:43.6659718Z Post job cleanup.
+2026-11-16T16:48:43.7560707Z (node:2377) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-16T16:48:43.7561868Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-16T16:48:43.7711017Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/rsl_rl/rsl_rl --files-from manifest.txt --use-compress-program zstdmt
+2026-11-16T16:48:44.3799214Z (node:2377) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-16T16:48:45.3674465Z Sent 0 of 275441920 (0.0%), 0.0 MBs/sec
+2026-11-16T16:48:46.3683249Z Sent 7006464 of 275441920 (2.5%), 3.3 MBs/sec
+2026-11-16T16:48:47.1522762Z Sent 275441920 of 275441920 (100.0%), 94.3 MBs/sec
+2026-11-16T16:48:47.4683033Z Cache saved with the key: setup-python-Linux-x64-24.04-Ubuntu-python-3.12.16-pip-2ff4dfe6db356546a8971124710e37c900449697574eb4ff3b087f8cbe46f3aa
+2026-11-16T16:48:47.4845149Z Post job cleanup.
+2026-11-16T16:48:47.5481938Z [command]/usr/bin/git version
+2026-11-16T16:48:47.5512273Z git version 2.56.1
+2026-11-16T16:48:47.5538332Z Temporarily overriding HOME='/home/runner/work/_temp/61201323-046e-4b0a-81e7-840a22c27916' before making global git config changes
+2026-11-16T16:48:47.5539391Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-16T16:48:47.5542731Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/rsl_rl/rsl_rl
+2026-11-16T16:48:47.5572396Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-16T16:48:47.5596673Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-16T16:48:47.5760452Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-16T16:48:47.5777392Z http.https://github.com/.extraheader
+2026-11-16T16:48:47.5786335Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-16T16:48:47.5811220Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-16T16:48:47.5965270Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-16T16:48:47.5989676Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-16T16:48:47.6282777Z Cleaning up orphan processes
+2026-11-16T16:48:47.6515586Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
