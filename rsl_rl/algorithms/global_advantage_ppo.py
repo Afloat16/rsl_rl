@@ -32,3 +32,17 @@ class GlobalAdvantagePPO(PPO):
     def compute_returns(self, obs: TensorDict) -> None:
         """Compute GAE targets, then normalize with pooled sample statistics."""
         super().compute_returns(obs)
+        if not self.is_multi_gpu or self.gpu_world_size == 1:
+            return
+
+        with torch.inference_mode(False):
+            advantages = (self.storage.returns - self.storage.values).to(torch.float64)
+            count_sum = torch.stack((advantages.new_tensor(advantages.numel()), advantages.sum()))
+            torch.distributed.all_reduce(count_sum, op=torch.distributed.ReduceOp.SUM)
+            if count_sum[0] <= 1:
+                return
+            centered = advantages - count_sum[1] / count_sum[0]
+            squared_deviation = centered.square().sum()
+            torch.distributed.all_reduce(squared_deviation, op=torch.distributed.ReduceOp.SUM)
+            std = (squared_deviation / (count_sum[0] - 1)).sqrt()
+            self.storage.advantages = (centered / (std + 1e-8)).to(self.storage.advantages.dtype)
