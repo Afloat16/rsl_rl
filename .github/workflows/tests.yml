@@ -1,41 +1,238 @@
-name: Tests
+name: RSL integration native validation
 
-on:
+"on":
   push:
-    branches:
-      - main
-      - extras
-  pull_request:
+    branches: [afloat16/rsl-integration-validation-20261126]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: tests-${{ github.ref }}
-  cancel-in-progress: true
+  group: rsl-integration-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  test:
+  native:
+    if: github.repository == 'Afloat16/rsl_rl'
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        include:
+          - pr: 293
+            source_sha: 04613fdf33c129e1902389015722147dcd862d47
+            base_sha: 4c9900fe242805266b30a91cd75302a6ad376833
+            tree_sha: f3aea17f596a477b895bf2111f087bc0b34b5081
+          - pr: 300
+            source_sha: 9ee69b31ff36990a117d48d31d02911d619f8f4c
+            base_sha: 10c49d25d1498e8333260be0cf1e0ae81a6bc16f
+            tree_sha: fa82a7d2cb463886a17be0d1d08c7dd913fc8ee9
+    env:
+      PR_NUMBER: ${{ matrix.pr }}
+      SOURCE_SHA: ${{ matrix.source_sha }}
+      BASE_SHA: ${{ matrix.base_sha }}
+      EXPECTED_TREE: ${{ matrix.tree_sha }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
     steps:
-      - name: Checkout
+      - name: Checkout immutable candidate
         uses: actions/checkout@v4
-
-      - name: Setup Python ${{ matrix.python-version }}
+        with:
+          ref: ${{ matrix.source_sha }}
+          path: source
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.12'
           cache: pip
-
-      - name: Install package
+          cache-dependency-path: source/pyproject.toml
+      - name: Install CPU dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install -e ".[test]"
-
-      - name: Run tests
-        run: pytest tests/ -v --tb=short
+          python -m pip install 'torch==2.15.0+cpu' --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e './source[test]' 'pytest==9.0.2' 'tensordict==0.11.0' 'numpy==2.5.5' 'onnx==1.23.2' 'onnxscript==0.7.2'
+      - name: Compare exact base, numerical negative control, and candidate
+        working-directory: source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import ast
+          import datetime
+          import hashlib
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+          import time
+          import xml.etree.ElementTree as ET
+          
+          if os.environ.get("GITHUB_ACTIONS") != "true":
+              raise SystemExit("This harness runs only in the temporary GitHub Actions source checkout.")
+          
+          pr = int(os.environ["PR_NUMBER"])
+          source = os.environ["SOURCE_SHA"]
+          base = os.environ["BASE_SHA"]
+          expected_tree = os.environ["EXPECTED_TREE"]
+          assert pr in (293, 300)
+          assert all(re.fullmatch(r"[0-9a-f]{40}", value) for value in (source, base, expected_tree))
+          repo = Path.cwd().resolve()
+          out = Path(os.environ["RUNNER_TEMP"]) / f"rsl-integration-{pr}"
+          out.mkdir(parents=True, exist_ok=True)
+          records = []
+          summary = {"pr": pr, "source": source, "base": base, "expected_tree": expected_tree, "phases": records}
+          
+          def git(*args):
+              return subprocess.check_output(["git", *args], cwd=repo, text=True).strip()
+          
+          def restore(ref):
+              subprocess.run(["git", "reset", "--hard", ref], cwd=repo, check=True)
+              assert git("rev-parse", "HEAD") == ref
+              subprocess.run(["git", "diff", "--exit-code"], cwd=repo, check=True)
+              subprocess.run(["git", "diff", "--cached", "--exit-code"], cwd=repo, check=True)
+          
+          def run_pytest(label, selectors):
+              xml = out / f"{label}.xml"
+              log = out / f"{label}.log"
+              command = [sys.executable, "-m", "pytest", *selectors, "-v", "--tb=short", f"--junitxml={xml}"]
+              start = time.monotonic()
+              with log.open("w") as stream:
+                  result = subprocess.run(command, cwd=repo, stdout=stream, stderr=subprocess.STDOUT, timeout=600)
+              assert xml.exists(), f"No JUnit report for {label}: exit {result.returncode}"
+              cases = list(ET.parse(xml).getroot().iter("testcase"))
+              failures = []
+              for case in cases:
+                  failure = case.find("failure")
+                  if failure is not None:
+                      failures.append({"test": case.get("name"), "message": failure.get("message"), "text": failure.text or ""})
+              record = {
+                  "label": label,
+                  "command": command,
+                  "exit_code": result.returncode,
+                  "tests": len(cases),
+                  "failures": failures,
+                  "errors": sum(case.find("error") is not None for case in cases),
+                  "skipped": sum(case.find("skipped") is not None for case in cases),
+                  "seconds": round(time.monotonic() - start, 2),
+                  "head": git("rev-parse", "HEAD"),
+                  "index_tree": git("write-tree"),
+                  "worktree_changed_paths": git("diff", "--name-only").splitlines(),
+                  "junit": str(xml),
+                  "log": str(log),
+              }
+              records.append(record)
+              print(json.dumps({key: value for key, value in record.items() if key != "failures"}, indent=2), flush=True)
+              return record
+          
+          def validate_negative(record):
+              assert record["exit_code"] == 1 and record["errors"] == 0 and record["skipped"] == 0
+              assert len(record["failures"]) == 2
+              names = {case["test"] for case in record["failures"]}
+              if pr == 293:
+                  assert record["tests"] == 2
+                  assert names == {
+                      "test_finite_half_gradients_do_not_overflow_during_averaging[8]",
+                      "test_finite_half_gradients_do_not_overflow_during_averaging[64]",
+                  }
+              else:
+                  assert record["tests"] == 3
+                  assert names == {
+                      "test_pooled_advantage_optimizer_equivalence[True]",
+                      "test_pooled_advantage_statistics",
+                  }
+              for case in record["failures"]:
+                  text = (case["message"] + "\n" + case["text"]).lower()
+                  assert "assert_close" in text
+                  assert any(value in text for value in ("not close", "mismatched elements", "greatest absolute difference"))
+                  assert not any(value in text for value in ("operation not permitted", "modulenotfounderror", "importerror"))
+                  if pr == 293:
+                      assert "inf" in text
+              record["expected_numerical_negative_control"] = True
+          
+          assert Path(git("rev-parse", "--show-toplevel")).resolve() == repo
+          assert git("rev-parse", source + "^{tree}") == expected_tree
+          summary["started_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+          summary["base_tree"] = git("rev-parse", base + "^{tree}")
+          summary["gloo_available"] = subprocess.check_output(
+              [sys.executable, "-c", "import torch; print(torch.distributed.is_available() and torch.distributed.is_gloo_available())"],
+              text=True,
+          ).strip()
+          assert summary["gloo_available"] == "True"
+          (out / "environment.txt").write_text(subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True))
+          error = None
+          try:
+              restore(base)
+              base_suite = run_pytest("exact-base-full-suite", ["tests/"])
+              restore(source)
+              if pr == 293:
+                  path = "tests/algorithms/test_distributed.py"
+                  candidate_tests = subprocess.check_output(["git", "show", f"{source}:{path}"], cwd=repo)
+                  summary["negative_test_blob"] = git("rev-parse", f"{source}:{path}")
+                  restore(base)
+                  (repo / path).write_bytes(candidate_tests)
+                  assert git("diff", "--name-only") == path
+                  assert git("rev-parse", "HEAD:rsl_rl/utils/utils.py") == git("rev-parse", f"{base}:rsl_rl/utils/utils.py")
+                  negative = run_pytest("exact-base-with-identical-candidate-regressions", [
+                      "tests/algorithms/test_distributed.py::TestDistributedAlgorithms::test_finite_half_gradients_do_not_overflow_during_averaging"
+                  ])
+              else:
+                  ppo_path = "rsl_rl/algorithms/ppo.py"
+                  assert git("rev-parse", f"{source}:{ppo_path}") == git("rev-parse", f"{base}:{ppo_path}")
+                  summary["ablation_delegates_to_exact_base_ppo"] = True
+                  path = repo / "rsl_rl/algorithms/global_advantage_ppo.py"
+                  original = path.read_text()
+                  marker = "        super().compute_returns(obs)\n"
+                  assert original.count(marker) == 1
+                  ablated = original.split(marker, 1)[0] + marker
+                  before = ast.parse(original)
+                  after = ast.parse(ablated)
+                  original_class = next(node for node in before.body if isinstance(node, ast.ClassDef))
+                  ablated_class = next(node for node in after.body if isinstance(node, ast.ClassDef))
+                  original_method = next(node for node in original_class.body if isinstance(node, ast.FunctionDef) and node.name == "compute_returns")
+                  ablated_method = next(node for node in ablated_class.body if isinstance(node, ast.FunctionDef) and node.name == "compute_returns")
+                  assert ast.dump(original_method.body[0]) == ast.dump(ablated_method.body[0])
+                  assert ast.dump(original_method.body[1]) == ast.dump(ablated_method.body[1])
+                  assert len(ablated_method.body) == 2
+                  original_method.body = ablated_method.body
+                  assert ast.dump(before) == ast.dump(after)
+                  path.write_text(ablated)
+                  assert git("diff", "--name-only") == "rsl_rl/algorithms/global_advantage_ppo.py"
+                  summary["ablation_sha256"] = hashlib.sha256(ablated.encode()).hexdigest()
+                  negative = run_pytest("base-ppo-behavior-with-candidate-interface-ablation", [
+                      "tests/algorithms/test_distributed.py::TestDistributedAlgorithms::test_pooled_advantage_optimizer_equivalence",
+                      "tests/algorithms/test_distributed.py::TestDistributedAlgorithms::test_pooled_advantage_statistics",
+                  ])
+              restore(source)
+              assert git("write-tree") == expected_tree
+              candidate_suite = run_pytest("candidate-full-suite", ["tests/"])
+              validate_negative(negative)
+              assert base_suite["exit_code"] == 0, "Exact base full suite failed; inspect before attributing candidate failures"
+              assert candidate_suite["exit_code"] == 0, "Candidate full suite failed"
+              summary["verified"] = True
+          except BaseException as exc:
+              error = exc
+              summary["verified"] = False
+              summary["error"] = repr(exc)
+          finally:
+              restore(source)
+              summary["restored_head"] = git("rev-parse", "HEAD")
+              summary["restored_tree"] = git("write-tree")
+              summary["restored_clean"] = git("diff", "--name-only") == "" and git("diff", "--cached", "--name-only") == ""
+              assert summary["restored_head"] == source and summary["restored_tree"] == expected_tree and summary["restored_clean"]
+              summary["finished_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+              (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+          if error is not None:
+              raise error
+          PY
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rsl-integration-${{ matrix.pr }}-${{ github.run_id }}
+          path: ${{ runner.temp }}/rsl-integration-${{ matrix.pr }}
+          if-no-files-found: error
